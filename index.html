@@ -228,7 +228,7 @@ button:active,.drop:active{transform:scale(.96)}
 
 <div class="topbar"><button type="button" id="langBtn" aria-label="Language">EN</button><button type="button" id="themeBtn" aria-label="Theme">&#9680;</button></div>
 <h1>ဗီဒီယိုကနေ မြန်မာစာတန်းထိုး SRT ထုတ်မယ်</h1>
-<p class="lede">ဗီဒီယို / အသံဖိုင် (သို့) SRT ဖိုင် ထည့်လိုက်ရင် မြန်မာ စာတန်းထိုး (.srt / .vtt) ထုတ်ပေးပါတယ်။ Engine ၄ မျိုး ရွေးလို့ရပါတယ်။</p>
+<p class="lede">ဗီဒီယို / အသံဖိုင် (သို့) SRT ဖိုင် ထည့်လိုက်ရင် မြန်မာ စာတန်းထိုး (.srt / .vtt) ထုတ်ပေးပါတယ်။</p>
 
 <div class="tabbar" role="group" aria-label="အပိုင်းများ ရွေးရန်">
   <button id="tabTranslate" aria-pressed="true">ဘာသာပြန်</button>
@@ -335,7 +335,7 @@ button:active,.drop:active{transform:scale(.96)}
       <input type="number" id="paceSec" value="7" min="0" max="60" step="1" inputmode="numeric" />
     </div>
     <div class="hint">Request တွေကြား စောင့်ချိန် — ၇ စက္ကန့်ဆို 429 (limit) ထိတာ အများကြီး လျော့တယ်။ 0 = မစောင့်ဘူး။</div>
-    <div class="hint">Key မရှိရင် <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> မှာ အခမဲ့ ထုတ်ပါ။ Key ကို ဘယ်မှာမှ မသိမ်းဘူး — tab ပိတ်ရင် ပျက်မယ်။</div>
+    <div class="hint">Key မရှိရင် <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> မှာ အခမဲ့ ထုတ်ပါ။ Key Not Save!</div>
   </div>
   <div class="note hidden" id="geminiNote">Gemini မုဒ်မှာ အကြောင်းအရာကို Google server သို့ ပို့ရတယ်။ 429 ထိရင် အလိုအလျောက် စောင့်ပြီး ပြန်ကြိုးစားပေးမယ်။</div>
 
@@ -352,19 +352,19 @@ button:active,.drop:active{transform:scale(.96)}
     </div>
     <div class="hint">Key မရှိရင် <a href="https://portal.azure.com" target="_blank" rel="noopener">Azure Portal</a> မှာ "Translator" resource (F0 — အခမဲ့) ဖန်တီးပြီး "Keys and Endpoint" က Key နဲ့ Region ကို ထည့်ပါ။ Key ကို မသိမ်းဘူး — tab ပိတ်ရင် ပျက်မယ်။</div>
   </div>
-  <div class="note hidden" id="msNote">ဘာသာပြန်ဖို့ စာသားကို Microsoft server သို့ ပို့ရတယ် (အသံကတော့ စက်ထဲမှာပဲ)။ F0 မှာ တစ်လ စာလုံး 2M အခမဲ့။</div>
+  <div class="note hidden" id="msNote">ဘာသာပြန်ဖို့ စာသားကို Microsoft server သို့ ပို့ရတယ် (အသံကတော့ စက်ထဲမှာပဲ)။</div>
 
   <div id="nllbBox" class="hidden" style="margin-top:14px">
-    <div class="hint" style="margin-top:0">Key / အကောင့် မလို။ ပထမအကြိမ် မော်ဒယ် (~၁ GB) တစ်ခါ ဒေါင်းရမယ်။ မူရင်းဘာသာစကားကို အတိအကျ ရွေးပါ ("အလိုအလျောက်" ဆို တရုတ်အဖြစ် ယူဆမယ်)။</div>
+    <div class="hint" style="margin-top:0">Key / အကောင့် မလို။ ပထမအကြိမ် မော်ဒယ် (~၁ GB) တစ်ခါ ဒေါင်းရမယ်။</div>
   </div>
   <div class="note hidden" id="nllbNote">အားလုံး စက်ထဲမှာပဲ — unlimited။ ဖုန်းမှာ နှေးနိုင်ပြီး အရည်အသွေး Gemini လောက် မမီနိုင်ဘူး။</div>
 
   <div style="margin-top:16px">
-    <label class="f" for="glossaryText">ဇာတ်ကောင်နာမည် / ဝေါဟာရ မှတ်တမ်း (Glossary)</label>
+    <label class="f" for="glossaryText">ဇာတ်ကောင်နာမည် / ဝေါဟာရ မှတ်တမ်း</label>
     <textarea class="my" id="glossaryText" rows="4" placeholder="တစ်ကြောင်းလျှင် တစ်စုံ — မူရင်းနာမည် = မြန်မာနာမည်&#10;ဥပမာ —&#10;林浩 = လင်းဟောက်&#10;沈清欢 = ရှန်ချင်းဟွမ်"></textarea>
     <div class="row">
       <button class="btn small ghost" id="glossarySave">မှတ်တမ်း သိမ်းမယ်</button>
-      <button class="btn small ghost" id="glossaryAi">Gemini နဲ့ နာမည်တွေ အလိုအလျောက် ထုတ်မယ်</button>
+      <button class="btn small ghost" id="glossaryAi">Generate character name</button>
     </div>
     <div class="hint">ဒီနာမည်တွေကို ဘာသာပြန်တိုင်း ဒီပုံစံအတိုင်းပဲ သုံးမယ် — အပိုင်းများတဲ့ ဇာတ်လမ်းမှာ နာမည် မလွဲအောင်။ "အလိုအလျောက် ထုတ်မယ်" က Gemini + Key လိုတယ်။</div>
   </div>
@@ -409,7 +409,7 @@ button:active,.drop:active{transform:scale(.96)}
 
 <div id="panelEdit" class="hidden">
 <section class="card" id="editEmpty">
-  <div class="empty">ပြင်စရာစာတန်း မရှိသေးပါဘူး — ဘာသာပြန် tab မှာ အရင် ဘာသာပြန်ပါ၊ ဒါမှမဟုတ် Projects tab က ပရောဂျက် ဖွင့်ပါ။</div>
+  <div class="empty">ပြင်စရာစာတန်း မရှိသေးပါဘူး — ဘာသာပြန် tab မှာ အရင် ဘာသာပြန်ပါ၊</div>
 </section>
 <section class="card hidden" id="cardResult">
   <h2>ပြီးပါပြီ — စာတန်းတွေ အဆင်သင့်ဖြစ်ပါပြီ</h2>
@@ -430,7 +430,7 @@ button:active,.drop:active{transform:scale(.96)}
 
       <div class="burnbox" id="burnBox">
         <h3>စာတန်းထိုးပြီး ဗီဒီယို ထုတ်မယ်</h3>
-        <div class="hint" style="margin-top:0">စာတန်းကို ဗီဒီယိုထဲ တိုက်ရိုက် ထည့်ပြီး ဖိုင်အသစ် ထုတ်မယ်။ ချိန်လိုက်တာနဲ့ အစမ်းပြမှာ ချက်ချင်း ပြောင်းပြမယ်။</div>
+        <div class="hint" style="margin-top:0">စာတန်းကို ဗီဒီယိုထဲ တိုက်ရိုက် ထည့်ပြီး ဖိုင်အသစ် ထုတ်မယ်။</div>
         <div class="burngrid">
           <div class="full">
             <label class="f">စာတန်း နေရာ</label>
@@ -502,7 +502,7 @@ button:active,.drop:active{transform:scale(.96)}
               <button class="btn small ghost hidden" id="fontReset">မူရင်း ဖောင့် ပြန်သုံးမယ်</button>
             </div>
             <input type="file" id="fontFile" accept=".ttf,.otf,.woff,.woff2" class="hidden" />
-            <div class="hint" id="fontStatus">အခု သုံးနေတာ — Noto Sans Myanmar (မူရင်း)။ ကိုယ်ပိုင်ဖောင့်က ဒီ tab ဖွင့်ထားသရွေ့ပဲ ရမယ်။</div>
+            <div class="hint" id="fontStatus">အခု သုံးနေတာ — Noto Sans Myanmar (မူရင်း)။ ဖောင့် မသိမ်းပါ</div>
           </div>
           <div class="full">
             <label class="f">Logo / Watermark ပုံ</label>
@@ -511,7 +511,7 @@ button:active,.drop:active{transform:scale(.96)}
               <button class="btn small ghost hidden" id="logoRemove">Logo ဖြုတ်မယ်</button>
             </div>
             <input type="file" id="logoFile" accept="image/*" class="hidden" />
-            <div class="hint" id="logoStatus">Logo မထည့်ရသေးဘူး။ PNG (နောက်ခံ ပွင့်လင်း) ဆို အလှဆုံးပဲ။</div>
+            <div class="hint" id="logoStatus">Logo မထည့်ရသေးဘူး။ Insert PNG files</div>
           </div>
           <div class="full">
             <label class="f">Logo နေရာ</label>
@@ -540,7 +540,7 @@ button:active,.drop:active{transform:scale(.96)}
           <div id="burnStatus" style="font-size:13.5px;margin-top:8px;line-height:1.7"></div>
           <button class="btn small danger-ghost hidden" id="burnCancel" style="margin-top:8px">ရပ်မယ်</button>
         </div>
-        <div class="note">သတိ — အချိန်မှန်အတိုင်း ပြန်ဖွင့်ပြီး ထုတ်တာမို့ ဗီဒီယိုရှည်သလောက် ကြာမယ်။ ထုတ်နေတုန်း tab မပိတ်ပါနဲ့။</div>
+        <div class="note">သတိ — ဗီဒီယိုရှည်သလောက် အချိန် ကြာမည်။ ထုတ်နေတုန်း tab မပိတ်ပါနဲ့။</div>
       </div>
     </div>
     <div>
@@ -594,7 +594,7 @@ button:active,.drop:active{transform:scale(.96)}
 <div id="panelVideo" class="hidden">
 <section class="card" id="cardVideo">
   <h2>ဗီဒီယို ပြင်ဆင်ရန်</h2>
-  <div class="empty" id="videoEmpty">ဗီဒီယို မရှိသေးပါဘူး — ဘာသာပြန် tab မှာ ဗီဒီယို အရင် ဘာသာပြန်ပါ၊ ဒါမှမဟုတ် Projects tab က ပရောဂျက် ဖွင့်ပါ။</div>
+  <div class="empty" id="videoEmpty">ဗီဒီယို မရှိသေးပါ။</div>
   <div id="videoSlot"></div>
 </section>
 </div>
@@ -628,7 +628,7 @@ button:active,.drop:active{transform:scale(.96)}
   <div id="cloudProjectList" style="margin-top:10px"></div>
   <details style="margin-top:16px">
     <summary>Firestore Security Rules (တစ်ခါပဲ ထည့်ရမယ်)</summary>
-    <div class="hint">Firebase Console → Firestore Database → Rules မှာ ဒီ rules ကို paste လုပ်ပါ — ကိုယ့် project ကိုယ်ပဲ ဖွင့်/သိမ်း/ဖျက်လို့ရမှာ ဖြစ်အောင်။</div>
+    <div class="hint">Firebase Console → Firestore Database add firestore rules</div>
     <pre class="rulesbox">rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -643,7 +643,7 @@ service cloud.firestore {
 
 <footer>
   <div class="credit">Power By Maxflix Team</div>
-  Whisper / NLLB — အားလုံး စက်ထဲမှာပဲ၊ ဖိုင် အပြင် မထွက်ဘူး။ Gemini / Microsoft — server သို့ ပို့ရတယ်။ ဒေါင်းမဆွဲခင် စာသားတွေ တစ်ချက် ပြန်စစ်ပါ။
+  Translate By- Whisper / NLLB/ Gemini / Microsoft tools
 </footer>
 </div>
 
@@ -839,14 +839,14 @@ var SrtTools = (function () {
     $('nllbBox').classList.toggle('hidden', !nllb);
     $('nllbNote').classList.toggle('hidden', !nllb);
     $('engineDesc').textContent =
-      isVideo && engine === 'local' ? (enUI ? 'Whisper (on-device) transcribes → Google Translate translates.' : 'Whisper (စက်ထဲမှာ) အသံဖတ် → Google Translate ပြန်ဆို။')
-      : isVideo && gem ? (enUI ? 'Gemini listens to the audio and writes Burmese subtitles directly — audio is sent to Google\'s servers.' : 'Gemini က အသံနားထောင်ပြီး မြန်မာစာတန်း တိုက်ရိုက်ထုတ်တယ် — အသံကို Google server သို့ ပို့ရတယ်။')
-      : isVideo && ms ? (enUI ? 'Whisper (on-device) transcribes → Microsoft translates. Text is sent to Microsoft\'s servers.' : 'Whisper (စက်ထဲမှာ) အသံဖတ် → Microsoft ပြန်ဆို။ စာသားကို Microsoft server သို့ ပို့ရတယ်။')
-      : isVideo && nllb ? (enUI ? 'Whisper + NLLB — everything on-device. No key, no limits.' : 'Whisper + NLLB — အားလုံး စက်ထဲမှာပဲ။ Key မလို၊ limit မရှိ။')
-      : !isVideo && engine === 'local' ? (enUI ? 'Translates with Google Translate — free, no key needed.' : 'Google Translate နဲ့ ပြန်ဆို — အခမဲ့၊ key မလို။')
-      : !isVideo && ms ? (enUI ? 'Translates with Microsoft Translator — text is sent to Microsoft\'s servers.' : 'Microsoft Translator နဲ့ ပြန်ဆို — စာသားကို Microsoft server သို့ ပို့ရတယ်။')
+      isVideo && engine === 'local' ? (enUI ? 'Whisper (on-device) transcribes → Google Translate translates.' : 'Whisper')
+      : isVideo && gem ? (enUI ? 'Gemini listens to the audio and writes Burmese subtitles directly — audio is sent to Google\'s servers.' : 'Gemini')
+      : isVideo && ms ? (enUI ? 'Whisper (on-device) transcribes → Microsoft translates. Text is sent to Microsoft\'s servers.' : 'Whisper')
+      : isVideo && nllb ? (enUI ? 'Whisper + NLLB — everything on-device. No key, no limits.' : 'Whisper + NLLB — all are no need key, no limit')
+      : !isVideo && engine === 'local' ? (enUI ? 'Translates with Google Translate — free, no key needed.' : 'Google Translate')
+      : !isVideo && ms ? (enUI ? 'Translates with Microsoft Translator — text is sent to Microsoft\'s servers.' : 'Microsoft Translator')
       : !isVideo && nllb ? (enUI ? 'NLLB — translates on-device. No key, no limits.' : 'NLLB — စက်ထဲမှာပဲ ပြန်ဆို။ Key မလို၊ limit မရှိ။')
-      : (enUI ? 'Gemini understands context and translates naturally — text is sent to Google\'s servers.' : 'Gemini က အကြောင်းအရာ ဆက်စပ်နားလည်ပြီး သဘာဝကျကျ ပြန်ဆိုတယ် — စာသားကို Google server သို့ ပို့ရတယ်။');
+      : (enUI ? 'Gemini understands context and translates naturally — text is sent to Google\'s servers.' : 'Gemini');
   }
   $('engineA').addEventListener('click', function () { engine = 'local'; refreshSettings(); });
   $('engineB').addEventListener('click', function () { engine = 'gemini'; refreshSettings(); });
@@ -1916,7 +1916,7 @@ var SrtTools = (function () {
     if (!segments.length) {
       var empty = document.createElement('div');
       empty.className = 'empty';
-      empty.textContent = 'စာကြောင်း မရှိသေးပါဘူး — အောက်က ခလုတ်နဲ့ အသစ်ထည့်လို့ ရပါတယ်။';
+      empty.textContent = 'စာကြောင်း မရှိသေးပါ';
       list.appendChild(empty);
       return;
     }
