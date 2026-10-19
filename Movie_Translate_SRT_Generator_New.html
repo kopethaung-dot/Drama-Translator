@@ -1,0 +1,3516 @@
+<!doctype html>
+<html lang="my">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<script>try{var __t=localStorage.getItem("mt_theme");if(__t)document.documentElement.setAttribute("data-theme",__t)}catch(e){}</script>
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>Movie Translate SRT Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f2f3f5; --surface:#ffffff; --surface2:#eceef1; --ink:#17191d; --mut:#5b636f;
+  --line:#dbe0e7; --acc:#b8860b; --acc-dark:#8f6a08; --acc-soft:#faf1da; --acc-ink:#fffaf0;
+  --blue:#1f6feb; --ok:#177245; --warn-bg:#fdf4e0; --warn-line:#e3c078; --warn-ink:#7a5410;
+  --err:#c81e1e; --shadow:0 1px 3px rgba(16,20,28,.08),0 4px 14px rgba(16,20,28,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#0e0f12; --surface:#171a1f; --surface2:#21252d; --ink:#eceef2; --mut:#9aa3af;
+    --line:#2b303a; --acc:#d4af37; --acc-dark:#b8962e; --acc-soft:#2e2410; --acc-ink:#171204;
+    --blue:#4d94ff; --ok:#3fb27f; --warn-bg:#2c2110; --warn-line:#6b4a1f; --warn-ink:#f0c674;
+    --err:#ff7b7b; --shadow:0 1px 3px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+    color-scheme: dark;
+    --bg:#0e0f12; --surface:#171a1f; --surface2:#21252d; --ink:#eceef2; --mut:#9aa3af;
+    --line:#2b303a; --acc:#d4af37; --acc-dark:#b8962e; --acc-soft:#2e2410; --acc-ink:#171204;
+    --blue:#4d94ff; --ok:#3fb27f; --warn-bg:#2c2110; --warn-line:#6b4a1f; --warn-ink:#f0c674;
+    --err:#ff7b7b; --shadow:0 1px 3px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Noto Sans Myanmar',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  font-size:16px;line-height:1.6}
+.wrap{max-width:1020px;margin:0 auto;padding:22px 16px 72px}
+h1{font-size:clamp(22px,4.5vw,30px);line-height:1.35;margin:0;font-weight:800}
+.lede{color:var(--mut);margin:8px 0 0;font-size:15px;line-height:1.75;max-width:640px}
+h2{font-size:17px;margin:0 0 12px;font-weight:700;line-height:1.5}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.hidden{display:none !important}
+
+/* mode switch */
+.modebar{display:flex;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px;margin-top:20px}
+.modebar button{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;border:0;background:transparent;color:var(--mut);
+  padding:11px 8px;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;line-height:1.4}
+.modebar button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.modebar svg{flex:none}
+
+/* main tabs */
+.tabbar{display:flex;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px;margin-top:18px;flex-wrap:wrap}
+.tabbar button{flex:1 1 108px;border:0;background:transparent;color:var(--mut);padding:11px 6px;border-radius:9px;
+  font-size:15px;font-weight:700;cursor:pointer;line-height:1.45}
+.tabbar button[aria-pressed="true"]{background:var(--acc);color:var(--acc-ink);box-shadow:var(--shadow)}
+.resultgrid.solo{grid-template-columns:1fr}
+.rulesbox{background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;
+  font-size:12px;line-height:1.65;overflow:auto;white-space:pre-wrap;word-break:break-word;margin:10px 0 4px}
+#cardProjects summary{font-size:13.5px;color:var(--mut);cursor:pointer;line-height:1.6;font-weight:600}
+
+/* engine switch */
+.enginebar{display:flex;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:3px;gap:3px}
+.enginebar button{flex:1;border:0;background:transparent;color:var(--mut);padding:9px 6px;border-radius:7px;
+  font-size:13.5px;font-weight:700;cursor:pointer;line-height:1.45}
+.enginebar button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.hint a{color:var(--blue)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:16px;box-shadow:var(--shadow)}
+@media(max-width:560px){.card{padding:14px}}
+
+.drop{border:2px dashed var(--line);border-radius:12px;padding:30px 16px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+.drop:hover,.drop.over{border-color:var(--acc);background:var(--acc-soft)}
+.drop svg{color:var(--mut)}
+.drop .t{font-weight:700;margin-top:8px;line-height:1.6}
+.drop .s{color:var(--mut);font-size:13px;margin-top:4px;line-height:1.7}
+.filemeta{margin-top:10px;color:var(--mut);font-size:13px;line-height:1.7;word-break:break-all}
+.filemeta b{color:var(--ink)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+label.f{display:block;font-size:13px;color:var(--mut);margin-bottom:6px;font-weight:600}
+select,input[type=number],input[type=text],input[type=password]{width:100%;background:var(--surface);color:var(--ink);border:1px solid var(--line);
+  border-radius:8px;padding:11px;font-size:15px;font-family:inherit;min-height:46px}
+select:focus,input:focus,textarea:focus{border-color:var(--blue);outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 22%,transparent)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:10px;
+  padding:12px 20px;font-size:16px;font-weight:700;cursor:pointer;color:var(--acc-ink);background:var(--acc);min-height:48px;line-height:1.4;text-align:center}
+.btn:hover{background:var(--acc-dark)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.primary{width:100%;margin-top:16px}
+.btn.ghost{background:var(--surface2);color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{background:var(--line)}
+.btn.small{padding:9px 14px;font-size:14px;min-height:42px}
+.btn.danger-ghost{background:transparent;color:var(--err);border-color:var(--line)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+.note{background:var(--warn-bg);border:1px solid var(--warn-line);color:var(--warn-ink);border-radius:10px;
+  padding:11px 13px;font-size:13px;margin-top:14px;line-height:1.8}
+.hint{font-size:12.5px;color:var(--mut);margin-top:10px;line-height:1.8}
+
+/* progress */
+.steps{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.step{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--mut);
+  border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 7px;line-height:1.5}
+.step .dot{width:20px;height:20px;border-radius:50%;background:var(--surface2);color:var(--mut);
+  display:inline-flex;align-items:center;justify-content:center;font-size:12px;flex:none}
+.step.active{color:var(--ink);border-color:var(--blue)}
+.step.active .dot{background:var(--blue);color:#fff}
+.step.done{color:var(--ok);border-color:var(--ok)}
+.step.done .dot{background:var(--ok);color:#fff}
+.step.err{color:var(--err);border-color:var(--err)}
+.step.err .dot{background:var(--err);color:#fff}
+.prog{height:10px;background:var(--surface2);border-radius:6px;overflow:hidden}
+.prog>div{height:100%;width:0%;background:var(--acc);transition:width .3s}
+#status{font-size:14.5px;margin-top:10px;min-height:24px;line-height:1.7}
+#status.err{color:var(--err);font-weight:600}
+.elapsed{font-size:12.5px;color:var(--mut);font-variant-numeric:tabular-nums}
+#log{font-size:12px;color:var(--mut);margin-top:8px;max-height:130px;overflow:auto;white-space:pre-wrap;
+  background:var(--surface2);border-radius:8px;padding:10px 12px;line-height:1.7;font-variant-numeric:tabular-nums}
+#logBox{margin-top:8px}
+#logBox summary{font-size:12.5px;color:var(--mut);cursor:pointer;line-height:1.6}
+
+/* result */
+.stats{color:var(--mut);font-size:13.5px;line-height:1.8}
+.resultgrid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:6px}
+@media(min-width:820px){.resultgrid{grid-template-columns:1.5fr 1fr;align-items:start}}
+.vwrap{position:relative;border-radius:12px;overflow:hidden;background:#000}
+.vwrap.framed{margin-left:auto;margin-right:auto}
+#previewBg{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:cover;filter:blur(16px) brightness(.55);transform:scale(1.15);z-index:0;display:none;background:#000}
+.vwrap.framed.blurbg #previewBg{display:block}
+.vwrap.framed #preview{position:absolute;inset:0;width:100%;height:100%;max-height:none;z-index:1;background:transparent}
+.vwrap.framed #preview.contain{object-fit:contain}
+.vwrap.framed #preview.cover{object-fit:cover}
+.vwrap.framed #cue{z-index:2}
+.enginebar.wrap{flex-wrap:wrap}
+.enginebar.wrap button{flex:1 1 30%}
+video{width:100%;display:block;max-height:52vh;background:#000}
+#cue{position:absolute;left:0;right:0;bottom:10px;text-align:center;padding:0 14px;font-size:19px;font-weight:700;color:#fff;
+  text-shadow:0 2px 6px #000,0 0 2px #000;pointer-events:none;line-height:1.55}
+#cueText{display:inline-block;padding:.16em .55em;border-radius:.3em;white-space:pre-line;max-width:100%;overflow-wrap:break-word}
+#logoImg{position:absolute;z-index:3;pointer-events:none}
+input[type=range]{width:100%;accent-color:var(--acc);min-height:32px;padding:0}
+input[type=color]{width:100%;height:46px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.burnbox{border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:14px}
+.burnbox h3{font-size:15.5px;margin:0 0 4px;font-weight:700;line-height:1.5}
+.burngrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.burngrid .full{grid-column:1/-1}
+.val{color:var(--ink);font-weight:700}
+.dl-stack{display:flex;flex-direction:column;gap:10px}
+.dl-stack .btn{width:100%}
+.shiftbox{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:14px}
+.shiftbox .r{display:flex;gap:8px;align-items:center}
+.shiftbox input{flex:1;min-width:0}
+.seg{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:10px;background:var(--surface)}
+.seg.active{border-color:var(--acc);background:var(--acc-soft)}
+.seg-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.seg-num{font-weight:800;color:var(--blue);font-size:14px}
+.seg-head .sp{flex:1}
+.iconbtn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;
+  border:1px solid var(--line);background:var(--surface);color:var(--mut);cursor:pointer;flex:none}
+.iconbtn:hover{color:var(--ink);background:var(--surface2)}
+.iconbtn.red{color:var(--err)}
+.times{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.times input{width:104px;padding:8px;font-size:13.5px;font-family:ui-monospace,Menlo,Consolas,monospace;min-height:40px}
+.times .dur{color:var(--mut);font-size:12px}
+.orig{font-size:12.5px;color:var(--mut);margin-bottom:6px;line-height:1.7;word-break:break-word}
+textarea.my{width:100%;min-height:58px;background:var(--surface);color:var(--ink);border:1px solid var(--line);
+  border-radius:8px;padding:10px;font-size:15.5px;resize:vertical;font-family:inherit;line-height:1.75}
+.failbadge{display:inline-block;margin-top:8px;font-size:12px;font-weight:700;color:var(--err);
+  border:1px solid var(--err);border-radius:999px;padding:2px 10px}
+.cpsbadge{display:inline-block;font-size:11.5px;font-weight:700;border:1px solid var(--line);border-radius:999px;
+  padding:1px 9px;color:var(--mut);font-variant-numeric:tabular-nums;line-height:1.5}
+.cpsbadge.ok{color:var(--ok);border-color:var(--ok)}
+.cpsbadge.mid{color:var(--warn-ink);border-color:var(--warn-line);background:var(--warn-bg)}
+.cpsbadge.bad{color:var(--err);border-color:var(--err)}
+.qitem{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;
+  padding:10px 12px;margin-top:8px;background:var(--surface)}
+.qitem .qn{font-weight:600;font-size:14px;word-break:break-all;line-height:1.5}
+.qitem .qs{font-size:12.5px;color:var(--mut);line-height:1.6}
+.qitem .qs.run{color:var(--blue)}
+.qitem .qs.done{color:var(--ok)}
+.qitem .qs.err{color:var(--err)}
+.qitem .sp{flex:1;min-width:0}
+.empty{color:var(--mut);font-size:14px;border:1px dashed var(--line);border-radius:10px;padding:18px;text-align:center;line-height:1.7}
+
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);
+  background:#17191d;color:#f2f3f5;padding:11px 18px;border-radius:999px;font-size:14px;font-weight:600;
+  opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50;max-width:92vw;text-align:center;line-height:1.5;
+  box-shadow:0 6px 24px rgba(0,0,0,.3)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{color:var(--mut);font-size:12.5px;margin-top:34px;line-height:1.8;text-align:center}
+.credit{font-size:15px;font-weight:800;letter-spacing:.06em;color:var(--acc);margin-bottom:6px;line-height:1.6}
+
+/* top bar: language + theme */
+.topbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:8px}
+.topbar button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 14px;
+  font-size:14px;font-weight:700;cursor:pointer;min-height:38px;min-width:46px}
+
+/* click pop motion */
+button,.drop{transition:transform .13s ease,background-color .15s,border-color .15s,color .15s,box-shadow .15s}
+button:active,.drop:active{transform:scale(.96)}
+.btn{position:relative;overflow:hidden}
+.btn .ripple{position:absolute;border-radius:50%;background:currentColor;opacity:.28;transform:scale(0);
+  pointer-events:none;animation:ripple .5s ease-out forwards}
+@keyframes ripple{to{transform:scale(2.6);opacity:0}}
+.clickfx{position:fixed;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:2px solid var(--acc);
+  pointer-events:none;z-index:90;animation:fxring .45s ease-out forwards}
+@keyframes fxring{from{transform:scale(.4);opacity:.9}to{transform:scale(3.4);opacity:0}}
+.pop-in{animation:popin .38s cubic-bezier(.2,.9,.3,1.18) both}
+@keyframes popin{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media (prefers-reduced-motion: reduce){
+  .prog>div{transition:none} #toast{transition:none}
+  button,.drop{transition:none}
+  button:active,.drop:active{transform:none}
+  .pop-in,.btn .ripple,.clickfx{animation:none}
+  .clickfx{display:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="topbar"><button type="button" id="langBtn" aria-label="Language">EN</button><button type="button" id="themeBtn" aria-label="Theme">&#9680;</button></div>
+<h1>ဗီဒီယိုကနေ မြန်မာစာတန်းထိုး SRT ထုတ်မယ်</h1>
+<p class="lede">ဗီဒီယို / အသံဖိုင် (သို့) SRT ဖိုင် ထည့်လိုက်ရင် မြန်မာ စာတန်းထိုး (.srt / .vtt) ထုတ်ပေးပါတယ်။ Engine ၄ မျိုး ရွေးလို့ရပါတယ်။</p>
+
+<div class="tabbar" role="group" aria-label="အပိုင်းများ ရွေးရန်">
+  <button id="tabTranslate" aria-pressed="true">ဘာသာပြန်</button>
+  <button id="tabEdit" aria-pressed="false">ပြင်ဆင်ရန်</button>
+  <button id="tabVideo" aria-pressed="false">ဗီဒီယို</button>
+  <button id="tabProjects" aria-pressed="false">ပရောဂျက်များ</button>
+</div>
+
+<div id="panelTranslate">
+<div class="modebar" role="group" aria-label="လုပ်ဆောင်မည့်နည်းလမ်း ရွေးရန်">
+  <button id="modeVideo" aria-pressed="true">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16M2 9h5M2 15h5M17 9h5M17 15h5"/></svg>
+    ဗီဒီယိုကနေ စာတန်းထုတ်မယ်
+  </button>
+  <button id="modeSrt" aria-pressed="false">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+    SRT ဖိုင်ကို ပြန်ဆိုမယ်
+  </button>
+</div>
+
+<section class="card" id="cardInput">
+  <div class="note hidden" id="projBanner" style="margin-top:0">
+    သိမ်းထားတဲ့ ပရောဂျက် ရှိပါတယ် — <span id="projInfo"></span>။ အဲဒီကနေ ဆက်လုပ်မလား?
+    <div class="row" style="margin-top:8px">
+      <button class="btn small" id="projRestore">ဆက်လုပ်မယ်</button>
+      <button class="btn small ghost" id="projDiscard">ဖျက်မယ်</button>
+    </div>
+  </div>
+
+  <h2>၁ — ဖိုင်ရွေးပါ</h2>
+
+  <div class="drop" id="dropVideo" role="button" tabindex="0" aria-label="ဗီဒီယို သို့မဟုတ် အသံဖိုင် ရွေးရန်">
+    <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V5m0 0L8 9m4-4 4 4"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></svg>
+    <div class="t">နှိပ်ပြီး ဖိုင်ရွေးပါ (သို့) ဒီမှာ ဆွဲချလိုက်ပါ</div>
+    <div class="s">mp4, webm, mov, mp3, wav စတဲ့ ဗီဒီယို / အသံဖိုင် အားလုံး ရပါတယ်</div>
+  </div>
+  <input type="file" id="fileInputVideo" accept="video/*,audio/*,.mkv" class="hidden" />
+
+  <div class="drop hidden" id="dropSrt" role="button" tabindex="0" aria-label="SRT သို့မဟုတ် VTT ဖိုင် ရွေးရန်">
+    <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+    <div class="t">နှိပ်ပြီး .srt / .vtt ဖိုင်ရွေးပါ (သို့) ဒီမှာ ဆွဲချလိုက်ပါ</div>
+    <div class="s">ရှိပြီးသား စာတန်းကို မြန်မာပြန်ဆိုပေးမယ် — အချိန်တွေ ဒီအတိုင်း ထားမယ်</div>
+  </div>
+  <input type="file" id="fileInputSrt" accept=".srt,.vtt,text/plain" class="hidden" />
+
+  <div class="filemeta" id="fileMeta"></div>
+
+  <h2 style="margin-top:20px">၂ — ဆက်တင်များ</h2>
+  <div class="grid2">
+    <div>
+      <label class="f" for="srcLang">မူရင်းဘာသာစကား</label>
+      <select id="srcLang">
+        <option value="auto" selected>အလိုအလျောက် သိမယ်</option>
+        <option value="chinese">တရုတ်</option>
+        <option value="english">အင်္ဂလိပ်</option>
+        <option value="korean">ကိုရီးယား</option>
+        <option value="japanese">ဂျပန်</option>
+        <option value="thai">ထိုင်း</option>
+        <option value="burmese">မြန်မာ</option>
+      </select>
+    </div>
+    <div id="modelRow">
+      <label class="f" for="modelSel">AI မော်ဒယ် (အသံဖတ် တိကျမှု)</label>
+      <select id="modelSel">
+        <option value="Xenova/whisper-tiny">Tiny — အမြန်ဆုံး၊ ဖုန်းအတွက် သင့်တော်</option>
+        <option value="Xenova/whisper-base">Base — မြန်နှုန်းနဲ့ တိကျမှု မျှတ</option>
+        <option value="Xenova/whisper-small">Small — အတိကျဆုံး၊ ကွန်ပျူတာအတွက်</option>
+      </select>
+    </div>
+    <div style="max-width:230px">
+      <label class="f" for="maxChars">စာတန်းတစ်ကြောင်းလျှင် စာလုံးအများဆုံး</label>
+      <input type="number" id="maxChars" value="42" min="20" max="80" inputmode="numeric" />
+    </div>
+  </div>
+
+  <div style="margin-top:16px">
+    <label class="f" id="engineLabel">အသံဖတ် / ဘာသာပြန် နည်း (Engine)</label>
+    <div class="enginebar" role="group" aria-label="Engine ရွေးရန်">
+      <button id="engineA" aria-pressed="true">Whisper — စက်ထဲမှာ (အခမဲ့)</button>
+      <button id="engineB" aria-pressed="false">Google Gemini</button>
+      <button id="engineC" aria-pressed="false">Microsoft Translator</button>
+      <button id="engineD" aria-pressed="false">NLLB — စက်ထဲမှာ (Key မလို)</button>
+    </div>
+    <div class="hint" id="engineDesc"></div>
+  </div>
+
+  <div id="geminiBox" class="hidden" style="margin-top:14px">
+    <div class="grid2">
+      <div>
+        <label class="f" for="geminiKey">Gemini API Key</label>
+        <input type="password" id="geminiKey" placeholder="AIza…" autocomplete="off" spellcheck="false" />
+      </div>
+      <div>
+        <label class="f" for="geminiModel">Gemini မော်ဒယ်</label>
+        <select id="geminiModel">
+          <option value="gemini-3.8-flash" selected>Gemini 3.8 Flash — မြန် + တိကျ (အကြံပြု)</option>
+          <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite — အမြန်ဆုံး</option>
+          <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro — အတိကျဆုံး (နှေးနိုင်)</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:12px;max-width:300px">
+      <label class="f" for="paceSec">⏱️ Request ကြား စောင့်ချိန် — Pacing (စက္ကန့်)</label>
+      <input type="number" id="paceSec" value="7" min="0" max="60" step="1" inputmode="numeric" />
+    </div>
+    <div class="hint">Request တွေကြား စောင့်ချိန် — ၇ စက္ကန့်ဆို 429 (limit) ထိတာ အများကြီး လျော့တယ်။ 0 = မစောင့်ဘူး။</div>
+    <div class="hint">Key မရှိရင် <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> မှာ အခမဲ့ ထုတ်ပါ။ Key ကို ဘယ်မှာမှ မသိမ်းဘူး — tab ပိတ်ရင် ပျက်မယ်။</div>
+  </div>
+  <div class="note hidden" id="geminiNote">Gemini မုဒ်မှာ အကြောင်းအရာကို Google server သို့ ပို့ရတယ်။ 429 ထိရင် အလိုအလျောက် စောင့်ပြီး ပြန်ကြိုးစားပေးမယ်။</div>
+
+  <div id="msBox" class="hidden" style="margin-top:14px">
+    <div class="grid2">
+      <div>
+        <label class="f" for="msKey">Microsoft Translator Key</label>
+        <input type="password" id="msKey" placeholder="Azure Portal က Key" autocomplete="off" spellcheck="false" />
+      </div>
+      <div>
+        <label class="f" for="msRegion">Resource Region</label>
+        <input type="text" id="msRegion" placeholder="ဥပမာ — southeastasia" autocomplete="off" spellcheck="false" />
+      </div>
+    </div>
+    <div class="hint">Key မရှိရင် <a href="https://portal.azure.com" target="_blank" rel="noopener">Azure Portal</a> မှာ "Translator" resource (F0 — အခမဲ့) ဖန်တီးပြီး "Keys and Endpoint" က Key နဲ့ Region ကို ထည့်ပါ။ Key ကို မသိမ်းဘူး — tab ပိတ်ရင် ပျက်မယ်။</div>
+  </div>
+  <div class="note hidden" id="msNote">ဘာသာပြန်ဖို့ စာသားကို Microsoft server သို့ ပို့ရတယ် (အသံကတော့ စက်ထဲမှာပဲ)။ F0 မှာ တစ်လ စာလုံး 2M အခမဲ့။</div>
+
+  <div id="nllbBox" class="hidden" style="margin-top:14px">
+    <div class="hint" style="margin-top:0">Key / အကောင့် မလို။ ပထမအကြိမ် မော်ဒယ် (~၁ GB) တစ်ခါ ဒေါင်းရမယ်။ မူရင်းဘာသာစကားကို အတိအကျ ရွေးပါ ("အလိုအလျောက်" ဆို တရုတ်အဖြစ် ယူဆမယ်)။</div>
+  </div>
+  <div class="note hidden" id="nllbNote">အားလုံး စက်ထဲမှာပဲ — unlimited။ ဖုန်းမှာ နှေးနိုင်ပြီး အရည်အသွေး Gemini လောက် မမီနိုင်ဘူး။</div>
+
+  <div style="margin-top:16px">
+    <label class="f" for="glossaryText">ဇာတ်ကောင်နာမည် / ဝေါဟာရ မှတ်တမ်း (Glossary)</label>
+    <textarea class="my" id="glossaryText" rows="4" placeholder="တစ်ကြောင်းလျှင် တစ်စုံ — မူရင်းနာမည် = မြန်မာနာမည်&#10;ဥပမာ —&#10;林浩 = လင်းဟောက်&#10;沈清欢 = ရှန်ချင်းဟွမ်"></textarea>
+    <div class="row">
+      <button class="btn small ghost" id="glossarySave">မှတ်တမ်း သိမ်းမယ်</button>
+      <button class="btn small ghost" id="glossaryAi">Gemini နဲ့ နာမည်တွေ အလိုအလျောက် ထုတ်မယ်</button>
+    </div>
+    <div class="hint">ဒီနာမည်တွေကို ဘာသာပြန်တိုင်း ဒီပုံစံအတိုင်းပဲ သုံးမယ် — အပိုင်းများတဲ့ ဇာတ်လမ်းမှာ နာမည် မလွဲအောင်။ "အလိုအလျောက် ထုတ်မယ်" က Gemini + Key လိုတယ်။</div>
+  </div>
+
+  <div class="hint" id="deviceHint"></div>
+
+  <button class="btn primary" id="startBtn">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+    <span id="startBtnText">စတင်လုပ်ဆောင်မယ်</span>
+  </button>
+  <div class="note" id="modelNote">ပထမအကြိမ် မော်ဒယ် ဒေါင်းရမယ် (အင်တာနက် လိုတယ်)။ အသံဖတ်တာ စက်ထဲမှာပဲ — ဖိုင် အပြင် မထွက်ဘူး။</div>
+</section>
+
+<section class="card" id="cardBatch">
+  <h2>အပိုင်းများစွာ တန်းစီ (Batch)</h2>
+  <div class="drop" id="dropBatch" role="button" tabindex="0" aria-label="ဗီဒီယိုဖိုင်များ တန်းစီထဲ ထည့်ရန်">
+    <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V5m0 0L8 9m4-4 4 4"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></svg>
+    <div class="t">အပိုင်းတွေ အများကြီး တစ်ခါတည်း ထည့်လို့ရပါတယ်</div>
+    <div class="s">တစ်ပိုင်းပြီးမှ နောက်တစ်ပိုင်း အလိုအလျောက် ဆက်လုပ်မယ်</div>
+  </div>
+  <input type="file" id="fileInputBatch" accept="video/*,audio/*,.mkv" multiple class="hidden" />
+  <div id="batchList"></div>
+  <div class="row">
+    <button class="btn" id="batchStart">အကုန်စမယ်</button>
+    <button class="btn ghost hidden" id="batchDlAll">ပြီးတဲ့ SRT အကုန် ဒေါင်းမယ်</button>
+    <button class="btn small danger-ghost hidden" id="batchClear">တန်းစီ ရှင်းမယ်</button>
+  </div>
+  <div class="hint">အပေါ်က ဆက်တင်တွေကို အပိုင်းအားလုံးအတွက် သုံးမယ်။ လုပ်နေတုန်း tab မပိတ်ပါနဲ့၊ screen ဖွင့်ထားပါ။</div>
+</section>
+
+<section class="card hidden" id="cardProg" aria-live="polite">
+  <h2>လုပ်ဆောင်နေပါတယ်… <span class="elapsed" id="elapsed"></span></h2>
+  <div class="steps" id="steps"></div>
+  <div class="prog"><div id="bar"></div></div>
+  <div id="status">ပြင်ဆင်နေပါတယ်…</div>
+  <details id="logBox" class="hidden">
+    <summary>အသေးစိတ် မှတ်တမ်း (log)</summary>
+    <div id="log"></div>
+  </details>
+</section>
+</div>
+
+<div id="panelEdit" class="hidden">
+<section class="card" id="editEmpty">
+  <div class="empty">ပြင်စရာစာတန်း မရှိသေးပါဘူး — ဘာသာပြန် tab မှာ အရင် ဘာသာပြန်ပါ၊ ဒါမှမဟုတ် Projects tab က ပရောဂျက် ဖွင့်ပါ။</div>
+</section>
+<section class="card hidden" id="cardResult">
+  <h2>ပြီးပါပြီ — စာတန်းတွေ အဆင်သင့်ဖြစ်ပါပြီ</h2>
+  <div class="stats" id="stats"></div>
+  <div class="stats" id="cpsStats"></div>
+  <div class="note hidden" id="coverageWarn" role="alert"></div>
+  <div class="note hidden" id="restoreNote"></div>
+
+  <div class="resultgrid">
+    <div id="previewCol">
+      <div class="vwrap" id="vwrap">
+        <video id="previewBg" muted playsinline preload="metadata" aria-hidden="true"></video>
+        <video id="preview" controls playsinline preload="metadata"></video>
+        <div id="cue"><span id="cueText"></span></div>
+        <img id="logoImg" class="hidden" alt="" />
+      </div>
+      <div class="hint">ဗီဒီယို ဖွင့်ရင် စာတန်းတွေ အပေါ်မှာ တက်ပြမယ်။</div>
+
+      <div class="burnbox" id="burnBox">
+        <h3>စာတန်းထိုးပြီး ဗီဒီယို ထုတ်မယ်</h3>
+        <div class="hint" style="margin-top:0">စာတန်းကို ဗီဒီယိုထဲ တိုက်ရိုက် ထည့်ပြီး ဖိုင်အသစ် ထုတ်မယ်။ ချိန်လိုက်တာနဲ့ အစမ်းပြမှာ ချက်ချင်း ပြောင်းပြမယ်။</div>
+        <div class="burngrid">
+          <div class="full">
+            <label class="f">စာတန်း နေရာ</label>
+            <div class="enginebar" role="group" aria-label="စာတန်း နေရာ ရွေးရန်">
+              <button id="posTop" aria-pressed="false">အပေါ်</button>
+              <button id="posMid" aria-pressed="false">အလယ်</button>
+              <button id="posBottom" aria-pressed="true">အောက်</button>
+            </div>
+          </div>
+          <div>
+            <label class="f" for="burnOff">အပေါ် / အောက် ရွှေ့ရန် <span class="val" id="burnOffVal">0%</span></label>
+            <input type="range" id="burnOff" min="-25" max="25" step="1" value="0" />
+          </div>
+          <div>
+            <label class="f" for="burnFont">ဖောင့်အရွယ်အစား <span class="val" id="burnFontVal">4.8%</span></label>
+            <input type="range" id="burnFont" min="2" max="9" step="0.2" value="4.8" />
+          </div>
+          <div>
+            <label class="f" for="burnColor">စာသား အရောင်</label>
+            <input type="color" id="burnColor" value="#ffffff" />
+          </div>
+          <div>
+            <label class="f" for="burnBg">နောက်ခံ အရောင်</label>
+            <input type="color" id="burnBg" value="#000000" />
+          </div>
+          <div>
+            <label class="f" for="burnOp">နောက်ခံ ပွင့်လင်းမှု <span class="val" id="burnOpVal">55%</span></label>
+            <input type="range" id="burnOp" min="0" max="100" step="5" value="55" />
+          </div>
+          <div style="display:flex;align-items:flex-end">
+            <button class="btn small ghost" id="burnBold" aria-pressed="true" style="width:100%">စာလုံးအထူ (Bold) — ဖွင့်ထားသည်</button>
+          </div>
+          <div class="full">
+            <button class="btn small ghost" id="burnPreset" style="width:100%">MaxFlix အနီ theme နဲ့ ချိန်မယ်</button>
+          </div>
+          <div class="full">
+            <label class="f">ဗီဒီယို အချိုးအစား (Ratio)</label>
+            <div class="enginebar wrap" role="group" aria-label="ဗီဒီယို အချိုးအစား ရွေးရန်">
+              <button id="ratioOrig" aria-pressed="true">မူရင်း</button>
+              <button id="ratio916" aria-pressed="false">9:16 · TikTok</button>
+              <button id="ratio169" aria-pressed="false">16:9 · YouTube</button>
+              <button id="ratio11" aria-pressed="false">1:1 · စတုရန်း</button>
+              <button id="ratio45" aria-pressed="false">4:5 · Facebook</button>
+            </div>
+            <div class="hint">9:16 = TikTok/Reels · 16:9 = YouTube · 1:1 / 4:5 = ပို့စ်။</div>
+          </div>
+          <div class="full hidden" id="fillRow">
+            <label class="f">နေရာလွတ် ဖြည့်နည်း</label>
+            <div class="enginebar" role="group" aria-label="နေရာလွတ် ဖြည့်နည်း ရွေးရန်">
+              <button id="fillBlur" aria-pressed="true">မှုန်ဝါး (Blur)</button>
+              <button id="fillBlack" aria-pressed="false">အနက်ရောင် ဘောင်</button>
+              <button id="fillCrop" aria-pressed="false">အပြည့် ဖြတ်ထည့် (Crop)</button>
+            </div>
+            <div class="hint">မှုန်ဝါး = နောက်ခံ blur · အနက်ရောင် = letterbox ဘောင် · Crop = ဘောင်မပါ အပြည့်ဖြတ်။</div>
+          </div>
+          <div class="full">
+            <label class="f">ဗီဒီယို အရည်အသွေး (Quality)</label>
+            <div class="enginebar" role="group" aria-label="ဗီဒီယို အရည်အသွေး ရွေးရန်">
+              <button id="q720" aria-pressed="false">720p — မြန်</button>
+              <button id="q1080" aria-pressed="true">1080p — ကြည်</button>
+              <button id="qOrig" aria-pressed="false">မူရင်းအရွယ် — အကြည်ဆုံး</button>
+            </div>
+            <div class="hint">ကြည်လေ ဖိုင်ကြီးပြီး ကြာလေပဲ။ မူရင်းထက် သေးရင် မူရင်းအရွယ်အတိုင်းပဲ ထုတ်မယ်။</div>
+          </div>
+          <div class="full">
+            <label class="f">ကိုယ်ပိုင် ဖောင့် (.ttf / .otf)</label>
+            <div class="row" style="margin-top:0">
+              <button class="btn small ghost" id="fontPick">ဖုန်းထဲက ဖောင့် ရွေးမယ်</button>
+              <button class="btn small ghost hidden" id="fontReset">မူရင်း ဖောင့် ပြန်သုံးမယ်</button>
+            </div>
+            <input type="file" id="fontFile" accept=".ttf,.otf,.woff,.woff2" class="hidden" />
+            <div class="hint" id="fontStatus">အခု သုံးနေတာ — Noto Sans Myanmar (မူရင်း)။ ကိုယ်ပိုင်ဖောင့်က ဒီ tab ဖွင့်ထားသရွေ့ပဲ ရမယ်။</div>
+          </div>
+          <div class="full">
+            <label class="f">Logo / Watermark ပုံ</label>
+            <div class="row" style="margin-top:0">
+              <button class="btn small ghost" id="logoPick">Logo ပုံ ရွေးမယ်</button>
+              <button class="btn small ghost hidden" id="logoRemove">Logo ဖြုတ်မယ်</button>
+            </div>
+            <input type="file" id="logoFile" accept="image/*" class="hidden" />
+            <div class="hint" id="logoStatus">Logo မထည့်ရသေးဘူး။ PNG (နောက်ခံ ပွင့်လင်း) ဆို အလှဆုံးပဲ။</div>
+          </div>
+          <div class="full">
+            <label class="f">Logo နေရာ</label>
+            <div class="enginebar" role="group" aria-label="Logo နေရာ ရွေးရန်">
+              <button id="logoTL" aria-pressed="false">ဘယ်အပေါ်</button>
+              <button id="logoTR" aria-pressed="true">ညာအပေါ်</button>
+              <button id="logoBL" aria-pressed="false">ဘယ်အောက်</button>
+              <button id="logoBR" aria-pressed="false">ညာအောက်</button>
+            </div>
+          </div>
+          <div>
+            <label class="f" for="logoSize">Logo အရွယ်အစား <span class="val" id="logoSizeVal">18%</span></label>
+            <input type="range" id="logoSize" min="5" max="40" step="1" value="18" />
+          </div>
+          <div>
+            <label class="f" for="logoOp">Logo ပွင့်လင်းမှု <span class="val" id="logoOpVal">85%</span></label>
+            <input type="range" id="logoOp" min="10" max="100" step="5" value="85" />
+          </div>
+        </div>
+        <button class="btn primary" id="burnBtn" style="margin-top:14px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11m0 0-4-4m4 4 4-4"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></svg>
+          စာတန်းထိုးပြီး ဗီဒီယို ထုတ်မယ်
+        </button>
+        <div id="burnProg" class="hidden" style="margin-top:12px">
+          <div class="prog"><div id="burnBar"></div></div>
+          <div id="burnStatus" style="font-size:13.5px;margin-top:8px;line-height:1.7"></div>
+          <button class="btn small danger-ghost hidden" id="burnCancel" style="margin-top:8px">ရပ်မယ်</button>
+        </div>
+        <div class="note">သတိ — အချိန်မှန်အတိုင်း ပြန်ဖွင့်ပြီး ထုတ်တာမို့ ဗီဒီယိုရှည်သလောက် ကြာမယ်။ ထုတ်နေတုန်း tab မပိတ်ပါနဲ့။</div>
+      </div>
+    </div>
+    <div>
+      <div class="dl-stack">
+        <button class="btn" id="dlSrt">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11m0 0-4-4m4 4 4-4"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></svg>
+          SRT ဒေါင်းလုဒ်ဆွဲမယ်
+        </button>
+        <button class="btn ghost" id="dlVtt">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11m0 0-4-4m4 4 4-4"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></svg>
+          VTT ဒေါင်းလုဒ်ဆွဲမယ် (web player အတွက်)
+        </button>
+        <button class="btn ghost" id="dlTxt">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+          စာသားသီးသန့် (.txt)
+        </button>
+        <button class="btn ghost" id="copySrt">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          SRT ကော်ပီယူမယ်
+        </button>
+        <button class="btn ghost hidden" id="retryFailed">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.3L3 8"/><path d="M3 3v5h5"/></svg>
+          မအောင်မြင်တဲ့ စာကြောင်းတွေ ပြန်ဆိုမယ်
+        </button>
+      </div>
+      <div class="shiftbox">
+        <label class="f" for="shiftSec">စာတန်းအချိန်အားလုံး ရွှေ့ရန် (စက္ကန့်)</label>
+        <div class="r">
+          <input type="number" id="shiftSec" value="0" step="0.1" inputmode="decimal" />
+          <button class="btn small ghost" id="applyShift">ရွှေ့မယ်</button>
+        </div>
+        <div class="hint" style="margin-top:8px">နောက်ကျနေရင် +၊ စောနေရင် − ထည့်ပါ (ဥပမာ 1.5 = ၁.၅ စက္ကန့် နောက်)။</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 style="margin-top:22px">စာတန်းများ ပြင်ဆင်မယ်</h2>
+  <div class="hint" style="margin-top:0">ဒေါင်းမဆွဲခင် စာသားနဲ့ အချိန်တွေ ဒီမှာ ပြင်လို့ရတယ်။ အချိန်ကို စက္ကန့် (65.5) နဲ့ရော 0:01:05.5 နဲ့ရော ရိုက်လို့ရတယ်။</div>
+  <div id="segList"></div>
+  <div class="row">
+    <button class="btn small ghost" id="addSeg">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      စာကြောင်းအသစ် ထည့်မယ်
+    </button>
+    <button class="btn small danger-ghost" id="resetBtn">အသစ်ကနေ ပြန်စမယ်</button>
+    <button class="btn small danger-ghost hidden" id="clearProjectBtn">သိမ်းထားတဲ့ ပရောဂျက် ဖျက်မယ်</button>
+  </div>
+</section>
+</div>
+
+<div id="panelVideo" class="hidden">
+<section class="card" id="cardVideo">
+  <h2>ဗီဒီယို ပြင်ဆင်ရန်</h2>
+  <div class="empty" id="videoEmpty">ဗီဒီယို မရှိသေးပါဘူး — ဘာသာပြန် tab မှာ ဗီဒီယို အရင် ဘာသာပြန်ပါ၊ ဒါမှမဟုတ် Projects tab က ပရောဂျက် ဖွင့်ပါ။</div>
+  <div id="videoSlot"></div>
+</section>
+</div>
+
+<div id="panelProjects" class="hidden">
+<section class="card" id="cardProjects">
+  <h2>ပရောဂျက်များ</h2>
+  <div class="hint" style="margin-top:0">နာမည်ပေးပြီး သိမ်းထားရင် နောက်မှ ပြန်ဖွင့်ပြီး အချိန်မရွေး ဆက်ပြင်လို့ရတယ်။ ဗီဒီယိုဖိုင်ကိုတော့ သိမ်းမရဘူး — ပြန်ဖွင့်ရင် ဗီဒီယိုဖိုင် ပြန်ရွေးပေးရမယ် (စာတန်းနဲ့ ဗီဒီယို setting တွေကတော့ အကုန် ပြန်ရမယ်)။</div>
+
+  <div style="margin-top:14px">
+    <label class="f" for="projName">ပရောဂျက် နာမည်</label>
+    <input type="text" id="projName" placeholder="ဥပမာ — ဇာတ်လမ်း အပိုင်း ၁" autocomplete="off" />
+  </div>
+  <div class="row">
+    <button class="btn" id="saveLocalBtn">ဒီစက်ထဲ သိမ်းမယ်</button>
+    <button class="btn ghost" id="saveCloudBtn">Cloud မှာ သိမ်းမယ်</button>
+  </div>
+
+  <h2 style="margin-top:24px">ဒီစက်ထဲက ပရောဂျက်များ</h2>
+  <div id="localProjectList"></div>
+
+  <h2 style="margin-top:24px">Cloud — Firestore</h2>
+  <div class="stats" id="cloudStatus">Cloud ချိတ်နေပါတယ်…</div>
+  <div class="row hidden" id="fbRetryRow">
+    <button class="btn small" id="fbRetry">ပြန်ချိတ်မယ်</button>
+  </div>
+  <div class="row hidden" id="fbAuthRow">
+    <button class="btn small" id="fbSignIn">Google နဲ့ Sign in ဝင်မယ်</button>
+    <button class="btn small ghost hidden" id="fbSignOut">Sign out</button>
+  </div>
+  <div id="cloudProjectList" style="margin-top:10px"></div>
+  <details style="margin-top:16px">
+    <summary>Firestore Security Rules (တစ်ခါပဲ ထည့်ရမယ်)</summary>
+    <div class="hint">Firebase Console → Firestore Database → Rules မှာ ဒီ rules ကို paste လုပ်ပါ — ကိုယ့် project ကိုယ်ပဲ ဖွင့်/သိမ်း/ဖျက်လို့ရမှာ ဖြစ်အောင်။</div>
+    <pre class="rulesbox">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/projects/{projectId} {
+      allow read, write: if request.auth != null &amp;&amp; request.auth.uid == userId;
+    }
+  }
+}</pre>
+  </details>
+</section>
+</div>
+
+<footer>
+  <div class="credit">Power By Maxflix Team</div>
+  Whisper / NLLB — အားလုံး စက်ထဲမှာပဲ၊ ဖိုင် အပြင် မထွက်ဘူး။ Gemini / Microsoft — server သို့ ပို့ရတယ်။ ဒေါင်းမဆွဲခင် စာသားတွေ တစ်ချက် ပြန်စစ်ပါ။
+</footer>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ===== Pure subtitle logic (no browser APIs) ===== */
+var SrtTools = (function () {
+  function pad(n, l) { return String(n).padStart(l, '0'); }
+  function formatSrtTime(sec) {
+    if (!isFinite(sec) || sec < 0) sec = 0;
+    var ms = Math.round(sec * 1000);
+    var h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000);
+    var s = Math.floor((ms % 60000) / 1000), r = ms % 1000;
+    return pad(h, 2) + ':' + pad(m, 2) + ':' + pad(s, 2) + ',' + pad(r, 3);
+  }
+  function formatVttTime(sec) { return formatSrtTime(sec).replace(',', '.'); }
+  function parseTimeInput(str) {
+    str = String(str == null ? '' : str).trim().replace(',', '.');
+    if (/^\d+(\.\d+)?$/.test(str)) return parseFloat(str);
+    var parts = str.split(':').map(Number);
+    if (parts.some(isNaN)) return NaN;
+    var sec = 0;
+    for (var i = 0; i < parts.length; i++) sec = sec * 60 + parts[i];
+    return sec;
+  }
+  var _seg = (typeof Intl !== 'undefined' && Intl.Segmenter)
+    ? new Intl.Segmenter(undefined, { granularity: 'grapheme' }) : null;
+  function _chars(s) {
+    if (_seg) { var out = []; var it = _seg.segment(s); for (var x of it) out.push(x.segment); return out; }
+    return Array.from(s);
+  }
+  function splitLines(text, maxChars) {
+    text = String(text || '').trim().replace(/\s+/g, ' ');
+    if (!text) return [''];
+    var chars = _chars(text);
+    if (chars.length <= maxChars) return [text];
+    var lines = [], start = 0;
+    while (start < chars.length) {
+      var end = Math.min(start + maxChars, chars.length);
+      if (end < chars.length) {
+        var breakAt = -1;
+        for (var i = end; i > Math.max(start, end - 18); i--) {
+          if (/[\s၊။!?,.;:：，。！？]/.test(chars[i])) { breakAt = i + 1; break; }
+        }
+        if (breakAt > start + 1) end = breakAt;
+      }
+      lines.push(chars.slice(start, end).join('').trim());
+      start = end;
+    }
+    if (lines.length <= 2) return lines;
+    var all = lines.join(' '), ac = _chars(all), mid = Math.floor(ac.length / 2), cut = -1;
+    for (var d = 0; d <= 30 && cut < 0; d++) {
+      var cands = [mid + d, mid - d];
+      for (var k = 0; k < cands.length; k++) {
+        var j = cands[k];
+        if (j > 0 && j < ac.length && /[\s၊။!?,.;:：，。！？]/.test(ac[j])) { cut = j + 1; break; }
+      }
+    }
+    if (cut < 0) cut = mid;
+    var halves = [ac.slice(0, cut).join('').trim(), ac.slice(cut).join('').trim()];
+    var res = [];
+    for (var p = 0; p < halves.length; p++) {
+      if (_chars(halves[p]).length <= maxChars) res.push(halves[p]);
+      else res.push.apply(res, splitLines(halves[p], maxChars));
+    }
+    return res;
+  }
+  function mergeChunks(chunks) {
+    var out = [];
+    for (var n = 0; n < chunks.length; n++) {
+      var c = chunks[n], text = String(c.text || '').trim();
+      if (!text) continue;
+      var last = out[out.length - 1];
+      if (last && (c.start - last.end) < 0.6 && (c.end - c.start) < 1.2 && (c.end - last.start) < 8) {
+        last.end = c.end;
+        last.text = (last.text + ' ' + text).trim();
+      } else out.push({ start: c.start, end: c.end, text: text });
+    }
+    return out;
+  }
+  function buildSrt(segments, maxChars) {
+    return segments.map(function (s, i) {
+      return (i + 1) + '\n' + formatSrtTime(s.start) + ' --> ' + formatSrtTime(s.end) + '\n' +
+        splitLines(s.my || '', maxChars).join('\n');
+    }).join('\n\n') + '\n';
+  }
+  function buildVtt(segments, maxChars) {
+    return 'WEBVTT\n\n' + segments.map(function (s, i) {
+      return (i + 1) + '\n' + formatVttTime(s.start) + ' --> ' + formatVttTime(s.end) + '\n' +
+        splitLines(s.my || '', maxChars).join('\n');
+    }).join('\n\n') + '\n';
+  }
+  function parseSrt(text) {
+    var norm = String(text || '').replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
+    var blocks = norm.split(/\n\s*\n/);
+    var timeRe = /(\d{1,2}:\d{2}:\d{2}[.,]\d{1,3}|\d{1,2}:\d{2}[.,]\d{1,3})\s*-->\s*(\d{1,2}:\d{2}:\d{2}[.,]\d{1,3}|\d{1,2}:\d{2}[.,]\d{1,3})/;
+    var segs = [];
+    for (var b = 0; b < blocks.length; b++) {
+      var lines = blocks[b].split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+      if (!lines.length) continue;
+      var ti = -1;
+      for (var i = 0; i < lines.length; i++) if (timeRe.test(lines[i])) { ti = i; break; }
+      if (ti < 0) continue;
+      var m = lines[ti].match(timeRe);
+      var start = parseTimeInput(m[1]), end = parseTimeInput(m[2]);
+      var txt = lines.slice(ti + 1).join(' ').replace(/<[^>]+>/g, '').replace(/\{[^}]*\}/g, '').trim();
+      if (isFinite(start) && isFinite(end) && end > start) segs.push({ start: start, end: end, text: txt });
+    }
+    segs.sort(function (a, b2) { return a.start - b2.start; });
+    return segs;
+  }
+  return { formatSrtTime: formatSrtTime, formatVttTime: formatVttTime, parseTimeInput: parseTimeInput,
+    splitLines: splitLines, mergeChunks: mergeChunks, buildSrt: buildSrt, buildVtt: buildVtt, parseSrt: parseSrt,
+    chars: _chars, cps: function (text, durSec) {
+      var d = Math.max(0.1, durSec || 0);
+      return _chars(String(text || '')).length / d;
+    } };
+})();
+</script>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var GT_SL = { auto: 'auto', chinese: 'zh-CN', english: 'en', korean: 'ko', japanese: 'ja', thai: 'th', burmese: 'my' };
+  var LANG_NAME = { auto: '', chinese: 'Chinese', english: 'English', korean: 'Korean', japanese: 'Japanese', thai: 'Thai', burmese: 'Burmese (Myanmar)' };
+
+  var mode = 'video';               // 'video' | 'srt'
+  var engine = 'gemini';            // 'gemini' | 'local' (Whisper+GT) | 'microsoft' (Whisper + MS Translator for video, MS Translator for srt) | 'nllb' (Whisper for video + on-device NLLB translation)
+  var videoFile = null, srtFile = null;
+  var segments = [];
+  var maxCharsVal = 42;
+  var objUrl = null;
+  var transcriber = null, loadedModel = null, TF = null;
+  var processing = false;
+  var procTimer = null, procStart = 0;
+  var wakeLock = null;
+  var activeIdx = -1;
+
+  /* ---------- toast ---------- */
+  var toastTimer = null;
+  function toast(msg) {
+    var t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2600);
+  }
+
+  /* ---------- device-aware defaults ---------- */
+  var isMobile = (window.matchMedia && matchMedia('(pointer: coarse)').matches) ||
+    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 760;
+  $('modelSel').value = isMobile ? 'Xenova/whisper-tiny' : 'Xenova/whisper-base';
+  $('deviceHint').textContent = isMobile
+    ? 'ဖုန်းမို့ အမြန်ဆုံး Tiny မော်ဒယ် ရွေးပေးထားတယ်။ ပိုတိကျချင်ရင် Base သုံးပါ (ပိုကြာမယ်)။'
+    : 'ကွန်ပျူတာမို့ Base မော်ဒယ် ရွေးပေးထားတယ်။ အတိကျဆုံးဆို Small သုံးပါ။';
+
+  /* ---------- mode switching ---------- */
+  function setMode(m) {
+    if (processing) return;
+    mode = m;
+    $('modeVideo').setAttribute('aria-pressed', m === 'video' ? 'true' : 'false');
+    $('modeSrt').setAttribute('aria-pressed', m === 'srt' ? 'true' : 'false');
+    $('dropVideo').classList.toggle('hidden', m !== 'video');
+    $('dropSrt').classList.toggle('hidden', m !== 'srt');
+    $('startBtnText').textContent = m === 'video' ? 'စတင်လုပ်ဆောင်မယ်' : 'SRT ကို မြန်မာပြန်ဆိုမယ်';
+    $('cardBatch').classList.toggle('hidden', m !== 'video');
+    refreshSettings();
+    showFileMeta();
+  }
+
+  /* ---------- engine switching ---------- */
+  function refreshSettings() {
+    var enUI = document.documentElement.lang === 'en';
+    var isVideo = mode === 'video';
+    var gem = engine === 'gemini';
+    var ms = engine === 'microsoft';
+    var nllb = engine === 'nllb';
+    $('engineA').setAttribute('aria-pressed', (!gem && !ms && !nllb) ? 'true' : 'false');
+    $('engineB').setAttribute('aria-pressed', gem ? 'true' : 'false');
+    $('engineC').setAttribute('aria-pressed', ms ? 'true' : 'false');
+    $('engineD').setAttribute('aria-pressed', nllb ? 'true' : 'false');
+    $('engineA').textContent = isVideo ? (enUI ? 'Whisper — on-device (free)' : 'Whisper — စက်ထဲမှာ (အခမဲ့)') : (enUI ? 'Google Translate (free)' : 'Google Translate (အခမဲ့)');
+    $('engineLabel').textContent = isVideo ? (enUI ? 'Transcription / translation engine' : 'အသံဖတ် / ဘာသာပြန် နည်း (Engine)') : (enUI ? 'Translation engine' : 'ဘာသာပြန် Engine');
+    $('modelRow').classList.toggle('hidden', !isVideo || gem);
+    $('modelNote').classList.toggle('hidden', !isVideo || gem);
+    $('deviceHint').classList.toggle('hidden', !isVideo || gem);
+    $('geminiBox').classList.toggle('hidden', !gem);
+    $('geminiNote').classList.toggle('hidden', !gem);
+    $('msBox').classList.toggle('hidden', !ms);
+    $('msNote').classList.toggle('hidden', !ms);
+    $('nllbBox').classList.toggle('hidden', !nllb);
+    $('nllbNote').classList.toggle('hidden', !nllb);
+    $('engineDesc').textContent =
+      isVideo && engine === 'local' ? (enUI ? 'Whisper (on-device) transcribes → Google Translate translates.' : 'Whisper (စက်ထဲမှာ) အသံဖတ် → Google Translate ပြန်ဆို။')
+      : isVideo && gem ? (enUI ? 'Gemini listens to the audio and writes Burmese subtitles directly — audio is sent to Google\'s servers.' : 'Gemini က အသံနားထောင်ပြီး မြန်မာစာတန်း တိုက်ရိုက်ထုတ်တယ် — အသံကို Google server သို့ ပို့ရတယ်။')
+      : isVideo && ms ? (enUI ? 'Whisper (on-device) transcribes → Microsoft translates. Text is sent to Microsoft\'s servers.' : 'Whisper (စက်ထဲမှာ) အသံဖတ် → Microsoft ပြန်ဆို။ စာသားကို Microsoft server သို့ ပို့ရတယ်။')
+      : isVideo && nllb ? (enUI ? 'Whisper + NLLB — everything on-device. No key, no limits.' : 'Whisper + NLLB — အားလုံး စက်ထဲမှာပဲ။ Key မလို၊ limit မရှိ။')
+      : !isVideo && engine === 'local' ? (enUI ? 'Translates with Google Translate — free, no key needed.' : 'Google Translate နဲ့ ပြန်ဆို — အခမဲ့၊ key မလို။')
+      : !isVideo && ms ? (enUI ? 'Translates with Microsoft Translator — text is sent to Microsoft\'s servers.' : 'Microsoft Translator နဲ့ ပြန်ဆို — စာသားကို Microsoft server သို့ ပို့ရတယ်။')
+      : !isVideo && nllb ? (enUI ? 'NLLB — translates on-device. No key, no limits.' : 'NLLB — စက်ထဲမှာပဲ ပြန်ဆို။ Key မလို၊ limit မရှိ။')
+      : (enUI ? 'Gemini understands context and translates naturally — text is sent to Google\'s servers.' : 'Gemini က အကြောင်းအရာ ဆက်စပ်နားလည်ပြီး သဘာဝကျကျ ပြန်ဆိုတယ် — စာသားကို Google server သို့ ပို့ရတယ်။');
+  }
+  $('engineA').addEventListener('click', function () { engine = 'local'; refreshSettings(); });
+  $('engineB').addEventListener('click', function () { engine = 'gemini'; refreshSettings(); });
+  $('engineC').addEventListener('click', function () { engine = 'microsoft'; refreshSettings(); });
+  $('engineD').addEventListener('click', function () { engine = 'nllb'; refreshSettings(); });
+  refreshSettings();
+  window.__mtRefreshSettings = refreshSettings; /* language toggle re-renders the engine description */
+  $('modeVideo').addEventListener('click', function () { setMode('video'); });
+  $('modeSrt').addEventListener('click', function () { setMode('srt'); });
+
+  /* ---------- file picking ---------- */
+  function fmtSize(b) { return (b / 1048576).toFixed(1) + ' MB'; }
+  function showFileMeta() {
+    var f = mode === 'video' ? videoFile : srtFile;
+    $('fileMeta').innerHTML = f
+      ? 'ရွေးထားသောဖိုင် — <b></b> (' + fmtSize(f.size) + ')'
+      : '';
+    if (f) $('fileMeta').querySelector('b').textContent = f.name;
+  }
+  function bindDrop(zoneId, inputId, onPick) {
+    var zone = $(zoneId), input = $(inputId);
+    zone.addEventListener('click', function () { input.click(); });
+    zone.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); }
+    });
+    ['dragover', 'dragenter'].forEach(function (ev) {
+      zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.add('over'); });
+    });
+    ['dragleave', 'drop'].forEach(function (ev) {
+      zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.remove('over'); });
+    });
+    zone.addEventListener('drop', function (e) {
+      var f = e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) onPick(f);
+    });
+    input.addEventListener('change', function () {
+      if (input.files[0]) onPick(input.files[0]);
+      input.value = '';
+    });
+  }
+  bindDrop('dropVideo', 'fileInputVideo', function (f) {
+    videoFile = f;
+    showFileMeta();
+    /* a restored project has cues but no file — re-picking the video brings the preview back */
+    if (segments.length && mode === 'video') {
+      $('previewCol').classList.remove('hidden');
+      $('restoreNote').classList.add('hidden');
+      if (objUrl) URL.revokeObjectURL(objUrl);
+      objUrl = URL.createObjectURL(f);
+      $('preview').src = objUrl;
+      $('previewBg').src = objUrl;
+    }
+  });
+  bindDrop('dropSrt', 'fileInputSrt', function (f) { srtFile = f; showFileMeta(); });
+  window.addEventListener('dragover', function (e) { e.preventDefault(); });
+  window.addEventListener('drop', function (e) { e.preventDefault(); });
+
+  /* ---------- progress helpers ---------- */
+  function setBar(p) { $('bar').style.width = Math.max(0, Math.min(100, p)) + '%'; }
+  function setStatus(t, isErr) {
+    var s = $('status');
+    s.textContent = t;
+    s.classList.toggle('err', !!isErr);
+  }
+  function fmtElapsed(ms) {
+    var sec = Math.floor(ms / 1000);
+    return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0');
+  }
+  function log(msg) {
+    var el = $('log');
+    $('logBox').classList.remove('hidden');
+    var stamp = procStart ? '[' + fmtElapsed(Date.now() - procStart) + '] ' : '';
+    el.textContent += stamp + msg + '\n';
+    el.scrollTop = 1e9;
+  }
+  function renderSteps(defs) {
+    var box = $('steps');
+    box.innerHTML = '';
+    defs.forEach(function (d, i) {
+      var el = document.createElement('span');
+      el.className = 'step';
+      el.id = 'step-' + d.id;
+      var dot = document.createElement('span');
+      dot.className = 'dot';
+      dot.textContent = String(i + 1);
+      el.appendChild(dot);
+      el.appendChild(document.createTextNode(d.label));
+      box.appendChild(el);
+    });
+  }
+  function setStep(id, state) {
+    var el = $('step-' + id);
+    if (!el) return;
+    el.classList.remove('active', 'done', 'err');
+    if (state) el.classList.add(state);
+    if (state === 'done') el.querySelector('.dot').innerHTML = '&#10003;';
+    if (state === 'err') el.querySelector('.dot').textContent = '!';
+  }
+  async function keepAwake(on) {
+    try {
+      if (on && 'wakeLock' in navigator) {
+        wakeLock = await navigator.wakeLock.request('screen');
+      } else if (wakeLock) {
+        await wakeLock.release();
+        wakeLock = null;
+      }
+    } catch (e) { /* wake lock is best-effort */ }
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (processing && document.visibilityState === 'visible') keepAwake(true);
+  });
+  function beginProgress(stepDefs) {
+    processing = true;
+    $('startBtn').disabled = true;
+    $('cardProg').classList.remove('hidden');
+    $('cardResult').classList.add('hidden');
+    $('log').textContent = '';
+    $('logBox').classList.add('hidden');
+    $('logBox').open = false;
+    setBar(2);
+    setStatus('ပြင်ဆင်နေပါတယ်…');
+    renderSteps(stepDefs);
+    procStart = Date.now();
+    $('elapsed').textContent = '— ကြာချိန် 0:00';
+    clearInterval(procTimer);
+    procTimer = setInterval(function () {
+      $('elapsed').textContent = '— ကြာချိန် ' + fmtElapsed(Date.now() - procStart);
+    }, 500);
+    keepAwake(true);
+    $('cardProg').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  function endProgress() {
+    processing = false;
+    $('startBtn').disabled = false;
+    clearInterval(procTimer);
+    if (procStart) $('elapsed').textContent = '— စုစုပေါင်း ကြာချိန် ' + fmtElapsed(Date.now() - procStart);
+    keepAwake(false);
+  }
+  function failProgress(stepId, msg) {
+    if (stepId) setStep(stepId, 'err');
+    setStatus(msg, true);
+    log(msg);
+    $('logBox').open = true;
+    endProgress();
+  }
+
+  /* ---------- Whisper (loaded lazily from CDN on first use) ---------- */
+  async function loadTransformers() {
+    if (TF) return TF;
+    setStatus('AI စာကြည့်တိုက် (library) ဖွင့်နေပါတယ်…');
+    TF = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js');
+    TF.env.allowLocalModels = false;
+    return TF;
+  }
+  async function extractAudio(f) {
+    var buf = await f.arrayBuffer();
+    var AC = window.AudioContext || window.webkitAudioContext;
+    var ctx = new AC();
+    var decoded;
+    try { decoded = await ctx.decodeAudioData(buf); }
+    catch (e) { try { ctx.close(); } catch (_) {} throw new Error('AUDIO_DECODE'); }
+    var rate = 16000;
+    var off = new OfflineAudioContext(1, Math.max(1, Math.ceil(decoded.duration * rate)), rate);
+    var src = off.createBufferSource();
+    src.buffer = decoded;
+    src.connect(off.destination);
+    src.start(0);
+    var rendered = await off.startRendering();
+    try { ctx.close(); } catch (_) {}
+    return rendered.getChannelData(0);
+  }
+  async function getTranscriber(modelId) {
+    if (transcriber && loadedModel === modelId) return transcriber;
+    var tf = await loadTransformers();
+    transcriber = await tf.pipeline('automatic-speech-recognition', modelId, {
+      progress_callback: function (d) {
+        if (d.status === 'progress' && d.total) {
+          var p = Math.round(d.loaded / d.total * 100);
+          setBar(15 + p * 0.35);
+          setStatus('AI မော်ဒယ် ဒေါင်းလုဒ်ဆွဲနေပါတယ်… ' + p + '%');
+        } else if (d.status === 'downloading' || d.status === 'download') {
+          setStatus('AI မော်ဒယ် ဒေါင်းလုဒ်ဆွဲနေပါတယ်… (' + (d.file || '') + ')');
+        } else if (d.status === 'done') {
+          setStatus('AI မော်ဒယ် ဖွင့်နေပါတယ်…');
+        }
+      }
+    });
+    loadedModel = modelId;
+    return transcriber;
+  }
+
+  /* ---------- translation (shared by both modes) ---------- */
+  async function translateText(text, sl) {
+    var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=' + sl +
+      '&tl=my&dt=t&q=' + encodeURIComponent(text);
+    var r = await fetch(url);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    var j = await r.json();
+    return j[0].map(function (x) { return x[0]; }).join('');
+  }
+  async function translateSegments(list, sl, onProgress) {
+    var done = 0, failed = 0, idx = 0;
+    var delay = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+    async function worker() {
+      while (idx < list.length) {
+        var s = list[idx++];
+        if (!s.text) { s.my = ''; s.failed = false; }
+        else {
+          try { s.my = await translateText(applyGlossary(s.text), sl); s.failed = false; }
+          catch (e) { if (!s.my) s.my = s.text; s.failed = true; failed++; }
+        }
+        done++;
+        if (onProgress) onProgress(done, list.length);
+        await delay(120);
+      }
+    }
+    var n = Math.min(3, list.length);
+    var workers = [];
+    for (var i = 0; i < n; i++) workers.push(worker());
+    await Promise.all(workers);
+    return failed;
+  }
+
+  /* ---------- Google Gemini ---------- */
+  var DEFAULT_GEMINI_MODEL = 'gemini-3.8-flash';
+  function geminiError(msg, code) {
+    var e = new Error(msg);
+    e.isGemini = true;
+    if (code) e.geminiCode = code;
+    return e;
+  }
+  function modelUnavailableMessage() {
+    return 'ရွေးထားတဲ့ Gemini မော်ဒယ်ကို Google က မပေးတော့ပါဘူး (404) — ဒါက API Key အမှား မဟုတ်ပါဘူး၊ အခမဲ့ ကန့်သတ်ချက် ပြည့်တာလည်း မဟုတ်ပါဘူး။ "Gemini မော်ဒယ်" နေရာမှာ တခြား မော်ဒယ်တစ်ခု (ဥပမာ Gemini 3.8 Flash) ပြောင်းရွေးပြီး ပြန်စမ်းပါ။';
+  }
+  /* How long Google asks us to wait after a 429: the Retry-After header, or
+     the retryDelay field inside the error body's google.rpc.RetryInfo
+     detail ("57s"). Returns 0 when Google gives no hint. */
+  function parseRetryAfter(r, j) {
+    var hdr = r.headers && r.headers.get ? r.headers.get('Retry-After') : null;
+    if (hdr) { var hs = parseFloat(hdr); if (isFinite(hs) && hs > 0) return hs; }
+    var dets = j && j.error && j.error.details;
+    if (Array.isArray(dets)) {
+      for (var i = 0; i < dets.length; i++) {
+        var rd = dets[i] && dets[i].retryDelay;
+        if (rd != null) { var s = parseFloat(rd); if (isFinite(s) && s > 0) return s; }
+      }
+    }
+    return 0;
+  }
+  function encodeWav(samples, rate) {
+    var n = samples.length;
+    var buf = new ArrayBuffer(44 + n * 2);
+    var v = new DataView(buf);
+    function wstr(off, s) { for (var i = 0; i < s.length; i++) v.setUint8(off + i, s.charCodeAt(i)); }
+    wstr(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); wstr(8, 'WAVE'); wstr(12, 'fmt ');
+    v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+    wstr(36, 'data'); v.setUint32(40, n * 2, true);
+    for (var i = 0; i < n; i++) {
+      var s = Math.max(-1, Math.min(1, samples[i]));
+      v.setInt16(44 + i * 2, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+    }
+    return new Uint8Array(buf);
+  }
+  function bytesToB64(bytes) {
+    var bin = '', CH = 0x8000;
+    for (var i = 0; i < bytes.length; i += CH) {
+      bin += String.fromCharCode.apply(null, bytes.subarray(i, Math.min(bytes.length, i + CH)));
+    }
+    return btoa(bin);
+  }
+  async function geminiRequest(parts, model, key) {
+    var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent';
+    var r;
+    try {
+      r = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+        body: JSON.stringify({
+          contents: [{ parts: parts }],
+          generationConfig: { temperature: 0.3, maxOutputTokens: 65536, responseMimeType: 'application/json' }
+        })
+      });
+    } catch (e) {
+      throw geminiError('Gemini ဆီ ချိတ်ဆက် မရပါဘူး — အင်တာနက် စစ်ပြီး ပြန်စမ်းပါ။');
+    }
+    var j = null;
+    try { j = await r.json(); } catch (e) { /* non-JSON error body */ }
+    if (!r.ok) {
+      var em = (j && j.error && j.error.message) || ('HTTP ' + r.status);
+      if (r.status === 400 && /API_KEY_INVALID|API key not valid/i.test(em)) {
+        throw geminiError('Gemini API Key မှားနေပါတယ် — စစ်ပြီး ပြန်ထည့်ပေးပါ။', 'BAD_KEY');
+      }
+      if (r.status === 403) throw geminiError('ဒီ API Key မှာ Gemini သုံးခွင့် မရှိပါဘူး (403) — AI Studio မှာ key အသစ် ထုတ်ကြည့်ပါ။', 'FORBIDDEN');
+      if (r.status === 429) {
+        var qerr = geminiError('Gemini အခမဲ့ ကန့်သတ်ချက် ပြည့်သွားပါပြီ (429) — ခဏစောင့်ပြီး ပြန်စမ်းပါ၊ ဒါမှမဟုတ် Whisper / Google Translate မုဒ် ပြောင်းသုံးပါ။', 'QUOTA');
+        qerr.retryAfterSec = parseRetryAfter(r, j);
+        throw qerr;
+      }
+      if (r.status === 404 || /not found|no longer available|not supported for generateContent/i.test(em)) {
+        /* Google's message names the dead model first, then the replacement it recommends — pick the first id that differs from the one we asked for */
+        var err = geminiError('MODEL_UNAVAILABLE', 'MODEL_UNAVAILABLE');
+        err.suggestedModel = '';
+        var mentions = em.match(/models\/(gemini-[a-z0-9.\-]+)/gi) || [];
+        for (var mi = 0; mi < mentions.length; mi++) {
+          var candId = mentions[mi].replace(/^models\//i, '');
+          if (candId !== model) { err.suggestedModel = candId; break; }
+        }
+        throw err;
+      }
+      throw geminiError('Gemini အမှား (' + r.status + '): ' + em);
+    }
+    var cand = j && j.candidates && j.candidates[0];
+    var out = cand && cand.content && cand.content.parts;
+    if (!out || !out.length) throw geminiError('Gemini က အဖြေ ပြန်မပေးပါဘူး — ခဏနေပြီး ပြန်စမ်းပါ။');
+    /* finishReason tells callers whether the answer was cut off mid-stream
+       (MAX_TOKENS) so they can salvage / re-request instead of silently
+       shipping a subtitle file whose later lines are missing. */
+    return { text: out.map(function (p) { return p.text || ''; }).join(''), finishReason: cand.finishReason || '' };
+  }
+  var QUOTA_MAX_RETRIES = 5;
+  function sleepSec(sec) { return new Promise(function (res) { setTimeout(res, sec * 1000); }); }
+  /* Rate limit (429, free-tier quota): instead of failing the whole run,
+     wait — honoring Google's own retry hint when it sent one, otherwise
+     backing off 15s → 30s → 60s → 120s → 120s — and retry the same request.
+     Chunks/batches already finished by the caller stay untouched; only the
+     request that hit the limit is re-sent. The user sees a live countdown
+     in the status line so a long wait never looks like a frozen page. */
+  async function geminiRequestRetry(parts, model, key) {
+    var tries = 0;
+    for (;;) {
+      try {
+        return await geminiRequest(parts, model, key);
+      } catch (e) {
+        if (!e || e.geminiCode !== 'QUOTA') throw e;
+        if (tries >= QUOTA_MAX_RETRIES) {
+          e.message = 'Gemini အခမဲ့ ကန့်သတ်ချက် (429) ကို ' + QUOTA_MAX_RETRIES +
+            ' ကြိမ် အလိုအလျောက် စောင့်ပြီး ပြန်ကြိုးစားပြီးပါပြီ — အခမဲ့ tier ရဲ့ တစ်နေ့တာ ကန့်သတ်ချက် ပြည့်သွားတာ ဖြစ်နိုင်ပါတယ်။ နောက်ထပ် အချိန်အတန်ကြာမှ ပြန်စမ်းပါ၊ ဒါမှမဟုတ် Billing ဖွင့်ထားတဲ့ API Key သုံးပါ / Whisper မုဒ် ပြောင်းသုံးပါ။';
+          throw e;
+        }
+        tries++;
+        var wait = e.retryAfterSec > 0 ? e.retryAfterSec
+          : Math.min(120, 15 * Math.pow(2, tries - 1));
+        wait = Math.max(5, Math.min(180, Math.ceil(wait)));
+        log('Gemini ကန့်သတ်ချက် (429) ထိသွားလို့ ' + wait + ' စက္ကန့် စောင့်ပြီး အလိုအလျောက် ပြန်ကြိုးစားပါမယ် (' + tries + '/' + QUOTA_MAX_RETRIES + ')');
+        for (var left = wait; left > 0; left--) {
+          setStatus('429 (limit) ထိသွားတယ် — ' + left + ' စက္ကန့်အကြာ ပြန်ကြိုးစားမယ် (' + tries + '/' + QUOTA_MAX_RETRIES + ')');
+          await sleepSec(1);
+        }
+      }
+    }
+  }
+  /* ---------- Gemini request pacing ----------
+     The free tier allows roughly 10 requests per minute, and this tool
+     fires requests back-to-back (one per 2-minute audio chunk, one per
+     30-cue batch), so a run slams into 429s even though plenty of daily
+     quota is left. When the user sets a pacing delay, geminiGenerate —
+     the single entry point every Gemini caller goes through (video
+     chunks, gap-fill passes, SRT batches, glossary extraction, single-cue
+     retries, batch queue) — waits until that many seconds have passed
+     since the previous request STARTED before sending the next one,
+     with a live countdown in the status line. This composes with the 429
+     auto-retry in geminiRequestRetry: pacing spaces normal requests, and
+     if a 429 still lands, the retry's own (longer) waits apply on top.
+     0 = off. The value is remembered in localStorage like the glossary. */
+  var geminiLastReqAt = 0;
+  var PACE_KEY = 'mt_pace_sec';
+  function pacingGapSec() {
+    var el = $('paceSec');
+    var v = el ? parseFloat(el.value) : 0;
+    if (!isFinite(v) || v < 0) return 0;
+    return Math.min(60, v);
+  }
+  async function applyPacing() {
+    var gap = pacingGapSec();
+    if (gap > 0 && geminiLastReqAt) {
+      var remainMs = gap * 1000 - (Date.now() - geminiLastReqAt);
+      if (remainMs > 0) {
+        var left = Math.ceil(remainMs / 1000);
+        log('Pacing — တစ်မိနစ် ကန့်သတ်ချက် (~၁၀ ကြိမ်) မထိအောင် နောက် request မပို့မီ ' + left + ' စက္ကန့် စောင့်နေပါတယ်…');
+        while (left > 0) {
+          if (processing) setStatus('⏱️ Pacing — ' + left + ' စက္ကန့် စောင့်နေတယ်');
+          await sleepSec(1);
+          left--;
+        }
+      }
+    }
+    geminiLastReqAt = Date.now();
+  }
+  try {
+    var savedPace = localStorage.getItem(PACE_KEY);
+    if (savedPace != null && $('paceSec')) $('paceSec').value = savedPace;
+  } catch (e) { /* storage unavailable — keep the default 7 */ }
+  if ($('paceSec')) $('paceSec').addEventListener('change', function () {
+    var v = parseFloat($('paceSec').value);
+    if (!isFinite(v) || v < 0) v = 0;
+    v = Math.min(60, v);
+    $('paceSec').value = String(v);
+    try { localStorage.setItem(PACE_KEY, String(v)); } catch (e) {}
+  });
+  async function geminiGenerate(parts) {
+    var key = $('geminiKey').value.trim();
+    if (!key) throw geminiError('အရင်ဆုံး Gemini API Key ထည့်ပေးပါ — Google AI Studio မှာ အခမဲ့ ထုတ်ယူလို့ ရပါတယ်။', 'NO_KEY');
+    await applyPacing();
+    var model = $('geminiModel').value;
+    try {
+      return await geminiRequestRetry(parts, model, key);
+    } catch (e) {
+      if (!e || e.geminiCode !== 'MODEL_UNAVAILABLE') throw e;
+      var fallback = (e.suggestedModel && e.suggestedModel !== model) ? e.suggestedModel
+        : (model !== DEFAULT_GEMINI_MODEL ? DEFAULT_GEMINI_MODEL : '');
+      if (!fallback) throw geminiError(modelUnavailableMessage(), 'MODEL_UNAVAILABLE');
+      log('ရွေးထားတဲ့ မော်ဒယ် (' + model + ') ကို Google က မပေးတော့လို့ ' + fallback + ' နဲ့ အလိုအလျောက် ပြန်စမ်းနေပါတယ်…');
+      toast('မော်ဒယ် မရတော့လို့ ' + fallback + ' နဲ့ ပြန်စမ်းနေပါတယ်');
+      /* keep the picker on the working model so later chunks/batches in this run use it too */
+      var opts = $('geminiModel').options;
+      for (var oi = 0; oi < opts.length; oi++) {
+        if (opts[oi].value === fallback) { $('geminiModel').value = fallback; break; }
+      }
+      try {
+        return await geminiRequestRetry(parts, fallback, key);
+      } catch (e2) {
+        if (e2 && e2.geminiCode === 'MODEL_UNAVAILABLE') {
+          throw geminiError(modelUnavailableMessage(), 'MODEL_UNAVAILABLE');
+        }
+        throw e2;
+      }
+    }
+  }
+  function parseJsonArray(text) {
+    try { var v = JSON.parse(text); if (Array.isArray(v)) return v; } catch (e) {}
+    var a = text.indexOf('['), b = text.lastIndexOf(']');
+    if (a >= 0 && b > a) {
+      try { var v2 = JSON.parse(text.slice(a, b + 1)); if (Array.isArray(v2)) return v2; } catch (e) {}
+    }
+    return null;
+  }
+  /* When Gemini's answer is cut off mid-array (finishReason MAX_TOKENS) the
+     strict parse fails and every cue in that chunk would be lost. Recover
+     every complete {...} object instead — the caller then re-requests the
+     still-uncovered tail of the audio. */
+  function salvageJsonArray(text) {
+    var a = text.indexOf('[');
+    if (a < 0) return null;
+    var items = [], depth = 0, inStr = false, esc = false, start = -1;
+    for (var i = a + 1; i < text.length; i++) {
+      var ch = text.charAt(i);
+      if (inStr) {
+        if (esc) esc = false;
+        else if (ch === '\\') esc = true;
+        else if (ch === '"') inStr = false;
+        continue;
+      }
+      if (ch === '"') { inStr = true; continue; }
+      if (ch === '{') { if (depth === 0) start = i; depth++; }
+      else if (ch === '}') {
+        depth--;
+        if (depth === 0 && start >= 0) {
+          try { items.push(JSON.parse(text.slice(start, i + 1))); } catch (e) {}
+          start = -1;
+        }
+        if (depth < 0) depth = 0;
+      }
+    }
+    return items.length ? items : null;
+  }
+  function coerceTime(v) {
+    if (typeof v === 'number') return v;
+    return SrtTools.parseTimeInput(v);
+  }
+  async function translateSegmentsGemini(list, onProgress) {
+    var BATCH = 30, failed = 0, done = 0;
+    var lang = LANG_NAME[$('srcLang').value];
+    var langPhrase = lang ? ('in ' + lang) : 'in the source language (detect it from the text itself)';
+    for (var i = 0; i < list.length; i += BATCH) {
+      var batch = list.slice(i, i + BATCH);
+      var todo = batch.filter(function (s) { return !!s.text; });
+      batch.forEach(function (s) { if (!s.text) { s.my = ''; s.failed = false; } });
+      if (todo.length) {
+        var payload = todo.map(function (s) { return { text: s.text }; });
+        var prompt = 'You are a professional subtitle translator for short drama videos. Below is a JSON array of subtitle lines ' +
+          langPhrase + '. Translate each line into natural, conversational Burmese (Myanmar) — meaning-first, the way native speakers actually talk in dramas, keeping names, tone and emotion; do NOT translate word-for-word. ' +
+          (glossaryPromptText() ? 'Use these exact Burmese forms for these names/terms wherever they appear: ' + glossaryPromptText() + '. ' : '') +
+          'Reply with ONLY a JSON array of exactly the same length and order, each item {"my": "<Burmese translation>"}. Lines:\n' +
+          JSON.stringify(payload);
+        try {
+          var gres = await geminiGenerate([{ text: prompt }]);
+          if (gres.finishReason === 'MAX_TOKENS') throw new Error('BAD_BATCH');
+          var arr = parseJsonArray(gres.text);
+          if (!arr || arr.length !== todo.length) throw new Error('BAD_BATCH');
+          todo.forEach(function (s, k) {
+            var my = arr[k] && (arr[k].my || arr[k].translation || '');
+            if (my) { s.my = String(my); s.failed = false; }
+            else { if (!s.my) s.my = s.text; s.failed = true; failed++; }
+          });
+        } catch (e) {
+          if (e.isGemini) throw e;
+          todo.forEach(function (s) { if (!s.my) s.my = s.text; s.failed = true; failed++; });
+        }
+      }
+      done += batch.length;
+      if (onProgress) onProgress(done, list.length);
+    }
+    return failed;
+  }
+  /* ---------- Microsoft Translator (Azure AI Translator) ----------
+     Text-only engine: it cannot listen to audio, so in video mode Whisper
+     still does the transcription on-device (runVideo) and only the text is
+     sent here. API: POST /translate?api-version=3.0 with an array of
+     {text} items; limits are 1,000 items and 50,000 characters per request,
+     so batches stay well under both. Free F0 tier: 2M characters/month. */
+  var MS_SL = { auto: '', chinese: 'zh-Hans', english: 'en', korean: 'ko', japanese: 'ja', thai: 'th', burmese: 'my' };
+  var MS_MAX_RETRIES = 3;
+  function msError(msg, code) {
+    var e = new Error(msg);
+    e.isMs = true;
+    if (code) e.msCode = code;
+    return e;
+  }
+  async function msRequest(texts, key, region, from) {
+    var url = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=my' +
+      (from ? '&from=' + encodeURIComponent(from) : '');
+    var headers = { 'Content-Type': 'application/json', 'Ocp-Apim-Subscription-Key': key };
+    if (region) headers['Ocp-Apim-Subscription-Region'] = region;
+    var r;
+    try {
+      r = await fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(texts.map(function (t) { return { text: t }; }))
+      });
+    } catch (e) {
+      throw msError('Microsoft Translator ဆီ ချိတ်ဆက် မရပါဘူး — အင်တာနက် စစ်ပြီး ပြန်စမ်းပါ။');
+    }
+    var j = null;
+    try { j = await r.json(); } catch (e) { /* non-JSON error body */ }
+    if (!r.ok) {
+      var em = (j && j.error && j.error.message) || ('HTTP ' + r.status);
+      if (r.status === 401) throw msError('Microsoft Translator Key မှားနေပါတယ် (401) — Azure Portal က "Keys and Endpoint" မှာ Key နဲ့ Region ကို စစ်ပြီး ပြန်ထည့်ပေးပါ။', 'BAD_KEY');
+      if (r.status === 403) throw msError('Microsoft Translator သုံးခွင့် မရှိပါဘူး (403) — Key / Region မှားနေတာ၊ ဒါမှမဟုတ် အခမဲ့ quota (တစ်လ စာလုံး ၂ သန်း) ပြည့်သွားတာ ဖြစ်နိုင်ပါတယ်။ Azure Portal မှာ စစ်ကြည့်ပါ။', 'FORBIDDEN');
+      if (r.status === 429 || r.status === 503) {
+        var qerr = msError('Microsoft Translator ကန့်သတ်ချက် ပြည့်သွားပါပြီ (' + r.status + ')', 'QUOTA');
+        qerr.retryAfterSec = parseRetryAfter(r, null);
+        throw qerr;
+      }
+      throw msError('Microsoft Translator အမှား (' + r.status + '): ' + em);
+    }
+    if (!Array.isArray(j)) throw msError('Microsoft Translator က အဖြေ ပြန်မပေးပါဘူး — ခဏနေပြီး ပြန်စမ်းပါ။');
+    return j.map(function (item) {
+      var t = item && item.translations && item.translations[0];
+      return t ? String(t.text || '') : '';
+    });
+  }
+  /* Same policy as the Gemini path: a 429 is a wait, not a failure — honor
+     Microsoft's Retry-After when sent, otherwise back off 10s → 20s → 40s,
+     with a live countdown so the wait never looks like a frozen page. Only
+     the failed batch is re-sent; finished batches are untouched. */
+  async function msRequestRetry(texts, key, region, from) {
+    var tries = 0;
+    for (;;) {
+      try {
+        return await msRequest(texts, key, region, from);
+      } catch (e) {
+        if (!e || e.msCode !== 'QUOTA') throw e;
+        if (tries >= MS_MAX_RETRIES) {
+          e.message = 'Microsoft Translator ကန့်သတ်ချက် (429) ကို ' + MS_MAX_RETRIES +
+            ' ကြိမ် အလိုအလျောက် စောင့်ပြီး ပြန်ကြိုးစားပြီးပါပြီ — ခဏနေမှ ပြန်စမ်းပါ၊ ဒါမှမဟုတ် အခမဲ့ quota (တစ်လ စာလုံး ၂ သန်း) ပြည့်သွားတာ ဖြစ်နိုင်ပါတယ်။';
+          throw e;
+        }
+        tries++;
+        var wait = e.retryAfterSec > 0 ? e.retryAfterSec
+          : Math.min(60, 10 * Math.pow(2, tries - 1));
+        wait = Math.max(3, Math.min(120, Math.ceil(wait)));
+        log('Microsoft Translator ကန့်သတ်ချက် (429) ထိသွားလို့ ' + wait + ' စက္ကန့် စောင့်ပြီး အလိုအလျောက် ပြန်ကြိုးစားပါမယ် (' + tries + '/' + MS_MAX_RETRIES + ')');
+        for (var left = wait; left > 0; left--) {
+          setStatus('429 (limit) ထိသွားတယ် — ' + left + ' စက္ကန့်အကြာ ပြန်ကြိုးစားမယ် (' + tries + '/' + MS_MAX_RETRIES + ')');
+          await sleepSec(1);
+        }
+      }
+    }
+  }
+  async function translateSegmentsMS(list, onProgress) {
+    var key = $('msKey').value.trim();
+    if (!key) throw msError('အရင်ဆုံး Microsoft Translator Key ထည့်ပေးပါ — Azure Portal မှာ အခမဲ့ ထုတ်ယူလို့ ရပါတယ်။', 'NO_KEY');
+    var region = $('msRegion').value.trim();
+    var from = MS_SL[$('srcLang').value] || '';
+    var failed = 0, done = 0, i = 0;
+    while (i < list.length) {
+      /* one request: at most 40 lines and ~20,000 characters */
+      var batch = [], chars = 0;
+      while (i < list.length && batch.length < 40) {
+        var len = (list[i].text || '').length;
+        if (batch.length && chars + len > 20000) break;
+        batch.push(list[i]);
+        chars += len;
+        i++;
+      }
+      var todo = batch.filter(function (s) { return !!s.text; });
+      batch.forEach(function (s) { if (!s.text) { s.my = ''; s.failed = false; } });
+      if (todo.length) {
+        /* glossary names are swapped to their canonical Burmese form first,
+           the same trick as the Google Translate path — MS Translator passes
+           existing Burmese text through untouched */
+        var out = await msRequestRetry(todo.map(function (s) { return applyGlossary(s.text); }), key, region, from);
+        todo.forEach(function (s, k) {
+          var my = out && out[k];
+          if (my) { s.my = String(my); s.failed = false; }
+          else { if (!s.my) s.my = s.text; s.failed = true; failed++; }
+        });
+      }
+      done += batch.length;
+      if (onProgress) onProgress(done, list.length);
+    }
+    return failed;
+  }
+  /* ---------- NLLB (Meta's No Language Left Behind, fully on-device) ----------
+     Translation runs in the browser via the same Transformers.js build that
+     Whisper uses — no account, no API key, no quota, and nothing leaves the
+     device; once the model is cached it even works offline. Video mode still
+     transcribes with Whisper on-device (runVideo) and only the translation
+     step runs here. The distilled 600M model is a ~1 GB one-time download,
+     and NLLB has no language auto-detection, so the source language comes
+     from the picker ('auto' falls back to Chinese, the common drama case).
+     FLORES-200 codes: target is always mya_Mymr. */
+  var NLLB_SL = { chinese: 'zho_Hans', english: 'eng_Latn', korean: 'kor_Hang', japanese: 'jpn_Jpan', thai: 'tha_Thai', burmese: 'mya_Mymr' };
+  var nllbTranslator = null;
+  function nllbError(msg, code) {
+    var e = new Error(msg);
+    e.isNllb = true;
+    if (code) e.nllbCode = code;
+    return e;
+  }
+  async function getNllbTranslator() {
+    if (nllbTranslator) return nllbTranslator;
+    var tf = await loadTransformers();
+    try {
+      nllbTranslator = await tf.pipeline('translation', 'Xenova/nllb-200-distilled-600M', {
+        progress_callback: function (d) {
+          if (d.status === 'progress' && d.total) {
+            setStatus('NLLB မော်ဒယ် ဒေါင်းနေတယ်… ' + Math.round(d.loaded / d.total * 100) + '%');
+          } else if (d.status === 'downloading' || d.status === 'download') {
+            setStatus('NLLB မော်ဒယ် ဒေါင်းလုဒ်ဆွဲနေပါတယ်… (' + (d.file || '') + ')');
+          } else if (d.status === 'done') {
+            setStatus('NLLB မော်ဒယ် ဖွင့်နေပါတယ်…');
+          }
+        }
+      });
+    } catch (e) {
+      throw nllbError('NLLB မော်ဒယ်ကို ဒေါင်းလုဒ် / ဖွင့် မရပါဘူး — အင်တာနက် စစ်ပြီး ပြန်စမ်းပါ။ (ပထမအကြိမ်မှာ မော်ဒယ် ~၁ GB ဒေါင်းရပါတယ်)');
+    }
+    return nllbTranslator;
+  }
+  async function translateSegmentsNllb(list, onProgress) {
+    var sel = $('srcLang').value;
+    var from = NLLB_SL[sel];
+    if (!from) {
+      from = 'zho_Hans';
+      log('NLLB မှာ ဘာသာစကား အလိုအလျောက် မရွေးနိုင်လို့ တရုတ်ဘာသာအဖြစ် ယူဆပြီး ပြန်ဆိုပါမယ် — နောက်တစ်ခါ "မူရင်းဘာသာစကား" မှာ အတိအကျ ရွေးပေးပါ။');
+    }
+    if (from === 'mya_Mymr') {
+      list.forEach(function (s) { s.my = s.text || ''; s.failed = false; });
+      if (onProgress) onProgress(list.length, list.length);
+      return 0;
+    }
+    var tr = await getNllbTranslator();
+    var failed = 0;
+    for (var i = 0; i < list.length; i++) {
+      var s = list[i];
+      if (!s.text) { s.my = ''; s.failed = false; }
+      else {
+        try {
+          /* glossary names are swapped to their canonical Burmese form first,
+             the same trick as the Google/Microsoft paths — NLLB passes the
+             existing Burmese text through mostly untouched */
+          var out = await tr(applyGlossary(s.text), { src_lang: from, tgt_lang: 'mya_Mymr' });
+          var my = out && out[0] && out[0].translation_text;
+          if (my) { s.my = String(my); s.failed = false; }
+          else { if (!s.my) s.my = s.text; s.failed = true; failed++; }
+        } catch (e) { if (!s.my) s.my = s.text; s.failed = true; failed++; }
+      }
+      if (onProgress) onProgress(i + 1, list.length);
+    }
+    return failed;
+  }
+  function translateSegmentsAuto(list, sl, onProgress) {
+    if (engine === 'gemini') return translateSegmentsGemini(list, onProgress);
+    if (engine === 'microsoft') return translateSegmentsMS(list, onProgress);
+    if (engine === 'nllb') return translateSegmentsNllb(list, onProgress);
+    return translateSegments(list, sl, onProgress);
+  }
+
+  /* ---------- start: video mode ---------- */
+  async function runVideo() {
+    var srcLang = $('srcLang').value, modelId = $('modelSel').value;
+    coverageGapSec = 0;
+    beginProgress([
+      { id: 'audio', label: 'အသံထုတ်ယူ' },
+      { id: 'model', label: 'AI မော်ဒယ်' },
+      { id: 'asr', label: 'အသံဖတ်' },
+      { id: 'tr', label: 'မြန်မာပြန်ဆို' }
+    ]);
+    var curStep = 'audio';
+    try {
+      setStep('audio', 'active');
+      setStatus('အသံထုတ်ယူနေပါတယ်…');
+      var audio = await extractAudio(videoFile);
+      var durMin = audio.length / 16000 / 60;
+      log('အသံရပြီ — ကြာချိန် ' + durMin.toFixed(1) + ' မိနစ်');
+      if (durMin > 20) log('ဗီဒီယို ရှည်လို့ အချိန် အတော်ကြာနိုင်ပါတယ်');
+      setBar(12);
+      setStep('audio', 'done');
+
+      curStep = 'model';
+      setStep('model', 'active');
+      setStatus('AI မော်ဒယ် ပြင်ဆင်နေပါတယ်…');
+      var tr = await getTranscriber(modelId);
+      setBar(52);
+      setStep('model', 'done');
+
+      curStep = 'asr';
+      setStep('asr', 'active');
+      setStatus('အသံဖတ်ပြီး စာသားထုတ်နေပါတယ်…');
+      log('အသံဖတ် စတင်ပါပြီ…');
+      var opts = { chunk_length_s: 30, stride_length_s: 5, task: 'transcribe', return_timestamps: true };
+      if (srcLang !== 'auto') opts.language = srcLang;
+      var out = await tr(audio, opts);
+      var raw = (out.chunks || []).map(function (c) {
+        return { start: (c.timestamp && c.timestamp[0]) || 0, end: (c.timestamp && c.timestamp[1]) || 0, text: c.text || '' };
+      });
+      if (!raw.length && out.text && out.text.trim()) {
+        raw = [{ start: 0, end: audio.length / 16000, text: out.text.trim() }];
+      }
+      log('အပိုင်းစုစုပေါင်း ' + raw.length + ' ခု ရခဲ့ပါတယ်');
+      segments = SrtTools.mergeChunks(raw).map(function (s) {
+        return { start: s.start, end: s.end, text: s.text, my: '', failed: false };
+      });
+      log('ပေါင်းပြီးနောက် စာကြောင်း ' + segments.length + ' ကြောင်း');
+      if (!segments.length) throw new Error('NO_SPEECH');
+      setBar(68);
+      setStep('asr', 'done');
+
+      curStep = 'tr';
+      setStep('tr', 'active');
+      var failed = await translateSegmentsAuto(segments, GT_SL[srcLang] || 'auto', function (done, total) {
+        setBar(70 + done / total * 28);
+        setStatus('မြန်မာလို ပြန်ဆိုနေပါတယ်… ' + done + '/' + total);
+      });
+      if (failed) log('စာကြောင်း ' + failed + ' ကြောင်း ဘာသာပြန် မအောင်မြင်လို့ မူရင်းအတိုင်း ထားခဲ့ပါတယ် — အောက်မှာ ပြန်စမ်းလို့ ရပါတယ်');
+      setStep('tr', 'done');
+      setBar(100);
+      setStatus('ပြီးပါပြီ!');
+      log('အားလုံး ပြီးပါပြီ');
+      endProgress();
+      showResult();
+    } catch (e) {
+      console.error(e);
+      var msg = (e.isGemini || e.isMs || e.isNllb) ? e.message
+        : e.message === 'AUDIO_DECODE'
+        ? 'ဒီဖိုင်ရဲ့ အသံကို ဖတ်မရပါဘူး။ mp4 / mp3 အဖြစ် ပြောင်းပြီးမှ ပြန်စမ်းကြည့်ပါ။'
+        : e.message === 'NO_SPEECH'
+        ? 'အသံထဲမှာ စကားပြောသံ မတွေ့မိပါဘူး။ အသံပါတဲ့ ဖိုင် ဖြစ်ကြောင်း စစ်ကြည့်ပါ။'
+        : 'အမှားတစ်ခု ဖြစ်သွားပါတယ်: ' + e.message + ' — အင်တာနက် ချိတ်ဆက်မှု စစ်ပြီး ပြန်စမ်းကြည့်ပါ။';
+      failProgress(curStep, msg);
+    }
+  }
+
+  /* ---------- start: video mode via Gemini (audio → Burmese subtitles in one pass) ---------- */
+  /* Seconds of the finished video not covered by any cue (set by runVideoGemini;
+     updateStats turns a big leftover gap into an on-screen warning). */
+  var coverageGapSec = 0;
+
+  async function runVideoGemini() {
+    var srcLang = $('srcLang').value;
+    coverageGapSec = 0;
+    beginProgress([
+      { id: 'audio', label: 'အသံထုတ်ယူ' },
+      { id: 'gem', label: 'Gemini ပြန်ဆို' }
+    ]);
+    var curStep = 'audio';
+    try {
+      setStep('audio', 'active');
+      setStatus('အသံထုတ်ယူနေပါတယ်…');
+      var audio = await extractAudio(videoFile);
+      var totalSec = audio.length / 16000;
+      log('အသံရပြီ — ကြာချိန် ' + (totalSec / 60).toFixed(1) + ' မိနစ်');
+      setBar(12);
+      setStep('audio', 'done');
+
+      curStep = 'gem';
+      setStep('gem', 'active');
+      /* 2 minutes of audio per request: with 4-minute chunks a dialogue-dense
+         clip overflows Gemini's output limit — the answer stops mid-JSON and
+         every later line of the video silently goes missing. Shorter chunks
+         plus the gap-fill pass below keep the whole video covered. */
+      var CHUNK = 120;
+      var chunks = Math.max(1, Math.ceil(totalSec / CHUNK));
+      var lang = LANG_NAME[srcLang];
+      var langPhrase = lang ? ('The spoken language is ' + lang + '.') : 'Detect the spoken language from the audio.';
+      var prompt = 'You are a professional subtitle translator for short drama videos. The attached audio is one clip from a video. ' +
+        langPhrase + ' Listen carefully to the ENTIRE clip from the first second to the very last second — do not stop early and do not summarize or skip the later part. Transcribe every spoken line, and translate each line into natural, conversational Burmese (Myanmar) — the way native speakers actually talk in dramas, keeping the meaning, tone and emotion rather than translating word-for-word. ' +
+        'Reply with ONLY a JSON array (no markdown, no explanation). Each item: {"start": <number>, "end": <number>, "original": "<line transcribed in the spoken language>", "my": "<natural Burmese translation>"}. ' +
+        'start/end are seconds from the beginning of THIS audio clip; cues must be in chronological order, each lasting about 1 to 7 seconds and covering one spoken line — split long lines at natural pauses. Keep transcribing until the audio ends. If there is no speech at all, reply with [].';
+      var glossVp = glossaryPromptText();
+      if (glossVp) prompt += ' For character names and terms, always use these exact Burmese forms: ' + glossVp + '.';
+
+      /* One Gemini request for the audio range [fromSec, toSec); returns cues
+         with absolute (video) timestamps plus whether the answer was cut off. */
+      async function fetchRangeCues(fromSec, toSec) {
+        var slice = audio.subarray(
+          Math.floor(fromSec * 16000),
+          Math.min(audio.length, Math.ceil(toSec * 16000))
+        );
+        var gres = await geminiGenerate([
+          { text: prompt },
+          { inline_data: { mime_type: 'audio/wav', data: bytesToB64(encodeWav(slice, 16000)) } }
+        ]);
+        var cues = [], salvaged = false;
+        var arr = parseJsonArray(gres.text);
+        if (!arr) {
+          arr = salvageJsonArray(gres.text);
+          if (arr) salvaged = true;
+        }
+        if (arr) {
+          arr.forEach(function (it) {
+            if (!it) return;
+            var st = coerceTime(it.start), en = coerceTime(it.end);
+            if (!isFinite(st)) return;
+            if (!isFinite(en) || en <= st) en = st + 2;
+            var my = String(it.my || it.translation || '').trim();
+            if (!my) return;
+            cues.push({ start: st + fromSec, end: en + fromSec, text: String(it.original || '').trim(), my: my, failed: false });
+          });
+        } else {
+          /* fallback: model answered with plain SRT instead of JSON — treat it as the Burmese track */
+          SrtTools.parseSrt(gres.text).forEach(function (p) {
+            cues.push({ start: p.start + fromSec, end: p.end + fromSec, text: '', my: p.text, failed: false });
+          });
+        }
+        cues.sort(function (a, b) { return a.start - b.start; });
+        return { cues: cues, cut: gres.finishReason === 'MAX_TOKENS' || salvaged };
+      }
+
+      var all = [];
+      var gapWarned = false;
+      for (var ci = 0; ci < chunks; ci++) {
+        var off = ci * CHUNK;
+        var chunkEnd = Math.min(totalSec, off + CHUNK);
+        setStatus('Gemini နဲ့ နားထောင်ပြီး မြန်မာပြန်ဆိုနေပါတယ်… အပိုင်း ' + (ci + 1) + '/' + chunks);
+        log('အပိုင်း ' + (ci + 1) + '/' + chunks + ' ကို Gemini သို့ ပို့နေပါတယ်…');
+        var res = await fetchRangeCues(off, chunkEnd);
+        var cues = res.cues;
+        /* If the answer stopped early the tail of this chunk has no subtitles
+           yet — re-request just that uncovered tail, up to 2 extra passes per
+           chunk. This must trigger on ANY tail gap over ~4s, not only when
+           the answer was cut off: Gemini often wraps up a few seconds before
+           the audio actually ends with a clean STOP finish, and at drama
+           pacing an accepted 5-12s tail gap is exactly the last 3-5 lines
+           silently missing from the video. */
+        for (var pass = 0; pass < 2 && cues.length; pass++) {
+          var lastEnd = 0;
+          cues.forEach(function (c) { if (c.end > lastEnd) lastEnd = c.end; });
+          var gap = chunkEnd - lastEnd;
+          if (gap <= 4) break;
+          var fillFrom = Math.max(off, lastEnd - 2);
+          log('အပိုင်း ' + (ci + 1) + ' ရဲ့ နောက်ပိုင်း ' + Math.round(gap) + ' စက္ကန့်ခန့် စာတန်း မရသေးလို့ အဲဒီအပိုင်းကို သီးသန့် ပြန်တောင်းနေပါတယ်… (ကြိုးစားမှု ' + (pass + 1) + ')');
+          setStatus('အပိုင်း ' + (ci + 1) + '/' + chunks + ' — ကျန်နေတဲ့ နောက်ပိုင်းကို ဖြည့်နေပါတယ်…');
+          var fill = await fetchRangeCues(fillFrom, chunkEnd);
+          /* The fill answer REPLACES the cues inside the re-requested range.
+             Filtering it by "starts after the old coverage end" threw away
+             recovered lines: the fill audio starts 2s before that end, so
+             its boundary lines are timestamped slightly before it. */
+          var fresh = fill.cues.filter(function (c) { return c.start >= fillFrom - 0.25; });
+          if (!fresh.length) { res.cut = fill.cut; break; }
+          cues = cues.filter(function (c) { return c.start < fillFrom - 0.25; }).concat(fresh);
+          cues.sort(function (a, b) { return a.start - b.start; });
+          res.cut = fill.cut;
+          var newEnd = 0;
+          cues.forEach(function (c) { if (c.end > newEnd) newEnd = c.end; });
+          if (newEnd <= lastEnd + 0.5) break; /* the fill reached no further — don't loop */
+        }
+        var coveredEnd = 0;
+        cues.forEach(function (c) { if (c.end > coveredEnd) coveredEnd = c.end; });
+        if (cues.length && chunkEnd - coveredEnd > 15 && !gapWarned) {
+          gapWarned = true;
+          log('သတိ — အပိုင်း ' + (ci + 1) + ' မှာ စာတန်းတွေ ဗီဒီယိုအဆုံးထိ မရောက်သေးပါဘူး။ ရလဒ်ထဲမှာ သတိပေးချက် ပြထားပါမယ်။');
+        }
+        log('အပိုင်း ' + (ci + 1) + ' — စာကြောင်း ' + cues.length + ' ကြောင်း ရပါတယ်');
+        all = all.concat(cues);
+        setBar(15 + (ci + 1) / chunks * 83);
+      }
+      all.sort(function (a, b) { return a.start - b.start; });
+      segments = all;
+      if (!segments.length) throw new Error('NO_SPEECH');
+      var finalEnd = 0;
+      segments.forEach(function (s) { if (s.end > finalEnd) finalEnd = s.end; });
+      coverageGapSec = Math.max(0, totalSec - finalEnd);
+      if (coverageGapSec > 10) {
+        log('သတိ — နောက်ဆုံး စာကြောင်းက ဗီဒီယို မဆုံးခင် ' + Math.round(coverageGapSec) + ' စက္ကန့်ခန့် စောပြီး ရပ်သွားပါတယ်။ ရလဒ်အပေါ်မှာ သတိပေးချက် ပြထားပါမယ်။');
+      }
+      setStep('gem', 'done');
+      setBar(100);
+      setStatus('ပြီးပါပြီ!');
+      log('အားလုံး ပြီးပါပြီ');
+      endProgress();
+      showResult();
+    } catch (e) {
+      console.error(e);
+      var msg = (e.isGemini || e.isMs || e.isNllb) ? e.message
+        : e.message === 'AUDIO_DECODE'
+        ? 'ဒီဖိုင်ရဲ့ အသံကို ဖတ်မရပါဘူး။ mp4 / mp3 အဖြစ် ပြောင်းပြီးမှ ပြန်စမ်းကြည့်ပါ။'
+        : e.message === 'NO_SPEECH'
+        ? 'အသံထဲမှာ စကားပြောသံ မတွေ့မိပါဘူး။ အသံပါတဲ့ ဖိုင် ဖြစ်ကြောင်း စစ်ကြည့်ပါ။'
+        : 'အမှားတစ်ခု ဖြစ်သွားပါတယ်: ' + e.message + ' — အင်တာနက် ချိတ်ဆက်မှု စစ်ပြီး ပြန်စမ်းကြည့်ပါ။';
+      failProgress(curStep, msg);
+    }
+  }
+
+  /* ---------- start: SRT mode ---------- */
+  async function readFileText(f) {
+    if (f.text) return await f.text();
+    return await new Promise(function (res, rej) {
+      var r = new FileReader();
+      r.onload = function () { res(r.result); };
+      r.onerror = rej;
+      r.readAsText(f);
+    });
+  }
+  async function runSrt() {
+    var srcLang = $('srcLang').value;
+    coverageGapSec = 0;
+    beginProgress([
+      { id: 'parse', label: 'ဖိုင်ဖတ်' },
+      { id: 'tr', label: 'မြန်မာပြန်ဆို' }
+    ]);
+    var curStep = 'parse';
+    try {
+      setStep('parse', 'active');
+      setStatus('SRT ဖိုင် ဖတ်နေပါတယ်…');
+      var text = await readFileText(srtFile);
+      srtTextCache = text;
+      var parsed = SrtTools.parseSrt(text);
+      log('စာကြောင်း ' + parsed.length + ' ကြောင်း တွေ့ပါတယ်');
+      if (!parsed.length) throw new Error('NO_CUES');
+      segments = parsed.map(function (s) {
+        return { start: s.start, end: s.end, text: s.text, my: '', failed: false };
+      });
+      setBar(15);
+      setStep('parse', 'done');
+
+      curStep = 'tr';
+      setStep('tr', 'active');
+      var failed = await translateSegmentsAuto(segments, GT_SL[srcLang] || 'auto', function (done, total) {
+        setBar(15 + done / total * 82);
+        setStatus('မြန်မာလို ပြန်ဆိုနေပါတယ်… ' + done + '/' + total);
+      });
+      if (failed) log('စာကြောင်း ' + failed + ' ကြောင်း ဘာသာပြန် မအောင်မြင်လို့ မူရင်းအတိုင်း ထားခဲ့ပါတယ် — အောက်မှာ ပြန်စမ်းလို့ ရပါတယ်');
+      setStep('tr', 'done');
+      setBar(100);
+      setStatus('ပြီးပါပြီ!');
+      log('အားလုံး ပြီးပါပြီ');
+      endProgress();
+      showResult();
+    } catch (e) {
+      console.error(e);
+      var msg = (e.isGemini || e.isMs || e.isNllb) ? e.message
+        : e.message === 'NO_CUES'
+        ? 'ဒီဖိုင်ထဲမှာ စာတန်းအချိန်တွေ မတွေ့မိပါဘူး။ စံချိန်ကိုက် .srt / .vtt ဖိုင် ဖြစ်ကြောင်း စစ်ကြည့်ပါ။'
+        : 'အမှားတစ်ခု ဖြစ်သွားပါတယ်: ' + e.message + ' — အင်တာနက် ချိတ်ဆက်မှု စစ်ပြီး ပြန်စမ်းကြည့်ပါ။';
+      failProgress(curStep, msg);
+    }
+  }
+
+  $('startBtn').addEventListener('click', function () {
+    if (processing || batchRunning) return;
+    maxCharsVal = Math.max(20, Math.min(80, parseInt($('maxChars').value, 10) || 42));
+    if (engine === 'gemini' && !$('geminiKey').value.trim()) {
+      toast('အရင်ဆုံး Gemini API Key ထည့်ပေးပါ');
+      $('geminiKey').focus();
+      return;
+    }
+    if (engine === 'microsoft' && !$('msKey').value.trim()) {
+      toast('အရင်ဆုံး Microsoft Translator Key ထည့်ပေးပါ');
+      $('msKey').focus();
+      return;
+    }
+    if (mode === 'video') {
+      if (!videoFile) { toast('အရင်ဆုံး ဗီဒီယို / အသံဖိုင် ရွေးပေးပါ'); return; }
+      if (engine === 'gemini') runVideoGemini(); else runVideo();
+    } else {
+      if (!srtFile) { toast('အရင်ဆုံး .srt / .vtt ဖိုင် ရွေးပေးပါ'); return; }
+      runSrt();
+    }
+  });
+
+  /* ---------- result ---------- */
+  function failedCount() { return segments.filter(function (s) { return s.failed; }).length; }
+  function updateStats() {
+    var total = segments.length ? segments[segments.length - 1].end : 0;
+    var mm = Math.floor(total / 60), ss = Math.round(total % 60);
+    var f = failedCount();
+    $('stats').textContent = 'စုစုပေါင်း စာကြောင်း ' + segments.length + ' ကြောင်း · ကြာချိန် ' +
+      mm + ':' + String(ss).padStart(2, '0') + (f ? ' · ဘာသာပြန် မအောင်မြင်သေး ' + f + ' ကြောင်း' : '');
+    $('retryFailed').classList.toggle('hidden', f === 0);
+    $('cpsStats').textContent = cpsSummaryText();
+    var warn = $('coverageWarn');
+    if (coverageGapSec > 10) {
+      warn.textContent = 'သတိ — စာတန်းက ဗီဒီယို မဆုံးခင် ' + Math.round(coverageGapSec) +
+        ' စက္ကန့် စောရပ်သွားတယ် (အဖြေ ပြတ်သွားတာ)။ ပြန်စမ်းကြည့်ပါ၊ ဒါမှမဟုတ် ဗီဒီယို တိုတို ခွဲလုပ်ပါ။';
+      warn.classList.remove('hidden');
+    } else {
+      warn.classList.add('hidden');
+    }
+  }
+  function showResult() {
+    $('cardResult').classList.remove('hidden');
+    activeIdx = -1;
+    var isVideoMode = mode === 'video';
+    $('previewCol').classList.toggle('hidden', !isVideoMode);
+    var v = $('preview');
+    if (isVideoMode && videoFile) {
+      if (objUrl) URL.revokeObjectURL(objUrl);
+      objUrl = URL.createObjectURL(videoFile);
+      v.src = objUrl;
+      $('previewBg').src = objUrl;
+    } else {
+      v.removeAttribute('src');
+      v.load();
+      var bgv2 = $('previewBg');
+      bgv2.removeAttribute('src');
+      bgv2.load();
+    }
+    applyRatioPreview();
+    updateStats();
+    renderEditor();
+    scheduleSave();
+    updateVideoEmpty();
+    if (!batchRunning) { switchTab('edit'); $('cardResult').scrollIntoView({ behavior: 'smooth' }); }
+  }
+  $('preview').addEventListener('timeupdate', function () {
+    var v = $('preview'), t = v.currentTime;
+    var idx = -1;
+    for (var i = 0; i < segments.length; i++) {
+      if (t >= segments[i].start && t <= segments[i].end) { idx = i; break; }
+    }
+    $('cueText').textContent = idx >= 0 ? SrtTools.splitLines(segments[idx].my || '', maxCharsVal).join('\n') : '';
+    applyCueStyle();
+    if (idx !== activeIdx) {
+      var rows = $('segList').children;
+      if (activeIdx >= 0 && rows[activeIdx]) rows[activeIdx].classList.remove('active');
+      if (idx >= 0 && rows[idx]) rows[idx].classList.add('active');
+      activeIdx = idx;
+    }
+  });
+
+  function escapeHtml(t) {
+    var d = document.createElement('div');
+    d.textContent = t == null ? '' : String(t);
+    return d.innerHTML;
+  }
+  var ICON_PLAY = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>';
+  var ICON_RETRY = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.3L3 8"/><path d="M3 3v5h5"/></svg>';
+  var ICON_DEL = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+
+  function renderEditor() {
+    var list = $('segList');
+    list.innerHTML = '';
+    if (!segments.length) {
+      var empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.textContent = 'စာကြောင်း မရှိသေးပါဘူး — အောက်က ခလုတ်နဲ့ အသစ်ထည့်လို့ ရပါတယ်။';
+      list.appendChild(empty);
+      return;
+    }
+    segments.forEach(function (s, i) {
+      var d = document.createElement('div');
+      d.className = 'seg';
+      var head = '<div class="seg-head"><span class="seg-num">#' + (i + 1) + '</span>' + cpsBadgeHtml(s) + '<span class="sp"></span>';
+      if (mode === 'video') head += '<button class="iconbtn seek" title="ဒီနေရာကနေ ဖွင့်ကြည့်မယ်" aria-label="ဒီနေရာကနေ ဖွင့်ကြည့်မယ်">' + ICON_PLAY + '</button>';
+      if (s.failed) head += '<button class="iconbtn retry" title="ဒီစာကြောင်း ပြန်ဆိုမယ်" aria-label="ဒီစာကြောင်း ပြန်ဆိုမယ်">' + ICON_RETRY + '</button>';
+      head += '<button class="iconbtn red del" title="ဖျက်မယ်" aria-label="စာကြောင်း ဖျက်မယ်">' + ICON_DEL + '</button></div>';
+      var dur = Math.max(0, s.end - s.start).toFixed(1);
+      d.innerHTML = head +
+        '<div class="times"><input class="t0" value="' + s.start.toFixed(2) + '" inputmode="decimal" aria-label="စတင်ချိန် (စက္ကန့်)">' +
+        '<span aria-hidden="true">&rarr;</span>' +
+        '<input class="t1" value="' + s.end.toFixed(2) + '" inputmode="decimal" aria-label="ပြီးဆုံးချိန် (စက္ကန့်)">' +
+        '<span class="dur">' + dur + ' စက္ကန့်</span></div>' +
+        (s.text ? '<div class="orig">' + escapeHtml(s.text) + '</div>' : '') +
+        '<textarea class="my" rows="2" aria-label="မြန်မာစာတန်း ' + (i + 1) + '"></textarea>' +
+        (s.failed ? '<span class="failbadge">ဘာသာပြန် မအောင်မြင်ခဲ့ပါ</span>' : '');
+      var ta = d.querySelector('.my');
+      ta.value = s.my || '';
+      ta.addEventListener('input', function (e) {
+        s.my = e.target.value;
+        refreshCpsBadge(d, s);
+        $('cpsStats').textContent = cpsSummaryText();
+        scheduleSave();
+      });
+      d.querySelector('.t0').addEventListener('change', function (e) {
+        var val = SrtTools.parseTimeInput(e.target.value);
+        if (isFinite(val) && val >= 0) s.start = val;
+        e.target.value = s.start.toFixed(2);
+        refreshCpsBadge(d, s);
+        $('cpsStats').textContent = cpsSummaryText();
+        scheduleSave();
+      });
+      d.querySelector('.t1').addEventListener('change', function (e) {
+        var val = SrtTools.parseTimeInput(e.target.value);
+        if (isFinite(val) && val > s.start) s.end = val;
+        e.target.value = s.end.toFixed(2);
+        refreshCpsBadge(d, s);
+        $('cpsStats').textContent = cpsSummaryText();
+        scheduleSave();
+      });
+      d.querySelector('.del').addEventListener('click', function () {
+        segments.splice(i, 1);
+        activeIdx = -1;
+        renderEditor();
+        updateStats();
+      });
+      var seekBtn = d.querySelector('.seek');
+      if (seekBtn) seekBtn.addEventListener('click', function () {
+        switchTab('video');
+        var v = $('preview');
+        v.currentTime = s.start;
+        var p = v.play();
+        if (p && p.catch) p.catch(function () {});
+      });
+      var retryBtn = d.querySelector('.retry');
+      if (retryBtn) retryBtn.addEventListener('click', async function () {
+        retryBtn.disabled = true;
+        var failed = 1;
+        try { failed = await translateSegmentsAuto([s], GT_SL[$('srcLang').value] || 'auto', null); }
+        catch (e) { toast(e.message || 'ပြန်ဆိုတာ မအောင်မြင်ပါဘူး'); }
+        retryBtn.disabled = false;
+        if (failed) toast('ပြန်ဆိုတာ မအောင်မြင်သေးပါဘူး — အင်တာနက် စစ်ပြီး ထပ်စမ်းပါ');
+        else toast('ပြန်ဆိုပြီးပါပြီ');
+        renderEditor();
+        updateStats();
+      });
+      list.appendChild(d);
+    });
+    scheduleSave();
+  }
+
+  /* ---------- burned-in video (style controls + canvas render) ---------- */
+  var burn = { pos: 'bottom', off: 0, fontFrac: 0.048, color: '#ffffff', bg: '#000000', bgOp: 0.55, bold: true,
+    quality: '1080p', ratio: 'original', fill: 'blur', fontFamily: '"Noto Sans Myanmar",sans-serif', fontName: '' };
+  var logo = { img: null, url: '', corner: 'tr', sizeFrac: 0.18, op: 0.85 };
+  var burnRender = null;
+
+  function hexToRgba(hex, a) {
+    var n = parseInt(String(hex || '').replace('#', ''), 16);
+    if (!isFinite(n)) return 'rgba(0,0,0,' + a + ')';
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  function applyCueStyle() {
+    var cue = $('cue'), span = $('cueText'), v = $('preview');
+    var h = v.clientHeight || 0;
+    cue.style.fontSize = Math.max(11, Math.round(h ? burn.fontFrac * h : 19)) + 'px';
+    cue.style.fontWeight = burn.bold ? '700' : '400';
+    cue.style.color = burn.color;
+    cue.style.fontFamily = burn.fontFamily;
+    cue.style.top = 'auto';
+    cue.style.bottom = 'auto';
+    cue.style.transform = 'none';
+    if (burn.pos === 'top') cue.style.top = Math.max(0, 3 + burn.off) + '%';
+    else if (burn.pos === 'middle') { cue.style.top = (50 + burn.off) + '%'; cue.style.transform = 'translateY(-50%)'; }
+    else cue.style.bottom = Math.max(0, 3 - burn.off) + '%';
+    span.style.background = burn.bgOp > 0 ? hexToRgba(burn.bg, burn.bgOp) : 'transparent';
+    cue.style.textShadow = burn.bgOp >= 0.35 ? 'none' : '0 2px 6px #000,0 0 2px #000';
+    fitPreviewCue();
+  }
+  /* keep the preview cue inside the frame: shrink the font if the current line is wider than the video */
+  function fitPreviewCue() {
+    var span = $('cueText'), cue = $('cue');
+    if (!span.textContent) return;
+    var wrapW = cue.clientWidth || 0;
+    var fs = parseInt(cue.style.fontSize, 10) || 0;
+    if (!wrapW || !fs) return;
+    var w = span.getBoundingClientRect().width;
+    var maxW = wrapW - 28;
+    if (w > maxW && w > 0) {
+      cue.style.fontSize = Math.max(10, Math.floor(fs * maxW / w)) + 'px';
+    }
+  }
+  /* frame the preview exactly like the exported video when a ratio is picked:
+     the wrap becomes the output frame, the video is contained (pad) or covered (crop),
+     and a blurred copy of the same video fills the empty space in blur mode */
+  function applyRatioPreview() {
+    var wrap = $('vwrap'), v = $('preview');
+    if (!wrap || !v) return;
+    if (burn.ratio === 'original') {
+      wrap.classList.remove('framed', 'blurbg');
+      wrap.style.aspectRatio = '';
+      wrap.style.width = '';
+      v.classList.remove('contain', 'cover');
+      var bg0 = $('previewBg');
+      if (bg0) { try { bg0.pause(); } catch (e) {} }
+      applyCueStyle();
+      return;
+    }
+    var parts = burn.ratio.split(':');
+    var r = parseInt(parts[0], 10) / parseInt(parts[1], 10);
+    wrap.classList.add('framed');
+    wrap.classList.toggle('blurbg', burn.fill === 'blur');
+    v.classList.toggle('contain', burn.fill !== 'crop');
+    v.classList.toggle('cover', burn.fill === 'crop');
+    wrap.style.aspectRatio = parts[0] + ' / ' + parts[1];
+    var parentW = wrap.parentElement ? wrap.parentElement.clientWidth : 0;
+    if (parentW > 0) {
+      var maxH = Math.round(window.innerHeight * 0.62);
+      var w = parentW;
+      if (Math.round(w / r) > maxH) w = Math.max(160, Math.round(maxH * r));
+      wrap.style.width = w + 'px';
+    } else {
+      wrap.style.width = '';
+    }
+    applyCueStyle();
+  }
+  function syncBurnControls() {
+    $('posTop').setAttribute('aria-pressed', burn.pos === 'top' ? 'true' : 'false');
+    $('posMid').setAttribute('aria-pressed', burn.pos === 'middle' ? 'true' : 'false');
+    $('posBottom').setAttribute('aria-pressed', burn.pos === 'bottom' ? 'true' : 'false');
+    $('burnOff').value = String(burn.off);
+    $('burnOffVal').textContent = burn.off + '%';
+    $('burnFont').value = String(Math.round(burn.fontFrac * 1000) / 10);
+    $('burnFontVal').textContent = (Math.round(burn.fontFrac * 1000) / 10) + '%';
+    $('burnColor').value = burn.color;
+    $('burnBg').value = burn.bg;
+    $('burnOp').value = String(Math.round(burn.bgOp * 100));
+    $('burnOpVal').textContent = Math.round(burn.bgOp * 100) + '%';
+    $('burnBold').setAttribute('aria-pressed', burn.bold ? 'true' : 'false');
+    $('burnBold').textContent = burn.bold ? 'စာလုံးအထူ (Bold) — ဖွင့်ထားသည်' : 'စာလုံးအထူ (Bold) — ပိတ်ထားသည်';
+    $('q720').setAttribute('aria-pressed', burn.quality === '720p' ? 'true' : 'false');
+    $('q1080').setAttribute('aria-pressed', burn.quality === '1080p' ? 'true' : 'false');
+    $('qOrig').setAttribute('aria-pressed', burn.quality === 'original' ? 'true' : 'false');
+    $('ratioOrig').setAttribute('aria-pressed', burn.ratio === 'original' ? 'true' : 'false');
+    $('ratio916').setAttribute('aria-pressed', burn.ratio === '9:16' ? 'true' : 'false');
+    $('ratio169').setAttribute('aria-pressed', burn.ratio === '16:9' ? 'true' : 'false');
+    $('ratio11').setAttribute('aria-pressed', burn.ratio === '1:1' ? 'true' : 'false');
+    $('ratio45').setAttribute('aria-pressed', burn.ratio === '4:5' ? 'true' : 'false');
+    $('fillRow').classList.toggle('hidden', burn.ratio === 'original');
+    $('fillBlur').setAttribute('aria-pressed', burn.fill === 'blur' ? 'true' : 'false');
+    $('fillBlack').setAttribute('aria-pressed', burn.fill === 'black' ? 'true' : 'false');
+    $('fillCrop').setAttribute('aria-pressed', burn.fill === 'crop' ? 'true' : 'false');
+    $('logoTL').setAttribute('aria-pressed', logo.corner === 'tl' ? 'true' : 'false');
+    $('logoTR').setAttribute('aria-pressed', logo.corner === 'tr' ? 'true' : 'false');
+    $('logoBL').setAttribute('aria-pressed', logo.corner === 'bl' ? 'true' : 'false');
+    $('logoBR').setAttribute('aria-pressed', logo.corner === 'br' ? 'true' : 'false');
+    $('logoSize').value = String(Math.round(logo.sizeFrac * 100));
+    $('logoSizeVal').textContent = Math.round(logo.sizeFrac * 100) + '%';
+    $('logoOp').value = String(Math.round(logo.op * 100));
+    $('logoOpVal').textContent = Math.round(logo.op * 100) + '%';
+    applyLogoStyle();
+    applyCueStyle();
+    applyRatioPreview();
+  }
+  function setBurnPos(p) { burn.pos = p; syncBurnControls(); }
+  $('posTop').addEventListener('click', function () { setBurnPos('top'); });
+  $('posMid').addEventListener('click', function () { setBurnPos('middle'); });
+  $('posBottom').addEventListener('click', function () { setBurnPos('bottom'); });
+  $('burnOff').addEventListener('input', function (e) {
+    burn.off = parseInt(e.target.value, 10) || 0;
+    $('burnOffVal').textContent = burn.off + '%';
+    applyCueStyle();
+  });
+  $('burnFont').addEventListener('input', function (e) {
+    burn.fontFrac = (parseFloat(e.target.value) || 4.8) / 100;
+    $('burnFontVal').textContent = e.target.value + '%';
+    applyCueStyle();
+  });
+  $('burnColor').addEventListener('input', function (e) { burn.color = e.target.value; applyCueStyle(); });
+  $('burnBg').addEventListener('input', function (e) { burn.bg = e.target.value; applyCueStyle(); });
+  $('burnOp').addEventListener('input', function (e) {
+    burn.bgOp = (parseInt(e.target.value, 10) || 0) / 100;
+    $('burnOpVal').textContent = e.target.value + '%';
+    applyCueStyle();
+  });
+  $('burnBold').addEventListener('click', function () { burn.bold = !burn.bold; syncBurnControls(); });
+  $('burnPreset').addEventListener('click', function () {
+    burn.pos = 'bottom'; burn.off = 0; burn.fontFrac = 0.05;
+    burn.color = '#ffffff'; burn.bg = '#d80f1e'; burn.bgOp = 0.88; burn.bold = true;
+    syncBurnControls();
+    toast('MaxFlix အနီ theme နဲ့ ချိန်ပြီးပါပြီ');
+  });
+  /* ---------- quality / custom font / logo controls ---------- */
+  function setBurnQuality(q) { burn.quality = q; syncBurnControls(); }
+  $('q720').addEventListener('click', function () { setBurnQuality('720p'); });
+  $('q1080').addEventListener('click', function () { setBurnQuality('1080p'); });
+  $('qOrig').addEventListener('click', function () { setBurnQuality('original'); });
+
+  /* ---------- output ratio / fill mode controls ---------- */
+  function setBurnRatio(r) { burn.ratio = r; syncBurnControls(); }
+  $('ratioOrig').addEventListener('click', function () { setBurnRatio('original'); });
+  $('ratio916').addEventListener('click', function () { setBurnRatio('9:16'); });
+  $('ratio169').addEventListener('click', function () { setBurnRatio('16:9'); });
+  $('ratio11').addEventListener('click', function () { setBurnRatio('1:1'); });
+  $('ratio45').addEventListener('click', function () { setBurnRatio('4:5'); });
+  function setBurnFill(f) { burn.fill = f; syncBurnControls(); }
+  $('fillBlur').addEventListener('click', function () { setBurnFill('blur'); });
+  $('fillBlack').addEventListener('click', function () { setBurnFill('black'); });
+  $('fillCrop').addEventListener('click', function () { setBurnFill('crop'); });
+
+  /* keep the blurred preview background in sync with the main preview video */
+  (function () {
+    var pv = $('preview'), bgv = $('previewBg');
+    if (!pv || !bgv) return;
+    pv.addEventListener('play', function () {
+      if (!bgv.getAttribute('src')) return;
+      try { bgv.currentTime = pv.currentTime; } catch (e) {}
+      var p = bgv.play();
+      if (p && p.catch) p.catch(function () {});
+    });
+    pv.addEventListener('pause', function () { try { bgv.pause(); } catch (e) {} });
+    pv.addEventListener('seeked', function () { try { bgv.currentTime = pv.currentTime; } catch (e) {} });
+    pv.addEventListener('timeupdate', function () {
+      if (bgv.getAttribute('src') && !bgv.paused && Math.abs(bgv.currentTime - pv.currentTime) > 0.4) {
+        try { bgv.currentTime = pv.currentTime; } catch (e) {}
+      }
+    });
+  })();
+
+  $('fontPick').addEventListener('click', function () { $('fontFile').click(); });
+  $('fontFile').addEventListener('change', async function (e) {
+    var f = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!f) return;
+    var family = f.name.replace(/\.[^.]+$/, '').replace(/[^A-Za-z0-9 _-]/g, ' ').replace(/\s+/g, ' ').trim() || 'CustomFont';
+    try {
+      var buf = await f.arrayBuffer();
+      var face = new FontFace(family, buf, { weight: '400 700' });
+      await face.load();
+      document.fonts.add(face);
+      burn.fontFamily = '"' + family + '","Noto Sans Myanmar",sans-serif';
+      burn.fontName = family;
+      $('fontReset').classList.remove('hidden');
+      $('fontStatus').textContent = 'အခု သုံးနေတာ — ' + f.name + ' (ကိုယ်ပိုင်ဖောင့်)။ ဒီ tab ဖွင့်ထားသရွေ့ပဲ ရမယ်။';
+      applyCueStyle();
+      toast('ဖောင့် ထည့်ပြီးပါပြီ — ' + family);
+    } catch (err) {
+      console.error(err);
+      toast('ဒီဖောင့်ဖိုင်ကို သုံးမရပါဘူး — .ttf / .otf ဖိုင် ဖြစ်ကြောင်း စစ်ပြီး ပြန်စမ်းပါ');
+    }
+  });
+  $('fontReset').addEventListener('click', function () {
+    burn.fontFamily = '"Noto Sans Myanmar",sans-serif';
+    burn.fontName = '';
+    $('fontReset').classList.add('hidden');
+    $('fontStatus').textContent = 'အခု သုံးနေတာ — Noto Sans Myanmar (မူရင်း)။';
+    applyCueStyle();
+    toast('မူရင်း ဖောင့် ပြန်သုံးပါပြီ');
+  });
+
+  function applyLogoStyle() {
+    var el = $('logoImg');
+    if (!logo.img) { el.classList.add('hidden'); return; }
+    el.classList.remove('hidden');
+    el.style.width = (logo.sizeFrac * 100) + '%';
+    el.style.opacity = String(logo.op);
+    el.style.top = 'auto'; el.style.bottom = 'auto'; el.style.left = 'auto'; el.style.right = 'auto';
+    var inset = '3%';
+    if (logo.corner === 'tl') { el.style.top = inset; el.style.left = inset; }
+    else if (logo.corner === 'tr') { el.style.top = inset; el.style.right = inset; }
+    else if (logo.corner === 'bl') { el.style.bottom = inset; el.style.left = inset; }
+    else { el.style.bottom = inset; el.style.right = inset; }
+  }
+  function drawBurnLogo(cx, W, H) {
+    var img = logo.img;
+    if (!img || !img.naturalWidth) return;
+    var lw = Math.round(logo.sizeFrac * W);
+    var lh = Math.round(lw * img.naturalHeight / img.naturalWidth);
+    var mx = Math.round(W * 0.03), my = Math.round(H * 0.03);
+    var x = (logo.corner === 'tl' || logo.corner === 'bl') ? mx : W - mx - lw;
+    var y = (logo.corner === 'tl' || logo.corner === 'tr') ? my : H - my - lh;
+    cx.save();
+    cx.globalAlpha = logo.op;
+    try { cx.drawImage(img, x, y, lw, lh); } catch (e) {}
+    cx.restore();
+  }
+  function setLogoCorner(c) { logo.corner = c; syncBurnControls(); }
+  $('logoTL').addEventListener('click', function () { setLogoCorner('tl'); });
+  $('logoTR').addEventListener('click', function () { setLogoCorner('tr'); });
+  $('logoBL').addEventListener('click', function () { setLogoCorner('bl'); });
+  $('logoBR').addEventListener('click', function () { setLogoCorner('br'); });
+  $('logoPick').addEventListener('click', function () { $('logoFile').click(); });
+  $('logoFile').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!f) return;
+    if (logo.url) URL.revokeObjectURL(logo.url);
+    logo.url = URL.createObjectURL(f);
+    var img = new Image();
+    img.onload = function () {
+      logo.img = img;
+      $('logoImg').src = logo.url;
+      $('logoRemove').classList.remove('hidden');
+      $('logoStatus').textContent = 'Logo ထည့်ပြီး — ' + f.name + ' ။ နေရာ / အရွယ် / ပွင့်လင်းမှု ချိန်လို့ရတယ်။';
+      applyLogoStyle();
+      toast('Logo ထည့်ပြီးပါပြီ');
+    };
+    img.onerror = function () { toast('ဒီပုံကို ဖတ်မရပါဘူး — PNG / JPG ပုံနဲ့ ပြန်စမ်းကြည့်ပါ'); };
+    img.src = logo.url;
+  });
+  $('logoRemove').addEventListener('click', function () {
+    logo.img = null;
+    if (logo.url) { URL.revokeObjectURL(logo.url); logo.url = ''; }
+    $('logoImg').removeAttribute('src');
+    $('logoRemove').classList.add('hidden');
+    $('logoStatus').textContent = 'Logo မထည့်ရသေးဘူး။ PNG (နောက်ခံ ပွင့်လင်း) ဆို အလှဆုံးပဲ။';
+    applyLogoStyle();
+    toast('Logo ဖြုတ်လိုက်ပါပြီ');
+  });
+  $('logoSize').addEventListener('input', function (e) {
+    logo.sizeFrac = (parseInt(e.target.value, 10) || 18) / 100;
+    $('logoSizeVal').textContent = e.target.value + '%';
+    applyLogoStyle();
+  });
+  $('logoOp').addEventListener('input', function (e) {
+    logo.op = (parseInt(e.target.value, 10) || 85) / 100;
+    $('logoOpVal').textContent = e.target.value + '%';
+    applyLogoStyle();
+  });
+
+  $('preview').addEventListener('loadedmetadata', applyRatioPreview);
+  window.addEventListener('resize', applyRatioPreview);
+  syncBurnControls();
+
+  function drawBurnSub(cx, W, H, t) {
+    var seg = null;
+    for (var i = 0; i < segments.length; i++) {
+      if (t >= segments[i].start && t <= segments[i].end) { seg = segments[i]; break; }
+    }
+    if (!seg) return;
+    var text = String(seg.my || '').trim();
+    if (!text) return;
+    var lines = SrtTools.splitLines(text, maxCharsVal);
+    /* safe area: the subtitle box must stay inside the frame — margins on every side,
+       and the font shrinks when the longest line would otherwise overflow */
+    var safeMx = Math.round(W * 0.04);
+    var safeTop = Math.round(H * 0.02);
+    var safeBot = Math.round(H * 0.98);
+    var availW = Math.max(40, W - safeMx * 2);
+    var fs = Math.max(12, Math.round(burn.fontFrac * H));
+    function setFont() { cx.font = (burn.bold ? '700 ' : '400 ') + fs + 'px ' + burn.fontFamily; }
+    setFont();
+    cx.textAlign = 'center';
+    cx.textBaseline = 'middle';
+    var maxW = 0;
+    lines.forEach(function (l) { maxW = Math.max(maxW, cx.measureText(l).width); });
+    if (maxW > availW && maxW > 0) {
+      fs = Math.max(10, Math.floor(fs * availW / maxW));
+      setFont();
+      maxW = 0;
+      lines.forEach(function (l) { maxW = Math.max(maxW, cx.measureText(l).width); });
+    }
+    var lh = fs * 1.5, padX = fs * 0.55, padY = fs * 0.3;
+    var boxW = Math.min(availW, maxW + padX * 2);
+    var boxH = lines.length * lh + padY * 2;
+    var offPx = burn.off / 100 * H;
+    var y0;
+    if (burn.pos === 'top') y0 = H * 0.03 + offPx;
+    else if (burn.pos === 'middle') y0 = H / 2 + offPx - boxH / 2;
+    else y0 = H * 0.97 + offPx - boxH;
+    y0 = Math.max(safeTop, Math.min(Math.max(safeTop, safeBot - boxH), y0));
+    var x0 = Math.max(safeMx, Math.min(W - safeMx - boxW, (W - boxW) / 2));
+    if (burn.bgOp > 0) {
+      cx.fillStyle = hexToRgba(burn.bg, burn.bgOp);
+      var r = fs * 0.18;
+      if (typeof cx.roundRect === 'function') {
+        cx.beginPath();
+        cx.roundRect(x0, y0, boxW, boxH, r);
+        cx.fill();
+      } else cx.fillRect(x0, y0, boxW, boxH);
+    }
+    if (burn.bgOp < 0.35) {
+      cx.shadowColor = 'rgba(0,0,0,0.9)';
+      cx.shadowBlur = Math.max(2, fs * 0.12);
+      cx.shadowOffsetY = Math.max(1, fs * 0.04);
+    }
+    cx.fillStyle = burn.color;
+    lines.forEach(function (l, li) {
+      /* maxWidth is the hard guarantee: even at the minimum font size a line can never spill past the safe width */
+      cx.fillText(l, x0 + boxW / 2, y0 + padY + lh * (li + 0.5), availW);
+    });
+    cx.shadowColor = 'transparent';
+    cx.shadowBlur = 0;
+    cx.shadowOffsetY = 0;
+  }
+
+  async function renderBurned() {
+    if (burnRender) return;
+    var btn = $('burnBtn');
+    var progBox = $('burnProg'), barEl = $('burnBar'), statusEl = $('burnStatus'), cancelBtn = $('burnCancel');
+    function bStatus(t) { progBox.classList.remove('hidden'); statusEl.textContent = t; }
+    if (!guardSegments()) return;
+    if (!videoFile) { toast('ဗီဒီယိုဖိုင် မရှိသေးပါဘူး'); return; }
+    if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream) {
+      bStatus('ဒီ browser မှာ ဗီဒီယို ပြန်ထုတ် (render) လုပ်တာ မရပါဘူး — Chrome / Edge နောက်ဆုံးဗားရှင်းနဲ့ စမ်းကြည့်ပါ။ SRT / VTT ဒေါင်းလုဒ်ကတော့ ပုံမှန်အတိုင်း ရပါတယ်။');
+      return;
+    }
+    var state = { cancelled: false, stop: null };
+    burnRender = state;
+    btn.disabled = true;
+    cancelBtn.classList.remove('hidden');
+    progBox.classList.remove('hidden');
+    barEl.style.width = '0%';
+    bStatus('ပြင်ဆင်နေပါတယ်…');
+    keepAwake(true);
+    var url = URL.createObjectURL(videoFile);
+    var vid = document.createElement('video');
+    vid.src = url;
+    vid.playsInline = true;
+    vid.preload = 'auto';
+    var actx = null, tick = null, raf = 0;
+    try {
+      await new Promise(function (res, rej) {
+        vid.onloadedmetadata = res;
+        vid.onerror = function () { rej(new Error('LOAD')); };
+      });
+      var srcW = vid.videoWidth, srcH = vid.videoHeight;
+      if (!srcW || !srcH) throw new Error('LOAD');
+      var W, H, framed = burn.ratio !== 'original';
+      if (!framed) {
+        var capH = burn.quality === '720p' ? 720 : burn.quality === '1080p' ? 1080 : Infinity;
+        var scale = Math.min(1, capH / srcH);
+        W = Math.max(2, Math.round(srcW * scale));
+        H = Math.max(2, Math.round(srcH * scale));
+      } else {
+        /* output frame at the chosen ratio: the frame's short edge follows the
+           quality pick (720p -> 720, 1080p -> 1080, original -> the source's own
+           short edge), so 9:16 at 1080p is 1080x1920 and 16:9 is 1920x1080.
+           The short edge never exceeds the source's, so nothing is upscaled. */
+        var rp = burn.ratio.split(':');
+        var rr = parseInt(rp[0], 10) / parseInt(rp[1], 10);
+        var shortCap = burn.quality === '720p' ? 720 : burn.quality === '1080p' ? 1080 : Infinity;
+        var shortEdge = Math.min(shortCap, Math.min(srcW, srcH));
+        if (rr >= 1) { H = shortEdge; W = Math.round(shortEdge * rr); }
+        else { W = shortEdge; H = Math.round(shortEdge / rr); }
+        W = Math.max(2, Math.round(W / 2) * 2);
+        H = Math.max(2, Math.round(H / 2) * 2);
+      }
+      var canvas = document.createElement('canvas');
+      canvas.width = W;
+      canvas.height = H;
+      var cx = canvas.getContext('2d');
+      try {
+        if (document.fonts && document.fonts.load) {
+          await document.fonts.load('700 40px "Noto Sans Myanmar"');
+          await document.fonts.load('400 40px "Noto Sans Myanmar"');
+          if (burn.fontName) {
+            await document.fonts.load('700 40px "' + burn.fontName + '"');
+            await document.fonts.load('400 40px "' + burn.fontName + '"');
+          }
+        }
+      } catch (e) { /* fall back to the default sans font on canvas */ }
+      var audioOk = false, adest = null;
+      try {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) {
+          actx = new AC();
+          var msrc = actx.createMediaElementSource(vid);
+          adest = actx.createMediaStreamDestination();
+          msrc.connect(adest);
+          audioOk = true;
+        }
+      } catch (e) {
+        audioOk = false;
+        adest = null;
+        if (actx) { try { actx.close(); } catch (_) {} actx = null; }
+      }
+      var stream = canvas.captureStream(30);
+      if (adest && adest.stream.getAudioTracks().length) {
+        stream.addTrack(adest.stream.getAudioTracks()[0]);
+      }
+      var mimes = ['video/mp4;codecs=avc1.640028,mp4a.40.2', 'video/mp4',
+        'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
+      var mime = '';
+      for (var mi = 0; mi < mimes.length; mi++) {
+        if (MediaRecorder.isTypeSupported(mimes[mi])) { mime = mimes[mi]; break; }
+      }
+      if (!mime) throw new Error('NO_MIME');
+      var chunks = [];
+      var vbps = burn.quality === '720p' ? 8000000 : burn.quality === '1080p' ? 16000000 : 24000000;
+      var rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: vbps, audioBitsPerSecond: 128000 });
+      rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+      var stoppedP = new Promise(function (res) { rec.onstop = res; });
+      state.stop = function () {
+        try { vid.pause(); } catch (e) {}
+        try { if (rec.state !== 'inactive') rec.stop(); } catch (e) {}
+      };
+      function draw() {
+        try {
+          if (!framed) {
+            cx.drawImage(vid, 0, 0, W, H);
+          } else if (burn.fill === 'crop') {
+            var cs = Math.max(W / srcW, H / srcH);
+            cx.drawImage(vid, (W - srcW * cs) / 2, (H - srcH * cs) / 2, srcW * cs, srcH * cs);
+          } else {
+            if (burn.fill === 'blur') {
+              var bs = Math.max(W / srcW, H / srcH) * 1.1;
+              cx.save();
+              try { cx.filter = 'blur(' + Math.max(10, Math.round(W * 0.035)) + 'px)'; } catch (e) {}
+              cx.drawImage(vid, (W - srcW * bs) / 2, (H - srcH * bs) / 2, srcW * bs, srcH * bs);
+              cx.restore();
+              cx.fillStyle = 'rgba(0,0,0,0.35)';
+              cx.fillRect(0, 0, W, H);
+            } else {
+              cx.fillStyle = '#000';
+              cx.fillRect(0, 0, W, H);
+            }
+            var ns = Math.min(W / srcW, H / srcH);
+            cx.drawImage(vid, (W - srcW * ns) / 2, (H - srcH * ns) / 2, srcW * ns, srcH * ns);
+          }
+        } catch (e) {}
+        drawBurnSub(cx, W, H, vid.currentTime);
+        drawBurnLogo(cx, W, H);
+        if (vid.duration) barEl.style.width = Math.min(100, vid.currentTime / vid.duration * 100) + '%';
+        if (!vid.ended && !state.cancelled) raf = requestAnimationFrame(draw);
+      }
+      var startT = Date.now();
+      tick = setInterval(function () {
+        var pct = vid.duration ? Math.floor(vid.currentTime / vid.duration * 100) : 0;
+        bStatus('စာတန်းထိုးပြီး ထုတ်နေပါတယ်… ' + pct + '% · ကြာချိန် ' + fmtElapsed(Date.now() - startT) +
+          (audioOk ? '' : ' · အသံ ထည့်မရလို့ အသံမပါဘဲ ထုတ်နေပါတယ်'));
+      }, 500);
+      if (actx) { try { await actx.resume(); } catch (e) {} }
+      rec.start(1000);
+      await vid.play();
+      draw();
+      await new Promise(function (res) {
+        var chk = setInterval(function () {
+          if (state.cancelled || vid.ended) { clearInterval(chk); res(); }
+        }, 200);
+      });
+      if (!state.cancelled) {
+        /* 'ended' fires the instant playback reaches the end; stopping the
+           recorder in that same instant can clip the final subtitle line's
+           last frames out of the exported file. The canvas keeps showing
+           the final frame (with its subtitle), so hold it on the recording
+           a moment longer before stopping. */
+        try { draw(); } catch (e) {}
+        await new Promise(function (r) { setTimeout(r, 800); });
+      }
+      clearInterval(tick); tick = null;
+      cancelAnimationFrame(raf);
+      if (rec.state !== 'inactive') rec.stop();
+      await stoppedP;
+      if (state.cancelled) {
+        bStatus('ရပ်လိုက်ပါပြီ — ဖိုင် မထုတ်လိုက်ပါဘူး။');
+        toast('ဗီဒီယို ထုတ်တာ ရပ်လိုက်ပါပြီ');
+      } else {
+        var ext = mime.indexOf('mp4') >= 0 ? 'mp4' : 'webm';
+        var blob = new Blob(chunks, { type: mime.split(';')[0] });
+        download(blob, baseName() + '.subbed.' + ext);
+        barEl.style.width = '100%';
+        bStatus('ပြီးပါပြီ — စာတန်းထိုးပြီး ဗီဒီယိုဖိုင် (' + fmtSize(blob.size) + ') ဒေါင်းလုဒ် စတင်ပါပြီ' +
+          ' · အရွယ် ' + W + '×' + H + (framed ? ' (' + burn.ratio + ')' : '') +
+          (audioOk ? '။' : ' (ဒီတစ်ခါ အသံမပါဘဲ ထုတ်လိုက်ပါတယ်)။'));
+        toast('စာတန်းထိုးပြီး ဗီဒီယိုဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
+      }
+    } catch (e) {
+      console.error(e);
+      if (tick) clearInterval(tick);
+      cancelAnimationFrame(raf);
+      bStatus(e.message === 'LOAD'
+        ? 'ဗီဒီယိုဖိုင်ကို ဖတ်မရပါဘူး — mp4 ဖိုင် ဖြစ်ကြောင်း စစ်ပြီး ပြန်စမ်းကြည့်ပါ။'
+        : e.message === 'NO_MIME'
+        ? 'ဒီ browser မှာ ဗီဒီယို ပြန်ထုတ် (render) လုပ်တာ မရပါဘူး — Chrome / Edge နောက်ဆုံးဗားရှင်းနဲ့ စမ်းကြည့်ပါ။'
+        : 'ထုတ်တာ မအောင်မြင်ပါဘူး: ' + e.message + ' — ပြန်စမ်းကြည့်ပါ။ SRT / VTT ဒေါင်းလုဒ်ကတော့ ပုံမှန်အတိုင်း ရပါတယ်။');
+    } finally {
+      if (actx) { try { actx.close(); } catch (_) {} }
+      URL.revokeObjectURL(url);
+      burnRender = null;
+      btn.disabled = false;
+      cancelBtn.classList.add('hidden');
+      if (!processing) keepAwake(false);
+    }
+  }
+  $('burnBtn').addEventListener('click', renderBurned);
+  $('burnCancel').addEventListener('click', function () {
+    if (burnRender) {
+      burnRender.cancelled = true;
+      if (burnRender.stop) burnRender.stop();
+    }
+  });
+
+  /* ---------- glossary (name / term consistency across episodes) ---------- */
+  var GLOSS_KEY = 'mt_glossary';
+  function parseGlossary(text) {
+    var pairs = [];
+    String(text || '').split(/\n/).forEach(function (line) {
+      var m = line.split(/=|＝/);
+      if (m.length < 2) return;
+      var src = m[0].trim();
+      var dst = m.slice(1).join('=').trim();
+      if (src && dst) pairs.push({ src: src, dst: dst });
+    });
+    return pairs;
+  }
+  function glossaryPairs() { return parseGlossary($('glossaryText').value); }
+  function glossaryPromptText() {
+    return glossaryPairs().map(function (p) { return p.src + ' = ' + p.dst; }).join('; ');
+  }
+  /* Local (Whisper + Google Translate) path: swap the source term for its
+     canonical Burmese form before translating — GT passes Burmese text
+     through mostly untouched, so the name survives translation intact. */
+  function applyGlossary(text) {
+    var out = String(text || '');
+    glossaryPairs().forEach(function (p) { out = out.split(p.src).join(p.dst); });
+    return out;
+  }
+  function saveGlossary() {
+    try { localStorage.setItem(GLOSS_KEY, $('glossaryText').value); } catch (e) {}
+  }
+  try { $('glossaryText').value = localStorage.getItem(GLOSS_KEY) || ''; } catch (e) {}
+  var glossSaveTimer = null;
+  $('glossaryText').addEventListener('input', function () {
+    clearTimeout(glossSaveTimer);
+    glossSaveTimer = setTimeout(saveGlossary, 600);
+  });
+  $('glossarySave').addEventListener('click', function () {
+    saveGlossary();
+    scheduleSave();
+    toast('မှတ်တမ်း သိမ်းပြီးပါပြီ — ' + glossaryPairs().length + ' စုံ');
+  });
+  $('glossaryAi').addEventListener('click', async function () {
+    var btn = $('glossaryAi');
+    if (engine !== 'gemini') { toast('နာမည်တွေ အလိုအလျောက် ထုတ်ဖို့ Gemini engine ကို ရွေးထားပေးပါ'); return; }
+    if (!$('geminiKey').value.trim()) { toast('အရင်ဆုံး Gemini API Key ထည့်ပေးပါ'); $('geminiKey').focus(); return; }
+    btn.disabled = true;
+    var oldLabel = btn.textContent;
+    btn.textContent = 'နာမည်တွေ ထုတ်နေပါတယ်…';
+    try {
+      var instr = 'List every character name and important proper noun (people, places, organizations) that appears. For each one, give the original form exactly as it appears and a natural Burmese (Myanmar) transliteration/translation for it. Reply with ONLY a JSON array like [{"src":"<original>","dst":"<Burmese>"}]. If there are none, reply [].';
+      var parts;
+      if (mode === 'srt') {
+        if (!srtFile) { toast('အရင်ဆုံး .srt / .vtt ဖိုင် ရွေးပေးပါ'); return; }
+        var ftxt = await readFileText(srtFile);
+        var sample = SrtTools.parseSrt(ftxt).slice(0, 150).map(function (s) { return s.text; }).join('\n');
+        if (!sample) { toast('ဖိုင်ထဲမှာ စာသားတွေ မတွေ့မိပါဘူး'); return; }
+        parts = [{ text: instr + '\n\nSubtitle text:\n' + sample }];
+      } else {
+        if (!videoFile) { toast('အရင်ဆုံး ဗီဒီယို / အသံဖိုင် ရွေးပေးပါ'); return; }
+        var aud = await extractAudio(videoFile);
+        var slice = aud.subarray(0, Math.min(aud.length, 90 * 16000));
+        parts = [
+          { text: instr + ' Listen to the attached audio (the first part of the video) and list the names you hear.' },
+          { inline_data: { mime_type: 'audio/wav', data: bytesToB64(encodeWav(slice, 16000)) } }
+        ];
+      }
+      var gres = await geminiGenerate(parts);
+      var arr = parseJsonArray(gres.text) || salvageJsonArray(gres.text);
+      if (!arr || !arr.length) { toast('နာမည်တွေ မတွေ့မိပါဘူး — ကိုယ်တိုင် ရိုက်ထည့်လို့လည်း ရပါတယ်'); return; }
+      var existing = {};
+      glossaryPairs().forEach(function (p) { existing[p.src] = 1; });
+      var lines = [], added = 0;
+      arr.forEach(function (it) {
+        if (!it) return;
+        var s = String(it.src || it.name || '').trim();
+        var d = String(it.dst || it.my || '').trim();
+        if (s && d && !existing[s]) { lines.push(s + ' = ' + d); existing[s] = 1; added++; }
+      });
+      if (!added) { toast('တွေ့တဲ့ နာမည်တွေ မှတ်တမ်းထဲမှာ ရှိပြီးသားပါ'); return; }
+      var cur = $('glossaryText').value.replace(/\s+$/, '');
+      $('glossaryText').value = (cur ? cur + '\n' : '') + lines.join('\n');
+      saveGlossary();
+      scheduleSave();
+      toast('နာမည် ' + added + ' ခု မှတ်တမ်းထဲ ထည့်ပြီးပါပြီ');
+    } catch (e) {
+      console.error(e);
+      toast(e && e.message ? e.message : 'နာမည်ထုတ်တာ မအောင်မြင်ပါဘူး');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = oldLabel;
+    }
+  });
+
+  /* ---------- reading-speed check (CPS = characters per second) ---------- */
+  function cueCps(s) {
+    if (!String(s.my || '').trim()) return 0;
+    return SrtTools.cps(s.my, Math.max(0.1, (s.end || 0) - (s.start || 0)));
+  }
+  function cpsClass(c) { return c <= 0 ? '' : (c <= 17 ? ' ok' : (c <= 20 ? ' mid' : ' bad')); }
+  function cpsBadgeHtml(s) {
+    var c = cueCps(s);
+    return '<span class="cpsbadge' + cpsClass(c) + '">' + (c ? c.toFixed(1) : '0.0') + ' CPS</span>';
+  }
+  function refreshCpsBadge(rowEl, s) {
+    var b = rowEl.querySelector('.cpsbadge');
+    if (!b) return;
+    var c = cueCps(s);
+    b.className = 'cpsbadge' + cpsClass(c);
+    b.textContent = (c ? c.toFixed(1) : '0.0') + ' CPS';
+  }
+  function cpsSummaryText() {
+    var n = 0;
+    segments.forEach(function (s) { if (cueCps(s) > 20) n++; });
+    return n ? ('ဖတ်ရမြန်လွန်းတဲ့ စာကြောင်း ' + n + ' ကြောင်း ရှိပါတယ် (တစ်စက္ကန့်လျှင် စာလုံး ၂၀ ကျော် — CPS)။ အဲဒီကြောင်းတွေ အချိန်ပိုရှည်ပေးတာ (သို့) စာသားတိုအောင် ပြင်တာ စဉ်းစားပါ။') : '';
+  }
+
+  /* ---------- batch queue (many episodes, processed one after another) ---------- */
+  var batchQueue = [];
+  var batchRunning = false;
+  var BATCH_STATUS = {
+    wait: ['စောင့်နေပါတယ်', ''],
+    running: ['လုပ်နေပါတယ်…', 'run'],
+    done: ['', 'done'],
+    error: ['မအောင်မြင်ပါ — "အကုန်စမယ်" နဲ့ ပြန်စမ်းလို့ ရပါတယ်', 'err']
+  };
+  function renderBatchList() {
+    var box = $('batchList');
+    box.innerHTML = '';
+    batchQueue.forEach(function (item, i) {
+      var row = document.createElement('div');
+      row.className = 'qitem';
+      var info = document.createElement('div');
+      info.className = 'sp';
+      var nm = document.createElement('div');
+      nm.className = 'qn';
+      nm.textContent = item.file.name;
+      var st = document.createElement('div');
+      st.className = 'qs ' + BATCH_STATUS[item.status][1];
+      st.textContent = item.status === 'done'
+        ? 'ပြီးပါပြီ — စာကြောင်း ' + item.cues + ' ကြောင်း · ' + fmtSize(item.file.size)
+        : BATCH_STATUS[item.status][0] + ' · ' + fmtSize(item.file.size);
+      info.appendChild(nm);
+      info.appendChild(st);
+      row.appendChild(info);
+      if (item.status === 'done' && item.srt) {
+        var dl = document.createElement('button');
+        dl.className = 'btn small ghost';
+        dl.textContent = 'SRT ဆွဲမယ်';
+        dl.addEventListener('click', function () {
+          download(new Blob([item.srt], { type: 'text/plain;charset=utf-8' }),
+            item.file.name.replace(/\.[^.]+$/, '') + '.my.srt');
+          toast('SRT ဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
+        });
+        row.appendChild(dl);
+      }
+      if (!batchRunning && item.status !== 'running') {
+        var rm = document.createElement('button');
+        rm.className = 'iconbtn red';
+        rm.title = 'တန်းစီထဲက ဖြုတ်မယ်';
+        rm.setAttribute('aria-label', 'တန်းစီထဲက ဖြုတ်မယ်');
+        rm.innerHTML = ICON_DEL;
+        rm.addEventListener('click', function () {
+          batchQueue.splice(i, 1);
+          renderBatchList();
+        });
+        row.appendChild(rm);
+      }
+      box.appendChild(row);
+    });
+    $('batchClear').classList.toggle('hidden', !batchQueue.length || batchRunning);
+    $('batchDlAll').classList.toggle('hidden', !batchQueue.some(function (q) { return q.status === 'done' && q.srt; }));
+  }
+  function addBatchFiles(fileList) {
+    var added = 0;
+    for (var i = 0; i < fileList.length; i++) {
+      batchQueue.push({ file: fileList[i], status: 'wait', srt: '', cues: 0 });
+      added++;
+    }
+    if (added) toast('တန်းစီထဲ ဖိုင် ' + added + ' ဖိုင် ထည့်ပြီးပါပြီ');
+    renderBatchList();
+  }
+  (function bindBatchDrop() {
+    var zone = $('dropBatch'), input = $('fileInputBatch');
+    zone.addEventListener('click', function () { input.click(); });
+    zone.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); }
+    });
+    ['dragover', 'dragenter'].forEach(function (ev) {
+      zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.add('over'); });
+    });
+    ['dragleave', 'drop'].forEach(function (ev) {
+      zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.remove('over'); });
+    });
+    zone.addEventListener('drop', function (e) {
+      if (e.dataTransfer.files && e.dataTransfer.files.length) addBatchFiles(e.dataTransfer.files);
+    });
+    input.addEventListener('change', function () {
+      if (input.files.length) addBatchFiles(input.files);
+      input.value = '';
+    });
+  })();
+  async function runBatch() {
+    if (batchRunning || processing) return;
+    var pending = batchQueue.filter(function (q) { return q.status !== 'done'; });
+    if (!pending.length) {
+      toast(batchQueue.length ? 'တန်းစီထဲက အပိုင်းတွေ အားလုံး ပြီးပြီးသားပါ' : 'အရင်ဆုံး ဗီဒီယိုတွေ တန်းစီထဲ ထည့်ပေးပါ');
+      return;
+    }
+    if (engine === 'gemini' && !$('geminiKey').value.trim()) {
+      toast('အရင်ဆုံး Gemini API Key ထည့်ပေးပါ');
+      $('geminiKey').focus();
+      return;
+    }
+    if (engine === 'microsoft' && !$('msKey').value.trim()) {
+      toast('အရင်ဆုံး Microsoft Translator Key ထည့်ပေးပါ');
+      $('msKey').focus();
+      return;
+    }
+    maxCharsVal = Math.max(20, Math.min(80, parseInt($('maxChars').value, 10) || 42));
+    batchRunning = true;
+    var btn = $('batchStart');
+    btn.disabled = true;
+    btn.textContent = 'လုပ်နေပါတယ်…';
+    renderBatchList();
+    var okCount = 0;
+    for (var i = 0; i < pending.length; i++) {
+      var item = pending[i];
+      item.status = 'running';
+      renderBatchList();
+      videoFile = item.file;
+      showFileMeta();
+      segments = [];
+      activeIdx = -1;
+      try {
+        if (engine === 'gemini') await runVideoGemini(); else await runVideo();
+      } catch (e) { console.error(e); }
+      /* the run functions report failure through the progress card instead of
+         throwing — success means the result card is showing with cues in it */
+      var ok = segments.length > 0 && !$('cardResult').classList.contains('hidden');
+      if (ok) {
+        item.status = 'done';
+        item.cues = segments.length;
+        item.srt = '﻿' + SrtTools.buildSrt(segments, maxCharsVal); /* ﻿ = BOM so players read it as UTF-8 */
+        okCount++;
+      } else {
+        item.status = 'error';
+      }
+      renderBatchList();
+      if (i < pending.length - 1) $('cardResult').classList.add('hidden');
+    }
+    batchRunning = false;
+    btn.disabled = false;
+    btn.textContent = 'အကုန်စမယ်';
+    renderBatchList();
+    toast('Batch ပြီးပါပြီ — အောင်မြင် ' + okCount + ' / ' + pending.length);
+  }
+  $('batchStart').addEventListener('click', runBatch);
+  $('batchDlAll').addEventListener('click', async function () {
+    var doneItems = batchQueue.filter(function (q) { return q.status === 'done' && q.srt; });
+    for (var i = 0; i < doneItems.length; i++) {
+      download(new Blob([doneItems[i].srt], { type: 'text/plain;charset=utf-8' }),
+        doneItems[i].file.name.replace(/\.[^.]+$/, '') + '.my.srt');
+      await new Promise(function (r) { setTimeout(r, 400); });
+    }
+    if (doneItems.length) toast('SRT ' + doneItems.length + ' ဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
+  });
+  $('batchClear').addEventListener('click', function () {
+    if (batchRunning) return;
+    batchQueue = [];
+    renderBatchList();
+    toast('တန်းစီ ရှင်းပြီးပါပြီ');
+  });
+  renderBatchList();
+
+  /* ---------- project save / restore (IndexedDB, this browser only) ---------- */
+  var srtTextCache = '';
+  var savedProjectSnapshot = null;
+  function idbOpen() {
+    return new Promise(function (res, rej) {
+      if (!('indexedDB' in window)) { rej(new Error('NO_IDB')); return; }
+      var rq = indexedDB.open('movie-translate-projects', 1);
+      rq.onupgradeneeded = function () { rq.result.createObjectStore('projects'); };
+      rq.onsuccess = function () { res(rq.result); };
+      rq.onerror = function () { rej(rq.error); };
+    });
+  }
+  async function idbOp(mode, fn) {
+    var db = await idbOpen();
+    try {
+      return await new Promise(function (res, rej) {
+        var tx = db.transaction('projects', mode);
+        var rq = fn(tx.objectStore('projects'));
+        rq.onsuccess = function () { res(rq.result); };
+        rq.onerror = function () { rej(rq.error); };
+      });
+    } finally {
+      try { db.close(); } catch (e) {}
+    }
+  }
+  var saveTimer = null;
+  function scheduleSave() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveProject, 800);
+  }
+  /* full project snapshot — subtitles + settings + video-edit (burn-in) settings.
+     The video file itself is never stored; only its name, for re-linking. */
+  async function collectProjectData() {
+    if (mode === 'srt' && srtFile && !srtTextCache) {
+      try { srtTextCache = await readFileText(srtFile); } catch (e) {}
+    }
+    return {
+      v: 2, savedAt: Date.now(), mode: mode, engine: engine,
+      srcLang: $('srcLang').value, maxChars: maxCharsVal,
+      glossary: $('glossaryText').value,
+      videoFileName: videoFile ? videoFile.name : '',
+      srtFileName: srtFile ? srtFile.name : '',
+      srtText: mode === 'srt' ? srtTextCache : '',
+      segments: segments.map(function (s) {
+        return { start: s.start, end: s.end, text: s.text || '', my: s.my || '', failed: !!s.failed };
+      }),
+      burn: { pos: burn.pos, off: burn.off, fontFrac: burn.fontFrac, color: burn.color, bg: burn.bg,
+        bgOp: burn.bgOp, bold: burn.bold, quality: burn.quality, ratio: burn.ratio, fill: burn.fill },
+      logoCfg: { corner: logo.corner, sizeFrac: logo.sizeFrac, op: logo.op }
+    };
+  }
+  async function saveProject() {
+    if (!segments.length) return;
+    try {
+      var data = await collectProjectData();
+      await idbOp('readwrite', function (st) { return st.put(data, 'current'); });
+      $('clearProjectBtn').classList.remove('hidden');
+    } catch (e) { /* IndexedDB unavailable (private mode etc.) — saving is best-effort */ }
+  }
+  function clearSavedProject() {
+    savedProjectSnapshot = null;
+    $('projBanner').classList.add('hidden');
+    $('clearProjectBtn').classList.add('hidden');
+    idbOp('readwrite', function (st) { return st.delete('current'); }).catch(function () {});
+  }
+  $('projDiscard').addEventListener('click', function () {
+    clearSavedProject();
+    toast('သိမ်းထားတဲ့ ပရောဂျက် ဖျက်ပြီးပါပြီ');
+  });
+  $('clearProjectBtn').addEventListener('click', function () {
+    clearSavedProject();
+    toast('သိမ်းထားတဲ့ ပရောဂျက် ဖျက်ပြီးပါပြီ');
+  });
+  $('projRestore').addEventListener('click', function () {
+    var p = savedProjectSnapshot;
+    if (!p) return;
+    $('projBanner').classList.add('hidden');
+    restoreProject(p);
+  });
+  function restoreProject(p) {
+    engine = (p.engine === 'local' || p.engine === 'microsoft' || p.engine === 'nllb') ? p.engine : 'gemini';
+    if (p.mode) setMode(p.mode); /* setMode also refreshes the settings UI */
+    refreshSettings();
+    if (p.srcLang) $('srcLang').value = p.srcLang;
+    if (p.maxChars) { $('maxChars').value = String(p.maxChars); maxCharsVal = p.maxChars; }
+    if (p.glossary != null) { $('glossaryText').value = p.glossary; saveGlossary(); }
+    segments = (p.segments || []).map(function (s) {
+      return { start: +s.start || 0, end: +s.end || 0, text: s.text || '', my: s.my || '', failed: !!s.failed };
+    });
+    coverageGapSec = 0;
+    /* video-edit settings saved with the project (v2 snapshots) */
+    if (p.burn) {
+      var b = p.burn;
+      if (b.pos) burn.pos = b.pos;
+      if (typeof b.off === 'number') burn.off = b.off;
+      if (typeof b.fontFrac === 'number') burn.fontFrac = b.fontFrac;
+      if (b.color) burn.color = b.color;
+      if (b.bg) burn.bg = b.bg;
+      if (typeof b.bgOp === 'number') burn.bgOp = b.bgOp;
+      if (typeof b.bold === 'boolean') burn.bold = b.bold;
+      if (b.quality) burn.quality = b.quality;
+      if (b.ratio) burn.ratio = b.ratio;
+      if (b.fill) burn.fill = b.fill;
+    }
+    if (p.logoCfg) {
+      if (p.logoCfg.corner) logo.corner = p.logoCfg.corner;
+      if (typeof p.logoCfg.sizeFrac === 'number') logo.sizeFrac = p.logoCfg.sizeFrac;
+      if (typeof p.logoCfg.op === 'number') logo.op = p.logoCfg.op;
+    }
+    if (p.burn || p.logoCfg) syncBurnControls();
+    showResult();
+    if (mode === 'video' && !videoFile) {
+      /* the file itself can't be stored — edit/download works now, and the
+         preview comes back as soon as the same video is picked again */
+      $('previewCol').classList.add('hidden');
+      updateVideoEmpty();
+      var rn = $('restoreNote');
+      rn.textContent = 'ပရောဂျက် ပြန်ဖွင့်ထားတယ် — ပြင် / ဒေါင်းလို့ ရတယ်။ Preview နဲ့ burn-in အတွက် ဗီဒီယိုဖိုင် ပြန်ရွေးပါ' +
+        (p.videoFileName ? ' (' + p.videoFileName + ')' : '') + '။';
+      rn.classList.remove('hidden');
+    }
+    toast('ပရောဂျက် ပြန်ဖွင့်ပြီးပါပြီ');
+  }
+  (async function checkSavedProject() {
+    try {
+      var p = await idbOp('readonly', function (st) { return st.get('current'); });
+      if (p && p.segments && p.segments.length) {
+        savedProjectSnapshot = p;
+        $('projInfo').textContent = new Date(p.savedAt).toLocaleString() +
+          ' · စာကြောင်း ' + p.segments.length + ' ကြောင်း' +
+          (p.videoFileName ? ' · ' + p.videoFileName : '') +
+          (p.srtFileName ? ' · ' + p.srtFileName : '');
+        $('projBanner').classList.remove('hidden');
+        $('clearProjectBtn').classList.remove('hidden');
+      }
+    } catch (e) { /* no saved project / IndexedDB unavailable */ }
+  })();
+
+  /* ---------- main tabs: Translate / Edit / Video / Projects ---------- */
+  var currentTab = 'translate';
+  var currentLocalId = null, currentCloudId = null;
+  function switchTab(name) {
+    currentTab = name;
+    var panels = { translate: 'panelTranslate', edit: 'panelEdit', video: 'panelVideo', projects: 'panelProjects' };
+    Object.keys(panels).forEach(function (k) { $(panels[k]).classList.toggle('hidden', k !== name); });
+    [['tabTranslate', 'translate'], ['tabEdit', 'edit'], ['tabVideo', 'video'], ['tabProjects', 'projects']].forEach(function (pr) {
+      $(pr[0]).setAttribute('aria-pressed', pr[1] === name ? 'true' : 'false');
+    });
+    if (name === 'edit') $('editEmpty').classList.toggle('hidden', !$('cardResult').classList.contains('hidden'));
+    if (name === 'video') { updateVideoEmpty(); applyRatioPreview(); }
+    if (name === 'projects') { refreshLocalList(); if (fbUser) refreshCloudList(); }
+  }
+  function updateVideoEmpty() {
+    var empty = $('previewCol').classList.contains('hidden') || !segments.length;
+    $('videoEmpty').classList.toggle('hidden', !empty);
+  }
+  $('tabTranslate').addEventListener('click', function () { switchTab('translate'); });
+  $('tabEdit').addEventListener('click', function () { switchTab('edit'); });
+  $('tabVideo').addEventListener('click', function () { switchTab('video'); });
+  $('tabProjects').addEventListener('click', function () { switchTab('projects'); });
+  /* the video preview + burn-in editor live in the Video tab now */
+  $('videoSlot').appendChild($('previewCol'));
+  $('previewCol').classList.add('hidden');
+  var resultGridEl = document.querySelector('.resultgrid');
+  if (resultGridEl) resultGridEl.classList.add('solo');
+  updateVideoEmpty();
+
+  /* ---------- named projects on this device (IndexedDB) ---------- */
+  function newProjectId() { return 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function defaultProjName() {
+    var n = baseName();
+    return n && n !== 'subtitles' ? n : 'ပရောဂျက် အသစ်';
+  }
+  function projMeta(p) {
+    return new Date(p.savedAt || Date.now()).toLocaleString() +
+      ' · စာကြောင်း ' + (p.segments ? p.segments.length : 0) + ' ကြောင်း' +
+      (p.videoFileName ? ' · ' + p.videoFileName : '') +
+      (p.srtFileName ? ' · ' + p.srtFileName : '');
+  }
+  function projectItemEl(name, meta, onOpen, onDelete) {
+    var d = document.createElement('div');
+    d.className = 'qitem';
+    var mid = document.createElement('div');
+    mid.className = 'sp';
+    var n = document.createElement('div');
+    n.className = 'qn';
+    n.textContent = name;
+    var s = document.createElement('div');
+    s.className = 'qs';
+    s.textContent = meta;
+    mid.appendChild(n);
+    mid.appendChild(s);
+    var ob = document.createElement('button');
+    ob.className = 'btn small';
+    ob.textContent = 'ဖွင့်မယ်';
+    ob.addEventListener('click', onOpen);
+    var db = document.createElement('button');
+    db.className = 'btn small danger-ghost';
+    db.textContent = 'ဖျက်မယ်';
+    var armTimer = null;
+    db.addEventListener('click', function () {
+      if (db.dataset.armed !== '1') {
+        db.dataset.armed = '1';
+        db.textContent = 'သေချာလား?';
+        clearTimeout(armTimer);
+        armTimer = setTimeout(function () { db.dataset.armed = ''; db.textContent = 'ဖျက်မယ်'; }, 3000);
+        return;
+      }
+      clearTimeout(armTimer);
+      onDelete();
+    });
+    d.appendChild(mid);
+    d.appendChild(ob);
+    d.appendChild(db);
+    return d;
+  }
+  async function idbNamedProjects() {
+    var db = await idbOpen();
+    try {
+      return await new Promise(function (res, rej) {
+        var out = [];
+        var rq = db.transaction('projects', 'readonly').objectStore('projects').openCursor();
+        rq.onsuccess = function () {
+          var cur = rq.result;
+          if (cur) {
+            if (String(cur.key).indexOf('named:') === 0) out.push({ id: String(cur.key).slice(6), data: cur.value });
+            cur.continue();
+          } else res(out);
+        };
+        rq.onerror = function () { rej(rq.error); };
+      });
+    } finally {
+      try { db.close(); } catch (e) {}
+    }
+  }
+  async function refreshLocalList() {
+    var box = $('localProjectList');
+    if (!box) return;
+    box.innerHTML = '';
+    var items = [];
+    try { items = await idbNamedProjects(); } catch (e) {}
+    items.sort(function (a, b) { return (b.data.savedAt || 0) - (a.data.savedAt || 0); });
+    if (!items.length) {
+      var e0 = document.createElement('div');
+      e0.className = 'empty';
+      e0.textContent = 'သိမ်းထားတဲ့ ပရောဂျက် မရှိသေးပါဘူး';
+      box.appendChild(e0);
+      return;
+    }
+    items.forEach(function (it) {
+      box.appendChild(projectItemEl(it.data.name || 'အမည်မရှိ', projMeta(it.data), function () {
+        currentLocalId = it.id;
+        currentCloudId = null;
+        $('projName').value = it.data.name || '';
+        restoreProject(it.data);
+      }, async function () {
+        try { await idbOp('readwrite', function (st) { return st.delete('named:' + it.id); }); } catch (e) {}
+        if (currentLocalId === it.id) currentLocalId = null;
+        refreshLocalList();
+        toast('ပရောဂျက် ဖျက်ပြီးပါပြီ');
+      }));
+    });
+  }
+  $('saveLocalBtn').addEventListener('click', async function () {
+    if (!guardSegments()) return;
+    var btn = $('saveLocalBtn');
+    btn.disabled = true;
+    try {
+      var data = await collectProjectData();
+      data.name = $('projName').value.trim() || defaultProjName();
+      var id = currentLocalId || newProjectId();
+      data.id = id;
+      await idbOp('readwrite', function (st) { return st.put(data, 'named:' + id); });
+      currentLocalId = id;
+      $('projName').value = data.name;
+      toast('ဒီစက်ထဲ သိမ်းပြီးပါပြီ — ' + data.name);
+      refreshLocalList();
+    } catch (e) {
+      toast('သိမ်းမရပါဘူး — browser storage ပြည့်နေနိုင်တယ်');
+    }
+    btn.disabled = false;
+  });
+
+  /* ---------- cloud projects (Firestore, user's own Firebase project) ---------- */
+  /* Built-in config for the user's drama-translate-tools project, wired in
+     directly: Firestore connects automatically on page load — there is no
+     config box and nothing to paste. A Firebase web config is a public
+     project identifier, not a secret — it ships in every web app that
+     uses Firebase. */
+  var BUILTIN_FB_CONFIG = {
+    apiKey: "AIzaSyCMiGhiFQQEl3dB2Xdl4LRoTgh7ASPUAcY",
+    authDomain: "drama-translate-tools.firebaseapp.com",
+    projectId: "drama-translate-tools",
+    storageBucket: "drama-translate-tools.firebasestorage.app",
+    messagingSenderId: "106715117200",
+    appId: "1:106715117200:web:fdd9746d168dd6ae94ca15",
+    measurementId: "G-N5C251XSRF"
+  };
+  var fbApp = null, fbAuth = null, fbDb = null, fbUser = null, fbState = 'idle';
+  function loadScriptOnce(src) {
+    return new Promise(function (res, rej) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = function () { res(); };
+      s.onerror = function () { rej(new Error('LOAD_FAIL')); };
+      document.head.appendChild(s);
+    });
+  }
+  function updateCloudUI() {
+    var st = $('cloudStatus');
+    var ready = !!fbApp;
+    $('fbAuthRow').classList.toggle('hidden', !ready);
+    $('fbRetryRow').classList.toggle('hidden', ready || fbState !== 'failed');
+    if (ready) {
+      $('fbSignIn').classList.toggle('hidden', !!fbUser);
+      $('fbSignOut').classList.toggle('hidden', !fbUser);
+    }
+    if (!ready) st.textContent = fbState === 'failed'
+      ? 'Cloud ချိတ်မရပါဘူး — အင်တာနက် စစ်ပြီး "ပြန်ချိတ်မယ်" နှိပ်ပါ'
+      : 'Cloud ချိတ်နေပါတယ်…';
+    else if (fbUser) st.textContent = 'Sign in ဝင်ထားသည် — ' + (fbUser.email || '') + ' · Cloud project တွေ အောက်မှာ ပြထားတယ်';
+    else st.textContent = 'Cloud ချိတ်ပြီးပါပြီ — Google နဲ့ sign in ဝင်ရင် project တွေ cloud မှာ သိမ်းလို့ရပြီ';
+    if (!fbUser) $('cloudProjectList').innerHTML = '';
+  }
+  async function fbEnsure(opts) {
+    opts = opts || {};
+    if (fbApp) return true;
+    fbState = 'connecting';
+    updateCloudUI();
+    try {
+      if (!window.firebase) {
+        var base = 'https://www.gstatic.com/firebasejs/10.12.2/';
+        await loadScriptOnce(base + 'firebase-app-compat.js');
+        await loadScriptOnce(base + 'firebase-auth-compat.js');
+        await loadScriptOnce(base + 'firebase-firestore-compat.js');
+      }
+      fbApp = null;
+      for (var i = 0; i < firebase.apps.length; i++) {
+        if (firebase.apps[i].name === 'movieTranslate') { fbApp = firebase.apps[i]; break; }
+      }
+      if (!fbApp) fbApp = firebase.initializeApp(BUILTIN_FB_CONFIG, 'movieTranslate');
+      fbAuth = firebase.auth(fbApp);
+      fbDb = firebase.firestore(fbApp);
+      fbState = 'ready';
+      fbAuth.getRedirectResult().catch(function (e) { console.error(e); toast(fbSignInMessage(e)); });
+      fbAuth.onAuthStateChanged(function (u) {
+        fbUser = u;
+        updateCloudUI();
+        if (u) refreshCloudList();
+      });
+      updateCloudUI();
+      if (opts.toast) toast('Cloud ချိတ်ပြီးပါပြီ');
+      return true;
+    } catch (e) {
+      console.error(e);
+      fbApp = null; fbAuth = null; fbDb = null;
+      fbState = 'failed';
+      updateCloudUI();
+      if (opts.toast) toast('Cloud ချိတ်မရပါဘူး — အင်တာနက် ပြန်စစ်ပါ');
+      return false;
+    }
+  }
+  $('fbRetry').addEventListener('click', function () { fbEnsure({ toast: true }); });
+  function fbSignInMessage(e) {
+    var c = (e && e.code) || '';
+    var host = location.hostname || location.protocol;
+    if (c === 'auth/unauthorized-domain') return 'ဒီ website (' + host + ') ကို Firebase Console → Authentication → Settings → Authorized domains ထဲ ထည့်ပါ';
+    if (c === 'auth/operation-not-allowed') return 'Firebase Console → Authentication → Sign-in method မှာ Google ကို ဖွင့်ပါ (Enable)';
+    if (c === 'auth/popup-closed-by-user' || c === 'auth/cancelled-popup-request') return 'Sign in ကို ပယ်ဖျက်လိုက်တယ် (popup ပိတ်သွားတယ်) — ပြန်စမ်းပါ';
+    if (c === 'auth/network-request-failed') return 'ကွန်ရက်ချိတ်မရပါဘူး — VPN ဖွင့်ထားလား စစ်ပါ (Google/Firebase ကို VPN မပါရင် မရနိုင်ပါ)';
+    if (c === 'auth/operation-not-supported-in-this-environment' || c === 'auth/web-storage-unsupported')
+      return 'ဒီ browser / ဖွင့်ပုံနဲ့ sign in မရပါဘူး — https website အဖြစ်ဖွင့်ပါ၊ Telegram ထဲက browser မဟုတ်ဘဲ Chrome မှာ ဖွင့်ပါ';
+    return 'Sign in မရပါဘူး (' + (c || (e && e.message) || 'unknown') + ') — Chrome မှာ ဖွင့်ပြီး popup ခွင့်ပြုကာ ပြန်စမ်းပါ';
+  }
+  $('fbSignIn').addEventListener('click', async function () {
+    if (location.protocol !== 'http:' && location.protocol !== 'https:') {
+      toast('ဖိုင်ကို တိုက်ရိုက်ဖွင့်ထားလို့ Google sign in မရပါဘူး — GitHub Pages လို https website ပေါ်တင်ပြီး ဖွင့်ပါ');
+      return;
+    }
+    if (!fbApp && !(await fbEnsure())) return;
+    var provider = new firebase.auth.GoogleAuthProvider();
+    try {
+      await fbAuth.signInWithPopup(provider);
+    } catch (e) {
+      console.error(e);
+      if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment')) {
+        try { await fbAuth.signInWithRedirect(provider); return; } catch (e2) { console.error(e2); e = e2; }
+      }
+      toast(fbSignInMessage(e));
+    }
+  });
+  $('fbSignOut').addEventListener('click', function () { if (fbAuth) fbAuth.signOut(); });
+  function cloudCol() {
+    return fbDb.collection('users').doc(fbUser.uid).collection('projects');
+  }
+  $('saveCloudBtn').addEventListener('click', async function () {
+    if (!guardSegments()) return;
+    if (!fbApp && !(await fbEnsure())) return;
+    if (!fbUser) { toast('အရင် Google နဲ့ sign in ဝင်ပါ'); switchTab('projects'); return; }
+    var btn = $('saveCloudBtn');
+    btn.disabled = true;
+    try {
+      var data = await collectProjectData();
+      data.name = $('projName').value.trim() || defaultProjName();
+      var id = currentCloudId || newProjectId();
+      data.id = id;
+      /* Firestore caps one document at 1 MiB — measure the real payload in
+         UTF-8 bytes (Burmese text is 3 bytes per character, so a character
+         count would badly under-report the size). */
+      var docPayload = JSON.stringify({ name: data.name, savedAt: data.savedAt, data: JSON.stringify(data) });
+      var docBytes = docPayload.length;
+      try { docBytes = new Blob([docPayload]).size; } catch (e) {}
+      if (docBytes > 1000000) {
+        toast('Project အရမ်းကြီးနေတယ် (' + Math.round(docBytes / 1024) + ' KB) — Cloud limit 1 MB ကျော်လို့ ဒီစက်ထဲပဲ သိမ်းပါ');
+        btn.disabled = false;
+        return;
+      }
+      await cloudCol().doc(id).set({ name: data.name, savedAt: data.savedAt, data: JSON.stringify(data) });
+      currentCloudId = id;
+      $('projName').value = data.name;
+      toast('Cloud မှာ သိမ်းပြီးပါပြီ — ' + data.name);
+      refreshCloudList();
+    } catch (e) {
+      console.error(e);
+      toast('Cloud သိမ်းမရပါဘူး — အင်တာနက် နဲ့ Firestore rules စစ်ပါ');
+    }
+    btn.disabled = false;
+  });
+  async function refreshCloudList() {
+    var box = $('cloudProjectList');
+    if (!box || !fbUser || !fbDb) return;
+    box.innerHTML = '';
+    var load = document.createElement('div');
+    load.className = 'empty';
+    load.textContent = 'Cloud project တွေ ဖတ်နေပါတယ်…';
+    box.appendChild(load);
+    try {
+      var snap = await cloudCol().get();
+      box.innerHTML = '';
+      var docs = [];
+      snap.forEach(function (d) { docs.push({ id: d.id, rec: d.data() }); });
+      docs.sort(function (a, b) { return (b.rec.savedAt || 0) - (a.rec.savedAt || 0); });
+      if (!docs.length) {
+        var e0 = document.createElement('div');
+        e0.className = 'empty';
+        e0.textContent = 'Cloud မှာ ပရောဂျက် မရှိသေးပါဘူး';
+        box.appendChild(e0);
+        return;
+      }
+      docs.forEach(function (dc) {
+        var p = null;
+        try { p = JSON.parse(dc.rec.data || ''); } catch (e) {}
+        var meta = p ? projMeta(p) : new Date(dc.rec.savedAt || Date.now()).toLocaleString();
+        box.appendChild(projectItemEl(dc.rec.name || (p && p.name) || 'အမည်မရှိ', meta, function () {
+          if (!p) { toast('Project data ဖတ်မရပါဘူး'); return; }
+          currentCloudId = dc.id;
+          currentLocalId = null;
+          $('projName').value = p.name || dc.rec.name || '';
+          restoreProject(p);
+        }, async function () {
+          try { await cloudCol().doc(dc.id).delete(); } catch (e) {}
+          if (currentCloudId === dc.id) currentCloudId = null;
+          refreshCloudList();
+          toast('Cloud project ဖျက်ပြီးပါပြီ');
+        }));
+      });
+    } catch (e) {
+      console.error(e);
+      box.innerHTML = '';
+      var e1 = document.createElement('div');
+      e1.className = 'empty';
+      e1.textContent = 'Cloud project တွေ ဖတ်မရပါဘူး — Firestore rules ထည့်ပြီးပြီလား စစ်ပါ';
+      box.appendChild(e1);
+    }
+  }
+  /* Connect Firestore automatically on load with the built-in config —
+     no config box, no paste step. If it fails (e.g. no internet), the
+     status line explains and a retry button appears. */
+  try { localStorage.removeItem('mt_fb_config'); } catch (e) {}
+  fbEnsure();
+
+  /* ---------- downloads / actions ---------- */
+  function collectSrt() { return SrtTools.buildSrt(segments, maxCharsVal); }
+  function collectVtt() { return SrtTools.buildVtt(segments, maxCharsVal); }
+  function baseName() {
+    var f = mode === 'video' ? videoFile : srtFile;
+    return f ? f.name.replace(/\.[^.]+$/, '') : 'subtitles';
+  }
+  function download(blob, name) {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+  }
+  function guardSegments() {
+    if (!segments.length) { toast('စာကြောင်း မရှိသေးပါဘူး'); return false; }
+    return true;
+  }
+  $('dlSrt').addEventListener('click', function () {
+    if (!guardSegments()) return;
+    download(new Blob(['\uFEFF' + collectSrt()], { type: 'text/plain;charset=utf-8' }), baseName() + '.my.srt');
+    toast('SRT ဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
+  });
+  $('dlVtt').addEventListener('click', function () {
+    if (!guardSegments()) return;
+    download(new Blob(['\uFEFF' + collectVtt()], { type: 'text/vtt;charset=utf-8' }), baseName() + '.my.vtt');
+    toast('VTT ဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
+  });
+  $('dlTxt').addEventListener('click', function () {
+    if (!guardSegments()) return;
+    var txt = segments.map(function (s, i) { return (i + 1) + '. ' + (s.my || ''); }).join('\n\n');
+    download(new Blob(['\uFEFF' + txt], { type: 'text/plain;charset=utf-8' }), baseName() + '.my.txt');
+    toast('စာသားဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
+  });
+  $('copySrt').addEventListener('click', async function () {
+    if (!guardSegments()) return;
+    var text = collectSrt();
+    try {
+      await navigator.clipboard.writeText(text);
+      toast('SRT ကော်ပီယူပြီးပါပြီ');
+    } catch (e) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (_) {}
+      ta.remove();
+      toast(ok ? 'SRT ကော်ပီယူပြီးပါပြီ' : 'ကော်ပီ မရပါဘူး — SRT ဒေါင်းလုဒ်ဆွဲလိုက်ပါ');
+    }
+  });
+  $('retryFailed').addEventListener('click', async function () {
+    var failedSegs = segments.filter(function (s) { return s.failed; });
+    if (!failedSegs.length) return;
+    var btn = $('retryFailed');
+    btn.disabled = true;
+    var old = btn.innerHTML;
+    btn.innerHTML = 'ပြန်ဆိုနေပါတယ်… (' + failedSegs.length + ' ကြောင်း)';
+    try { await translateSegmentsAuto(failedSegs, GT_SL[$('srcLang').value] || 'auto', null); }
+    catch (e) { toast(e.message || 'ပြန်ဆိုတာ မအောင်မြင်ပါဘူး'); }
+    btn.disabled = false;
+    btn.innerHTML = old;
+    renderEditor();
+    updateStats();
+    toast(failedCount() ? 'တချို့ကြောင်း မအောင်မြင်သေးပါဘူး' : 'အားလုံး ပြန်ဆိုပြီးပါပြီ');
+  });
+  $('applyShift').addEventListener('click', function () {
+    if (!guardSegments()) return;
+    var shift = parseFloat($('shiftSec').value);
+    if (!isFinite(shift) || shift === 0) { toast('ရွှေ့မယ့် စက္ကန့် ပမာဏ ထည့်ပေးပါ (ဥပမာ 1.5 သို့ -1.5)'); return; }
+    segments.forEach(function (s) {
+      s.start = Math.max(0, s.start + shift);
+      s.end = Math.max(s.start + 0.1, s.end + shift);
+    });
+    $('shiftSec').value = '0';
+    activeIdx = -1;
+    renderEditor();
+    toast('စာတန်းအချိန်အားလုံး ' + shift + ' စက္ကန့် ရွှေ့ပြီးပါပြီ');
+  });
+  $('addSeg').addEventListener('click', function () {
+    var lastEnd = segments.length ? segments[segments.length - 1].end : 0;
+    segments.push({ start: lastEnd, end: lastEnd + 2, text: '', my: '', failed: false });
+    renderEditor();
+    updateStats();
+    var kids = $('segList').children;
+    if (kids.length) kids[kids.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+  var resetArmTimer = null;
+  $('resetBtn').addEventListener('click', function () {
+    var btn = $('resetBtn');
+    if (btn.dataset.armed !== '1') {
+      btn.dataset.armed = '1';
+      btn.textContent = 'သေချာပါသလား — အကုန် ပျက်သွားပါမယ်၊ ထပ်နှိပ်ပါ';
+      clearTimeout(resetArmTimer);
+      resetArmTimer = setTimeout(function () {
+        btn.dataset.armed = '';
+        btn.textContent = 'အသစ်ကနေ ပြန်စမယ်';
+      }, 4000);
+      return;
+    }
+    clearTimeout(resetArmTimer);
+    btn.dataset.armed = '';
+    btn.textContent = 'အသစ်ကနေ ပြန်စမယ်';
+    segments = [];
+    activeIdx = -1;
+    clearSavedProject();
+    $('cardResult').classList.add('hidden');
+    $('cardProg').classList.add('hidden');
+    var v = $('preview');
+    v.removeAttribute('src');
+    v.load();
+    var bgv3 = $('previewBg');
+    bgv3.removeAttribute('src');
+    bgv3.load();
+    if (objUrl) { URL.revokeObjectURL(objUrl); objUrl = null; }
+    currentLocalId = null; currentCloudId = null;
+    $('previewCol').classList.add('hidden');
+    updateVideoEmpty();
+    switchTab('translate');
+    $('cardInput').scrollIntoView({ behavior: 'smooth' });
+    toast('အသစ်ကနေ ပြန်စလို့ ရပါပြီ');
+  });
+})();
+</script>
+<script>
+/* ===== Click pop motion (visual only — no app logic) ===== */
+(function () {
+  'use strict';
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+
+  /* gold ring burst at every tap/click point */
+  document.addEventListener('pointerdown', function (e) {
+    var fx = document.createElement('span');
+    fx.className = 'clickfx';
+    fx.style.left = e.clientX + 'px';
+    fx.style.top = e.clientY + 'px';
+    document.body.appendChild(fx);
+    setTimeout(function () { fx.remove(); }, 500);
+  }, { passive: true });
+
+  /* ripple inside primary buttons */
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('.btn') : null;
+    if (!btn) return;
+    var r = btn.getBoundingClientRect();
+    var d = Math.max(r.width, r.height);
+    var rip = document.createElement('span');
+    rip.className = 'ripple';
+    rip.style.width = rip.style.height = d + 'px';
+    rip.style.left = (e.clientX - r.left - d / 2) + 'px';
+    rip.style.top = (e.clientY - r.top - d / 2) + 'px';
+    btn.appendChild(rip);
+    setTimeout(function () { rip.remove(); }, 550);
+  });
+
+  /* pop-in whenever a hidden panel/card becomes visible */
+  function popIn(el) {
+    el.classList.remove('pop-in');
+    void el.offsetWidth;
+    el.classList.add('pop-in');
+    el.addEventListener('animationend', function h() {
+      el.classList.remove('pop-in');
+      el.removeEventListener('animationend', h);
+    });
+  }
+  if (window.MutationObserver) {
+    var mo = new MutationObserver(function (muts) {
+      for (var i = 0; i < muts.length; i++) {
+        var m = muts[i], t = m.target;
+        if (m.attributeName === 'class' && m.oldValue &&
+            m.oldValue.split(/\s+/).indexOf('hidden') > -1 &&
+            !t.classList.contains('hidden')) popIn(t);
+      }
+    });
+    mo.observe(document.body, { attributes: true, attributeOldValue: true, attributeFilter: ['class'], subtree: true });
+  }
+})();
+</script>
+<script>
+/* data-i18n-restored: language (EN / မြန်မာ) + theme (light / dark) controls,
+   restored from the user's own file build; choices persist in localStorage.
+   Scope note (same as the file build): static UI text only — progress / toast
+   messages stay Burmese. */
+(function () {
+  var D = {"3031081012":"Nothing to edit yet — translate something in the Translate tab first, or open a project from the Projects tab.","1601612132":"Translate","1985745151":"Edit","3957733144":"Video","1554379587":"Projects","2603559262":"No video yet — translate a video in the Translate tab first, or open a project from the Projects tab.","3685363732":"Save on this device","1267441934":"Save to cloud","2521813395":"Sign in with Google","2322610756":"Connecting to cloud…","1897864038":"Reconnect","3641170596":"Project name","3317049154":"Edit video","1132575235":"Projects on this device","524896190":"Firestore security rules (one-time setup)","334448353":"Save with a name and you can reopen the project anytime and keep editing. The video file itself cannot be saved — re-pick it when you reopen (all subtitles and video settings come back).","3526770480":"Paste these rules in Firebase Console → Firestore Database → Rules — so only you can open, save and delete your own projects.","4341720":"Edit text and times here before downloading. Times can be seconds (65.5) or 0:01:05.5.","17725353":"Top left","28241691":"Bottom left","114364707":"9:16 = TikTok/Reels · 16:9 = YouTube · 1:1 / 4:5 = posts.","115455921":"Working…","223360000":"Embeds the subtitles directly into the video as a new file. Changes show in the preview instantly.","290194470":"Add a video / audio file (or an SRT file) and get Burmese subtitles (.srt / .vtt). Choose from 4 engines.","330712616":"Translates existing subtitles into Burmese — timings stay the same","332362665":"Each file starts automatically after the previous one finishes","333014165":"Video quality","333842618":"Advanced settings (line length, glossary)","335412626":"Save glossary","370265990":"Source language","389339989":"Download SRT","402358684":"Gemini 3.5 Flash-Lite — fastest","428803271":"Note — the video is played back in real time to export, so it takes as long as the video. Don't close the tab while it runs.","461568808":"Gemini model","461847679":"Transcribe from video","463273049":"Replace with","494313585":"Match MaxFlix red theme","503776586":"Edit subtitles","523116060":"Logo position","547470333":"Tap to choose a file (or drag it here)","606170203":"Start over","681388196":"Add new line","716859726":"Burn subtitles into video","752977529":"Custom font (.ttf / .otf)","790240776":"Bold text — on","807419400":"Original size — sharpest","877084967":"Preparing…","906863735":"Any video / audio file works: mp4, webm, mov, mp3, wav…","1018187751":"These names are used exactly as written in every translation — keeps names consistent in long stories. \"Auto-extract\" needs Gemini + a key.","1046684286":"Plain text (.txt)","1066402253":"Fill empty space","1066736260":"Wait between requests — 7 seconds greatly reduces hitting 429 (rate limit). 0 = no wait.","1227587218":"Detailed log","1327961265":"Auto-detect","1382859702":"No key or account needed. The first time, a model (~1 GB) must be downloaded once. Pick the exact source language (\"Auto-detect\" assumes Chinese).","1419261016":"Subtitle position","1449089048":"Retry failed lines","1479343753":"Black bars","1485812119":"Top right","1486566932":"Choose a logo image","1493394021":"Bottom right","1526777835":"Delete","1572071805":"Logo opacity","1605134115":"Auto-fix timing","1624115005":"Choose a font from your device","1640445698":"Download VTT (for web players)","1651150440":"Show problem lines only","1698560044":"In Gemini mode, content is sent to Google's servers. If you hit 429, it waits and retries automatically.","1725804443":"NLLB — on-device (no key)","1788602044":"Text outline — off","1878838907":"Gemini 3.1 Pro — most accurate (can be slow)","1882376159":"English","1932084483":"Add many files at once","1933781368":"Middle","1934859853":"Logo / watermark image","1938454817":"3 lines","2014564135":"Find next","2057429891":"Small — most accurate, for computers","2070432994":"Subtitles appear over the video when you play it.","2110056767":"Text color","2124619084":"Blur = blurred background · Black = letterbox bars · Crop = fill the frame, no bars.","2146240607":"A saved project was found —","2160603241":"The settings above apply to every file. Don't close the tab while it runs, and keep the screen on.","2183021866":"Use + if subtitles are late, − if early (e.g. 1.5 = 1.5 s later).","2263692363":"1 — Choose a file","2298645617":"create a \"Translator\" resource (F0 — free) and copy the Key and Region from \"Keys and Endpoint\". The key is never stored — it disappears when you close the tab.","2299392371":"Fill (crop)","2312450572":"Text is sent to Microsoft's servers for translation (audio stays on your device). F0 gives 2M free characters per month.","2317242879":"Copy SRT","2393555403":"Auto-extract names with Gemini","2456849762":"Shift","2461323583":"Make Burmese subtitles (SRT) from a video","2466517141":"Shift all subtitle times (seconds)","2487191186":"Clear queue","2496334195":"Move up / down","2529416285":"No logo yet. A PNG with a transparent background looks best.","2557151992":"Background color","2750716940":"2 lines (recommended)","2800069030":"Done — your subtitles are ready","2815737957":"Blur","2841272867":"Delete saved project","2844312431":"Replace all","3026275844":"1080p — sharp","3047403090":"Use the default font again","3082888572":"Long subtitles are split into timed parts. On portrait video, lines use at most 24 characters.","3130503681":"Max characters per subtitle line","3156441521":"Tap to choose a .srt / .vtt file (or drag it here)","3173007496":"⏱️ Wait between requests — Pacing (seconds)","3176134745":"Whisper — on-device (free)","3177674021":"Tiny — fastest, good for phones","3180056074":". Continue from there?","3181309630":"Max lines per subtitle","3185226000":"Thai","3203877059":"Currently using — Noto Sans Myanmar (default). A custom font only lasts while this tab stays open.","3225041020":"Continue","3253251343":"Gemini 3.8 Flash — fast + accurate (recommended)","3294018664":"Stop","3304258546":"Background opacity","3315872697":"Logo size","3377435078":"No key yet? Get one at","3426268121":"Start all","3447233304":"Remove logo","3452261499":"Burmese","3466128689":"Original","3494138020":"Korean","3531658975":"Character names / glossary","3560139175":"The first time, a model must be downloaded (internet required). Transcription runs on your device — files never leave it.","3561429392":"Font size","3626807071":"720p — fast","3639605806":"Start","3684965809":"Top","3686350595":"Bottom","3686539937":"— free. The key is never stored; it disappears when you close the tab.","3694515661":"Download all finished SRTs","3713273659":"AI model (transcription accuracy)","3727934151":"Japanese","3733779531":"Chinese","3769088475":"Everything stays on your device — unlimited. May be slow on phones and not as accurate as Gemini.","3820379712":"Higher quality means bigger files and longer waits. If the original is smaller, it keeps the original size.","3934924915":"Whisper / NLLB — everything stays on your device. Gemini / Microsoft — text is sent to their servers. Review the text before downloading.","4019014899":"Find (in Burmese subtitles)","4081033141":"TikTok/Reels safe margins — off","4100364258":"Translate an SRT file","4107242087":"Batch queue (many files)","4118571927":"2 — Settings","4172952895":"1:1 · square","4178067535":"Base — balanced speed and accuracy","4229543843":"1 line","4259696205":"Transcription / translation engine","4278015529":"Video aspect ratio"}, A = {"4219366211":"e.g. Drama — Episode 1","162983743":"Key from Azure Portal","822106510":"One pair per line — original name = Burmese name\ne.g.\n林浩 = လင်းဟောက်\n沈清欢 = ရှန်ချင်းဟွမ်","4294427544":"e.g. southeastasia"}, MYR = /[\u1000-\u109f]/;
+  function H(s) { s = s.replace(/\s+/g, ' ').trim(); var v = 5381; for (var i = 0; i < s.length; i++) v = ((v * 33) ^ s.charCodeAt(i)) >>> 0; return v; }
+  function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  var root = document.documentElement, langBtn = document.getElementById('langBtn'), themeBtn = document.getElementById('themeBtn');
+  if (!langBtn || !themeBtn) return;
+  /* ----- language: static UI text only; progress / toast messages stay Burmese ----- */
+  var nodes = [], attrs = [];
+  var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false), n;
+  while ((n = w.nextNode())) {
+    var pn = n.parentNode && n.parentNode.nodeName;
+    if (pn !== 'SCRIPT' && pn !== 'STYLE' && MYR.test(n.nodeValue)) nodes.push({ n: n, my: n.nodeValue });
+  }
+  document.querySelectorAll('[placeholder]').forEach(function (el) { var v = el.getAttribute('placeholder'); if (MYR.test(v)) attrs.push({ el: el, my: v }); });
+  function setLang(l) {
+    nodes.forEach(function (o) {
+      if (!o.n.parentNode) return;
+      var en = D[H(o.my)];
+      if (l === 'en' && en !== undefined) { var m = o.my.match(/^(\s*)[\s\S]*?(\s*)$/); o.n.nodeValue = m[1] + en + m[2]; }
+      else o.n.nodeValue = o.my;
+    });
+    attrs.forEach(function (o) { var en = A[H(o.my)]; o.el.setAttribute('placeholder', (l === 'en' && en !== undefined) ? en : o.my); });
+    root.lang = l === 'en' ? 'en' : 'my';
+    if (window.__mtRefreshSettings) window.__mtRefreshSettings();
+    langBtn.textContent = l === 'en' ? '\u1019\u103C\u1014\u103A\u1019\u102C' : 'EN';
+    set('mt_lang', l);
+  }
+  langBtn.addEventListener('click', function () { setLang(get('mt_lang') === 'en' ? 'my' : 'en'); });
+  if (get('mt_lang') === 'en') setLang('en');
+  /* ----- theme ----- */
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  function eff() { return root.getAttribute('data-theme') || (mq.matches ? 'dark' : 'light'); }
+  function paint() { var d = eff() === 'dark'; themeBtn.innerHTML = d ? '&#9728;' : '&#9790;'; themeBtn.setAttribute('aria-label', d ? 'Switch to light mode' : 'Switch to dark mode'); }
+  themeBtn.addEventListener('click', function () { var t = eff() === 'dark' ? 'light' : 'dark'; root.setAttribute('data-theme', t); set('mt_theme', t); paint(); });
+  if (mq.addEventListener) mq.addEventListener('change', paint);
+  paint();
+})();
+</script>
+</body>
+</html>
