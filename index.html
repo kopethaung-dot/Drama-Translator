@@ -13,26 +13,38 @@
 <style>
 :root{
   color-scheme: light;
-  --bg:#f2f3f5; --surface:#ffffff; --surface2:#eceef1; --ink:#17191d; --mut:#5b636f;
-  --line:#dbe0e7; --acc:#b8860b; --acc-dark:#8f6a08; --acc-soft:#faf1da; --acc-ink:#fffaf0;
-  --blue:#1f6feb; --ok:#177245; --warn-bg:#fdf4e0; --warn-line:#e3c078; --warn-ink:#7a5410;
-  --err:#c81e1e; --shadow:0 1px 3px rgba(16,20,28,.08),0 4px 14px rgba(16,20,28,.05);
+  --bg:linear-gradient(155deg,#b9d2ff 0%,#dcefff 32%,#d6f5e4 68%,#a9ecc4 100%);
+  --surface:rgba(255,255,255,.62); --surface2:rgba(255,255,255,.42); --ink:#0b1b33; --mut:#42597a;
+  --line:rgba(23,74,140,.18); --acc:#0e9f7a; --acc-dark:#0b7a5e; --acc-soft:rgba(196,242,222,.55); --acc-ink:#ffffff;
+  --blue:#0b63d8; --ok:#12805c; --warn-bg:rgba(253,244,224,.85); --warn-line:#e3c078; --warn-ink:#7a5410;
+  --err:#c81e1e; --shadow:0 8px 30px rgba(9,45,105,.14),0 2px 8px rgba(9,45,105,.08);
+  --grad:linear-gradient(135deg,#0a3fa8 0%,#0e8fa8 48%,#4fe3a1 100%);
+  --grad-hover:linear-gradient(135deg,#083382 0%,#0b7a8f 48%,#35cc88 100%);
+  --glass-brd:rgba(255,255,255,.6);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     color-scheme: dark;
-    --bg:#0e0f12; --surface:#171a1f; --surface2:#21252d; --ink:#eceef2; --mut:#9aa3af;
-    --line:#2b303a; --acc:#d4af37; --acc-dark:#b8962e; --acc-soft:#2e2410; --acc-ink:#171204;
-    --blue:#4d94ff; --ok:#3fb27f; --warn-bg:#2c2110; --warn-line:#6b4a1f; --warn-ink:#f0c674;
-    --err:#ff7b7b; --shadow:0 1px 3px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3);
+    --bg:linear-gradient(160deg,#020d24 0%,#06264f 34%,#063f45 66%,#07553c 100%);
+    --surface:rgba(13,26,48,.55); --surface2:rgba(255,255,255,.08); --ink:#eef4ff; --mut:#a7b8d4;
+    --line:rgba(160,200,255,.2); --acc:#3fd9a4; --acc-dark:#2bb885; --acc-soft:rgba(18,84,66,.5); --acc-ink:#ffffff;
+    --blue:#5eb2ff; --ok:#3fd9a4; --warn-bg:rgba(44,33,16,.82); --warn-line:#6b4a1f; --warn-ink:#f0c674;
+    --err:#ff8a8a; --shadow:0 8px 30px rgba(0,0,0,.5),0 2px 8px rgba(0,0,0,.35);
+    --grad:linear-gradient(135deg,#1a63e8 0%,#12a5b8 48%,#3fe39b 100%);
+    --grad-hover:linear-gradient(135deg,#1550c2 0%,#0e8a99 48%,#2ecc85 100%);
+    --glass-brd:rgba(255,255,255,.16);
   }
 }
 :root[data-theme="dark"]{
     color-scheme: dark;
-    --bg:#0e0f12; --surface:#171a1f; --surface2:#21252d; --ink:#eceef2; --mut:#9aa3af;
-    --line:#2b303a; --acc:#d4af37; --acc-dark:#b8962e; --acc-soft:#2e2410; --acc-ink:#171204;
-    --blue:#4d94ff; --ok:#3fb27f; --warn-bg:#2c2110; --warn-line:#6b4a1f; --warn-ink:#f0c674;
-    --err:#ff7b7b; --shadow:0 1px 3px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3);
+    --bg:linear-gradient(160deg,#020d24 0%,#06264f 34%,#063f45 66%,#07553c 100%);
+    --surface:rgba(13,26,48,.55); --surface2:rgba(255,255,255,.08); --ink:#eef4ff; --mut:#a7b8d4;
+    --line:rgba(160,200,255,.2); --acc:#3fd9a4; --acc-dark:#2bb885; --acc-soft:rgba(18,84,66,.5); --acc-ink:#ffffff;
+    --blue:#5eb2ff; --ok:#3fd9a4; --warn-bg:rgba(44,33,16,.82); --warn-line:#6b4a1f; --warn-ink:#f0c674;
+    --err:#ff8a8a; --shadow:0 8px 30px rgba(0,0,0,.5),0 2px 8px rgba(0,0,0,.35);
+    --grad:linear-gradient(135deg,#1a63e8 0%,#12a5b8 48%,#3fe39b 100%);
+    --grad-hover:linear-gradient(135deg,#1550c2 0%,#0e8a99 48%,#2ecc85 100%);
+    --glass-brd:rgba(255,255,255,.16);
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -221,6 +233,38 @@ button:active,.drop:active{transform:scale(.96)}
   .pop-in,.btn .ripple,.clickfx{animation:none}
   .clickfx{display:none}
 }
+
+/* ===== declutter: folded notes + collapsible groups ===== */
+.fold{position:relative;padding-right:26px;cursor:pointer;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;line-clamp:1;overflow:hidden}
+.fold::after{content:'\25BE';position:absolute;right:9px;top:2px;font-size:12px;opacity:.7}
+.fold.open{display:block;-webkit-line-clamp:unset;line-clamp:unset;overflow:visible}
+.fold.open::after{content:'\25B4'}
+details.adv{margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface2)}
+details.adv>summary,details.burnbox>summary,#cardBatch>details>summary{cursor:pointer;font-weight:700;font-size:14.5px;line-height:1.6;color:var(--ink)}
+details.adv[open]>summary{margin-bottom:6px}
+details.burnbox>summary{font-size:15.5px}
+details.adv.full{grid-column:1/-1;margin-top:0}
+/* ===== Premium glass theme — navy → light-green gradient ===== */
+body{background-attachment:fixed}
+.card,.burnbox,.shiftbox{
+  backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);
+  border-color:var(--glass-brd)}
+.modebar,.tabbar,.enginebar,.note,.rulesbox,#log{
+  backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%)}
+.drop,.topbar button,.step{
+  backdrop-filter:blur(10px) saturate(150%);-webkit-backdrop-filter:blur(10px) saturate(150%)}
+.btn{background:var(--grad);color:#fff;border-color:transparent}
+.btn:hover{background:var(--grad-hover)}
+.btn.ghost{background:var(--surface2);color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{background:var(--surface)}
+.btn.danger-ghost{background:transparent;color:var(--err);border-color:var(--line)}
+.tabbar button[aria-pressed="true"]{background:var(--grad);color:#fff}
+.prog>div{background:var(--grad)}
+#toast{background:rgba(8,22,44,.8);color:#eef4ff;border:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%)}
+#vwrap{position:sticky;top:0;z-index:40;margin-left:auto;margin-right:auto;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+.seg,.qitem{border-color:var(--glass-brd)}
+@media(max-width:640px){body{background-attachment:scroll}}
 </style>
 </head>
 <body>
@@ -228,13 +272,14 @@ button:active,.drop:active{transform:scale(.96)}
 
 <div class="topbar"><button type="button" id="langBtn" aria-label="Language">EN</button><button type="button" id="themeBtn" aria-label="Theme">&#9680;</button></div>
 <h1>ဗီဒီယိုကနေ မြန်မာစာတန်းထိုး SRT ထုတ်မယ်</h1>
-<p class="lede">ဗီဒီယို / အသံဖိုင် (သို့) SRT ဖိုင် ထည့်လိုက်ရင် မြန်မာ စာတန်းထိုး (.srt / .vtt) ထုတ်ပေးပါတယ်။</p>
+<p class="lede">ဗီဒီယို / အသံဖိုင် (သို့) SRT ဖိုင် ထည့်လိုက်ရင် မြန်မာ စာတန်းထိုး (.srt / .vtt) ထုတ်ပေးပါတယ်။ Engine ၄ မျိုး ရွေးလို့ရပါတယ်။</p>
 
 <div class="tabbar" role="group" aria-label="အပိုင်းများ ရွေးရန်">
   <button id="tabTranslate" aria-pressed="true">ဘာသာပြန်</button>
   <button id="tabEdit" aria-pressed="false">ပြင်ဆင်ရန်</button>
   <button id="tabVideo" aria-pressed="false">ဗီဒီယို</button>
   <button id="tabProjects" aria-pressed="false">ပရောဂျက်များ</button>
+  <button id="tabTts" aria-pressed="false">အသံထုတ်</button>
 </div>
 
 <div id="panelTranslate">
@@ -306,11 +351,12 @@ button:active,.drop:active{transform:scale(.96)}
 
   <div style="margin-top:16px">
     <label class="f" id="engineLabel">အသံဖတ် / ဘာသာပြန် နည်း (Engine)</label>
-    <div class="enginebar" role="group" aria-label="Engine ရွေးရန်">
+    <div class="enginebar wrap" role="group" aria-label="Engine ရွေးရန်">
       <button id="engineA" aria-pressed="true">Whisper — စက်ထဲမှာ (အခမဲ့)</button>
       <button id="engineB" aria-pressed="false">Google Gemini</button>
       <button id="engineC" aria-pressed="false">Microsoft Translator</button>
       <button id="engineD" aria-pressed="false">NLLB — စက်ထဲမှာ (Key မလို)</button>
+      <button id="engineE" aria-pressed="false">Oxion AI</button>
     </div>
     <div class="hint" id="engineDesc"></div>
   </div>
@@ -324,18 +370,55 @@ button:active,.drop:active{transform:scale(.96)}
       <div>
         <label class="f" for="geminiModel">Gemini မော်ဒယ်</label>
         <select id="geminiModel">
-          <option value="gemini-3.8-flash" selected>Gemini 3.8 Flash — မြန် + တိကျ (အကြံပြု)</option>
-          <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite — အမြန်ဆုံး</option>
-          <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro — အတိကျဆုံး (နှေးနိုင်)</option>
-        </select>
+<option value="gemini-3.8-flash" selected>Gemini 3.8 Flash — မြန် + တိကျ (အကြံပြု)</option>
+<option value="gemini-3.7-flash">Gemini 3.7 Flash</option>
+<option value="gemini-3.6-flash">Gemini 3.6 Flash</option>
+<option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
+<option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite — အမြန်ဆုံး</option>
+<option value="gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite (တရားဝင်)</option>
+<option value="gemini-3.1-pro-preview">Gemini 3.1 Pro — အတိကျဆုံး (နှေးနိုင်)</option>
+</select>
+<label class="f" for="geminiModelCustom" style="margin-top:8px">ဒါမှမဟုတ် မော်ဒယ်အမည် ကိုယ်တိုင်ရိုက်ပါ</label>
+<input type="text" id="geminiModelCustom" placeholder="ဥပမာ gemini-3.6-flash" autocomplete="off" spellcheck="false" />
+<div class="hint">ဒီကွက်မှာ ရိုက်ထားရင် အပေါ်က ရွေးထားတာထက် ဒါကို အရင်သုံးမယ်။ မော်ဒယ်အမည်ကို AI Studio ရဲ့ model စာရင်းက အတိအကျ ကူးထည့်ပါ။ မရှိတဲ့ မော်ဒယ်ဆိုရင် အလိုအလျောက် မူလ (3.8 Flash) ကို ပြန်သုံးမယ်။</div>
       </div>
     </div>
+    <details class="adv"><summary>အဆင့်မြင့် ဆက်တင်များ (Pacing၊ batch၊ fallback)</summary>
     <div style="margin-top:12px;max-width:300px">
       <label class="f" for="paceSec">⏱️ Request ကြား စောင့်ချိန် — Pacing (စက္ကန့်)</label>
       <input type="number" id="paceSec" value="7" min="0" max="60" step="1" inputmode="numeric" />
     </div>
     <div class="hint">Request တွေကြား စောင့်ချိန် — ၇ စက္ကန့်ဆို 429 (limit) ထိတာ အများကြီး လျော့တယ်။ 0 = မစောင့်ဘူး။</div>
-    <div class="hint">Key မရှိရင် <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> မှာ အခမဲ့ ထုတ်ပါ။ Key Not Save!</div>
+<label class="f" for="geminiPipe">ဗီဒီယိုကို Gemini နဲ့ ဘယ်လိုလုပ်မလဲ</label>
+<select id="geminiPipe">
+<option value="audio">Gemini က အသံကို တိုက်ရိုက် နားထောင် (မူလ)</option>
+<option value="whisper">Whisper နဲ့ စက်ထဲမှာ ဖတ်ပြီး Gemini ကို စာသားပဲ ပို့ (quota သက်သာ၊ အချိန်ပိုတည်ငြိမ်)</option>
+</select>
+<label class="f" for="batchSize">Gemini စာသားဘာသာပြန်: တစ်ကြိမ်ပို့တဲ့ စာတန်းအရေအတွက်</label>
+<select id="batchSize">
+<option value="">မူလ (၃၀ ကြောင်း)</option>
+<option value="60">၆၀ ကြောင်း (request တစ်ဝက်လောက်)</option>
+<option value="100">၁၀၀ ကြောင်း (request အနည်းဆုံး၊ ပျက်ရင် ပိုဆုံး)</option>
+</select>
+<div class="row"><button class="btn small ghost" type="button" id="trMemClear">ဘာသာပြန်မှတ်ဉာဏ် ရှင်းမယ်</button></div>
+<div class="hint">ဘာသာပြန်ပြီးသား စာတန်းတွေကို မှတ်ထားပြီး ပျက်လို့ ပြန်လုပ်ရင် မပို့တော့ဘူး၊ စာသားတူတာကို တစ်ခါပဲ ပို့တယ်။ Model၊ ပုံစံ box၊ Glossary ပြောင်းရင် အလိုအလျောက် အသစ်ပြန်ဘာသာပြန်မယ်။</div>
+<label class="f" for="geminiChunk">Gemini ကို အသံအပိုင်းလိုက် ပို့တဲ့ အရှည်</label>
+<select id="geminiChunk">
+<option value="60">၆၀ စက္ကန့် (အချိန် ပိုတိကျ၊ request ပိုများ)</option>
+<option value="90">၉၀ စက္ကန့်</option>
+<option value="120" selected>၁၂၀ စက္ကန့် (မူလ)</option>
+</select>
+<label class="f" for="overloadFallback">Gemini server အလုပ်များနေရင် (503) ဒါမှမဟုတ် quota ပြည့်ရင် (429) ဘာလုပ်မလဲ</label>
+<select id="overloadFallback">
+<option value="">မော်ဒယ် မပြောင်းဘူး — စောင့်ပြီး ပြန်စမ်းပဲ (အကြံပြု)</option>
+<option value="gemini-3.7-flash">3.7 Flash ကို ပြောင်းသုံး</option>
+<option value="gemini-3.6-flash">3.6 Flash ကို ပြောင်းသုံး</option>
+<option value="gemini-3.5-flash">3.5 Flash ကို ပြောင်းသုံး</option>
+<option value="gemini-3.5-flash-lite">Flash-Lite ကို ပြောင်းသုံး (မြန်ပေမယ့် စာတန်း သဘာဝကျမှု လျော့နိုင်)</option>
+<option value="gemini-3.1-pro-preview">Pro ကို ပြောင်းသုံး (စာတန်း ပိုသဘာဝကျ၊ နှေးနိုင်)</option>
+</select>
+    </details>
+    <div class="hint">Key မရှိရင် <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> မှာ အခမဲ့ ထုတ်ပါ။ Key ကို ဘယ်မှာမှ မသိမ်းဘူး — tab ပိတ်ရင် ပျက်မယ်။</div>
   </div>
   <div class="note hidden" id="geminiNote">Gemini မုဒ်မှာ အကြောင်းအရာကို Google server သို့ ပို့ရတယ်။ 429 ထိရင် အလိုအလျောက် စောင့်ပြီး ပြန်ကြိုးစားပေးမယ်။</div>
 
@@ -352,26 +435,59 @@ button:active,.drop:active{transform:scale(.96)}
     </div>
     <div class="hint">Key မရှိရင် <a href="https://portal.azure.com" target="_blank" rel="noopener">Azure Portal</a> မှာ "Translator" resource (F0 — အခမဲ့) ဖန်တီးပြီး "Keys and Endpoint" က Key နဲ့ Region ကို ထည့်ပါ။ Key ကို မသိမ်းဘူး — tab ပိတ်ရင် ပျက်မယ်။</div>
   </div>
-  <div class="note hidden" id="msNote">ဘာသာပြန်ဖို့ စာသားကို Microsoft server သို့ ပို့ရတယ် (အသံကတော့ စက်ထဲမှာပဲ)။</div>
+  <div class="note hidden" id="msNote">ဘာသာပြန်ဖို့ စာသားကို Microsoft server သို့ ပို့ရတယ် (အသံကတော့ စက်ထဲမှာပဲ)။ F0 မှာ တစ်လ စာလုံး 2M အခမဲ့။</div>
 
   <div id="nllbBox" class="hidden" style="margin-top:14px">
-    <div class="hint" style="margin-top:0">Key / အကောင့် မလို။ ပထမအကြိမ် မော်ဒယ် (~၁ GB) တစ်ခါ ဒေါင်းရမယ်။</div>
+    <div class="hint" style="margin-top:0">Key / အကောင့် မလို။ ပထမအကြိမ် မော်ဒယ် (~၁ GB) တစ်ခါ ဒေါင်းရမယ်။ မူရင်းဘာသာစကားကို အတိအကျ ရွေးပါ ("အလိုအလျောက်" ဆို တရုတ်အဖြစ် ယူဆမယ်)။</div>
   </div>
   <div class="note hidden" id="nllbNote">အားလုံး စက်ထဲမှာပဲ — unlimited။ ဖုန်းမှာ နှေးနိုင်ပြီး အရည်အသွေး Gemini လောက် မမီနိုင်ဘူး။</div>
 
-  <div style="margin-top:16px">
-    <label class="f" for="glossaryText">ဇာတ်ကောင်နာမည် / ဝေါဟာရ မှတ်တမ်း</label>
+  <div id="oxionBox" class="hidden" style="margin-top:14px">
+    <div class="grid2">
+      <div>
+        <label class="f" for="oxionKey">Oxion AI API Key</label>
+        <input type="password" id="oxionKey" placeholder="cc_…" autocomplete="off" spellcheck="false" />
+      </div>
+      <div>
+        <label class="f" for="oxionModel">Oxion AI မော်ဒယ်</label>
+        <select id="oxionModel">
+          <option value="qwen3.8-27b" selected>Qwen 3.8 27B — အကြံပြု</option>
+          <option value="deepseek-v4-flash-0731">DeepSeek V4 Flash — မြန်</option>
+          <option value="gemma-2-2b">Gemma 2 2B — ပေါ့ပါး</option>
+        </select>
+        <label class="f" for="oxionModelCustom" style="margin-top:8px">ဒါမှမဟုတ် Model ID ကိုယ်တိုင်ထည့်ပါ</label>
+        <input type="text" id="oxionModelCustom" placeholder="ဥပမာ qwen3.8-27b" autocomplete="off" spellcheck="false" />
+      </div>
+    </div>
+    <div class="hint">Oxion AI Dashboard မှာ API Key ဖန်တီးပြီး ထည့်ပါ။ Key ကို ဒီစာမျက်နှာမှာပဲ အသုံးပြုပြီး သိမ်းမထားပါ။ Browser ထဲက API Key ကို အခြားသူတွေ မြင်နိုင်နိုင်တဲ့အတွက် ကိုယ်ပိုင်စက်မှာသာ သုံးပါ။</div>
+  </div>
+  <div class="note hidden" id="oxionNote">Oxion AI ဆီ စာသားကို အင်တာနက်မှတစ်ဆင့် ပို့ပြီး မြန်မာဘာသာပြန်မယ်။ Video မုဒ်မှာ အသံဖတ်ခြင်းကို Whisper က စက်ထဲမှာ လုပ်ပြီး စာသားကိုသာ Oxion AI ဆီ ပို့မယ်။</div>
+
+  <details class="adv"><summary>ဘာသာပြန်ပုံစံ (Style) နဲ့ နာမည်မှတ်တမ်း (Glossary) — မလိုရင် ကျော်ပါ</summary>
+<div style="margin-top:16px">
+<label class="f" for="styleText">ကိုယ်ပိုင် ဘာသာပြန်ပုံစံ (Style)</label>
+<textarea class="my" id="styleText" rows="5" placeholder="ဥပမာ —&#10;စကားပြောလေသံ၊ ကျွန်တော်/ကျွန်မ သုံးပုံ၊ စာတိုတိုရေးပုံ&#10;နမူနာ — 你怎么来了 → မင်း ဘာလို့ လာတာလဲ"></textarea>
+<div class="row"><button class="btn small ghost" type="button" id="exportCorr">ပြင်ထားတဲ့စာတန်းတွေ ဒေတာအဖြစ် ထုတ်မယ် (JSONL)</button></div>
+<div class="hint">ဒီစာကို Gemini ဘာသာပြန်တိုင်း ထည့်ပေးမယ်၊ ဒီ browser မှာ မှတ်ထားမယ်။ ပြင်ဆင်ရေးထဲမှာ ပြင်ခဲ့တဲ့ စာတန်းတွေကို မူရင်း၊ စက်ပြန်၊ သင်ပြင်တာ အတွဲလိုက် ထုတ်ပေးတာက နမူနာအသစ်တွေ ရေးဖို့ အသုံးဝင်တယ်။</div>
+</div>
+<div style="margin-top:16px">
+    <label class="f" for="glossaryText">ဇာတ်ကောင်နာမည် / ဝေါဟာရ မှတ်တမ်း (Glossary)</label>
     <textarea class="my" id="glossaryText" rows="4" placeholder="တစ်ကြောင်းလျှင် တစ်စုံ — မူရင်းနာမည် = မြန်မာနာမည်&#10;ဥပမာ —&#10;林浩 = လင်းဟောက်&#10;沈清欢 = ရှန်ချင်းဟွမ်"></textarea>
     <div class="row">
       <button class="btn small ghost" id="glossarySave">မှတ်တမ်း သိမ်းမယ်</button>
-      <button class="btn small ghost" id="glossaryAi">Generate character name</button>
+      <button class="btn small ghost" id="glossaryAi">Gemini နဲ့ နာမည်တွေ အလိုအလျောက် ထုတ်မယ်</button>
     </div>
     <div class="hint">ဒီနာမည်တွေကို ဘာသာပြန်တိုင်း ဒီပုံစံအတိုင်းပဲ သုံးမယ် — အပိုင်းများတဲ့ ဇာတ်လမ်းမှာ နာမည် မလွဲအောင်။ "အလိုအလျောက် ထုတ်မယ်" က Gemini + Key လိုတယ်။</div>
   </div>
 
+</details>
   <div class="hint" id="deviceHint"></div>
 
-  <button class="btn primary" id="startBtn">
+  <div class="hint" style="margin-top:14px">
+<label style="display:flex;gap:8px;align-items:flex-start;margin:0 0 6px"><input type="checkbox" id="autoFinish" checked /> <span><b>One-click</b> — ပြီးတာနဲ့ ရှည်တဲ့စာတန်းတွေ အလိုအလျောက်ခွဲ၊ အချိန်ကိုက်ညှိပြီး SRT ကို ဒေါင်းလုဒ်ချမယ်</span></label>
+<label style="display:flex;gap:8px;align-items:flex-start;margin:0"><input type="checkbox" id="autoBackup" checked /> <span>ပျက်ရင် (503 / 429 / key မှား) တခြား engine (Gemini → Oxion → Microsoft → Google) နဲ့ အလိုအလျောက် ဆက်လုပ်မယ် — key မရှိတာကို ကျော်မယ်</span></label>
+</div>
+<button class="btn primary" id="startBtn">
     <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
     <span id="startBtnText">စတင်လုပ်ဆောင်မယ်</span>
   </button>
@@ -379,7 +495,7 @@ button:active,.drop:active{transform:scale(.96)}
 </section>
 
 <section class="card" id="cardBatch">
-  <h2>အပိုင်းများစွာ တန်းစီ (Batch)</h2>
+  <details><summary>အပိုင်းများစွာ တန်းစီ (Batch)</summary>
   <div class="drop" id="dropBatch" role="button" tabindex="0" aria-label="ဗီဒီယိုဖိုင်များ တန်းစီထဲ ထည့်ရန်">
     <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V5m0 0L8 9m4-4 4 4"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></svg>
     <div class="t">အပိုင်းတွေ အများကြီး တစ်ခါတည်း ထည့်လို့ရပါတယ်</div>
@@ -393,6 +509,7 @@ button:active,.drop:active{transform:scale(.96)}
     <button class="btn small danger-ghost hidden" id="batchClear">တန်းစီ ရှင်းမယ်</button>
   </div>
   <div class="hint">အပေါ်က ဆက်တင်တွေကို အပိုင်းအားလုံးအတွက် သုံးမယ်။ လုပ်နေတုန်း tab မပိတ်ပါနဲ့၊ screen ဖွင့်ထားပါ။</div>
+  </details>
 </section>
 
 <section class="card hidden" id="cardProg" aria-live="polite">
@@ -409,7 +526,7 @@ button:active,.drop:active{transform:scale(.96)}
 
 <div id="panelEdit" class="hidden">
 <section class="card" id="editEmpty">
-  <div class="empty">ပြင်စရာစာတန်း မရှိသေးပါဘူး — ဘာသာပြန် tab မှာ အရင် ဘာသာပြန်ပါ၊</div>
+  <div class="empty">ပြင်စရာစာတန်း မရှိသေးပါဘူး — ဘာသာပြန် tab မှာ အရင် ဘာသာပြန်ပါ၊ ဒါမှမဟုတ် Projects tab က ပရောဂျက် ဖွင့်ပါ။</div>
 </section>
 <section class="card hidden" id="cardResult">
   <h2>ပြီးပါပြီ — စာတန်းတွေ အဆင်သင့်ဖြစ်ပါပြီ</h2>
@@ -428,9 +545,28 @@ button:active,.drop:active{transform:scale(.96)}
       </div>
       <div class="hint">ဗီဒီယို ဖွင့်ရင် စာတန်းတွေ အပေါ်မှာ တက်ပြမယ်။</div>
 
-      <div class="burnbox" id="burnBox">
+      <details class="burnbox" id="syncBox">
+<summary>စာတန်းအချိန် လွဲနေရင် ညှိရန် (Sync)</summary>
+<div class="hint" id="syncInfo"></div>
+<div class="row">
+<button class="btn small" type="button" id="syncFit">ဗီဒီယိုအရှည်ကိုက်အောင် အလိုအလျောက် ချုံ့မယ်</button>
+<button class="btn small ghost" type="button" id="syncCheck">စစ်မယ်</button>
+</div>
+<div class="hint">တိကျအောင် ညှိချင်ရင် — စာတန်းအစပိုင်းက တစ်ကြောင်း၊ အဆုံးပိုင်းက တစ်ကြောင်း ရွေးပါ။ စာတန်းအမှတ်ကို ထည့်ပြီး ဗီဒီယိုကို အဲဒီစကားပြောတဲ့နေရာကို ရွှေ့ကာ ⏱ ကိုနှိပ်ပါ။ ညှိမယ်ကို နှိပ်ရင် စာတန်းအားလုံးရဲ့ အချိန်ကို အချိုးကျ ပြန်တွက်ပေးမယ်။</div>
+<div class="grid2">
+<div><label class="f" for="syncN1">အချက် A — စာတန်းအမှတ် (အစပိုင်း)</label><input type="number" id="syncN1" min="1" inputmode="numeric" /><div class="hint" id="syncT1"></div>
+<label class="f" for="syncR1">ဗီဒီယိုမှာ တကယ်ပေါ်တဲ့ အချိန် (စက္ကန့်)</label><input type="number" id="syncR1" step="0.1" /><button class="btn small ghost" type="button" id="syncS1" style="margin-top:6px">⏱ ယခုနေရာ</button></div>
+<div><label class="f" for="syncN2">အချက် B — စာတန်းအမှတ် (အဆုံးပိုင်း)</label><input type="number" id="syncN2" min="1" inputmode="numeric" /><div class="hint" id="syncT2"></div>
+<label class="f" for="syncR2">ဗီဒီယိုမှာ တကယ်ပေါ်တဲ့ အချိန် (စက္ကန့်)</label><input type="number" id="syncR2" step="0.1" /><button class="btn small ghost" type="button" id="syncS2" style="margin-top:6px">⏱ ယခုနေရာ</button></div>
+</div>
+<div class="row" style="margin-top:10px">
+<button class="btn small" type="button" id="syncGo">ညှိမယ်</button>
+<button class="btn small ghost" type="button" id="syncUndo">&#8630; ပြန်ဆုတ်မယ်</button>
+</div>
+</details>
+<div class="burnbox" id="burnBox">
         <h3>စာတန်းထိုးပြီး ဗီဒီယို ထုတ်မယ်</h3>
-        <div class="hint" style="margin-top:0">စာတန်းကို ဗီဒီယိုထဲ တိုက်ရိုက် ထည့်ပြီး ဖိုင်အသစ် ထုတ်မယ်။</div>
+        <div class="hint" style="margin-top:0">စာတန်းကို ဗီဒီယိုထဲ တိုက်ရိုက် ထည့်ပြီး ဖိုင်အသစ် ထုတ်မယ်။ ချိန်လိုက်တာနဲ့ အစမ်းပြမှာ ချက်ချင်း ပြောင်းပြမယ်။</div>
         <div class="burngrid">
           <div class="full">
             <label class="f">စာတန်း နေရာ</label>
@@ -444,9 +580,15 @@ button:active,.drop:active{transform:scale(.96)}
             <label class="f" for="burnOff">အပေါ် / အောက် ရွှေ့ရန် <span class="val" id="burnOffVal">0%</span></label>
             <input type="range" id="burnOff" min="-25" max="25" step="1" value="0" />
           </div>
-          <div>
-            <label class="f" for="burnFont">ဖောင့်အရွယ်အစား <span class="val" id="burnFontVal">4.8%</span></label>
-            <input type="range" id="burnFont" min="2" max="9" step="0.2" value="4.8" />
+          <div class="full">
+            <label class="f" for="burnFontNum">ဖောင့်အရွယ်အစား (နံပါတ်) <span class="val" id="burnFontVal">39 px</span></label>
+            <div class="shiftbox" style="margin-top:0;padding:10px"><div class="r">
+              <button class="btn small ghost" type="button" id="fontMinus" aria-label="လျှော့မယ်">&minus;</button>
+              <input type="number" id="burnFontNum" min="0" max="300" step="1" value="39" inputmode="decimal" />
+              <button class="btn small ghost" type="button" id="fontPlus" aria-label="တိုးမယ်">+</button>
+            </div></div>
+            <input type="range" id="burnFont" min="0" max="120" step="1" value="39" style="margin-top:8px" />
+            <div class="hint">နံပါတ်က ဗီဒီယိုအမြင့် 1080 px အပေါ် အခြေခံတဲ့ ဖောင့်ဆိုဒ်ပါ (ဥပမာ 24 = သေးသေး၊ 39 = ပုံမှန်၊ 60 = ကြီး)။ ဒသမ ရိုက်လို့ရတယ် (ဥပမာ 0.5)။ 0 ထည့်ရင် စာတန်း လုံးဝ မမြင်ရတော့ဘူး။ ဗီဒီယိုအရွယ်ကွာရင်လည်း အချိုးကျ ပြောင်းပေးမယ်။</div>
           </div>
           <div>
             <label class="f" for="burnColor">စာသား အရောင်</label>
@@ -461,11 +603,12 @@ button:active,.drop:active{transform:scale(.96)}
             <input type="range" id="burnOp" min="0" max="100" step="5" value="55" />
           </div>
           <div style="display:flex;align-items:flex-end">
-            <button class="btn small ghost" id="burnBold" aria-pressed="true" style="width:100%">စာလုံးအထူ (Bold) — ဖွင့်ထားသည်</button>
+            <button class="btn small ghost" id="burnBold" aria-pressed="false" style="width:100%">စာလုံးအထူ (Bold) — ပိတ်ထားသည်</button>
           </div>
           <div class="full">
             <button class="btn small ghost" id="burnPreset" style="width:100%">MaxFlix အနီ theme နဲ့ ချိန်မယ်</button>
           </div>
+          <details class="full adv"><summary>ဗီဒီယို အချိုးအစား (TikTok / YouTube…)</summary><div class="burngrid">
           <div class="full">
             <label class="f">ဗီဒီယို အချိုးအစား (Ratio)</label>
             <div class="enginebar wrap" role="group" aria-label="ဗီဒီယို အချိုးအစား ရွေးရန်">
@@ -486,6 +629,7 @@ button:active,.drop:active{transform:scale(.96)}
             </div>
             <div class="hint">မှုန်ဝါး = နောက်ခံ blur · အနက်ရောင် = letterbox ဘောင် · Crop = ဘောင်မပါ အပြည့်ဖြတ်။</div>
           </div>
+          </div></details>
           <div class="full">
             <label class="f">ဗီဒီယို အရည်အသွေး (Quality)</label>
             <div class="enginebar" role="group" aria-label="ဗီဒီယို အရည်အသွေး ရွေးရန်">
@@ -495,6 +639,7 @@ button:active,.drop:active{transform:scale(.96)}
             </div>
             <div class="hint">ကြည်လေ ဖိုင်ကြီးပြီး ကြာလေပဲ။ မူရင်းထက် သေးရင် မူရင်းအရွယ်အတိုင်းပဲ ထုတ်မယ်။</div>
           </div>
+          <details class="full adv"><summary>ကိုယ်ပိုင်ဖောင့် / Logo ထည့်ရန်</summary><div class="burngrid">
           <div class="full">
             <label class="f">ကိုယ်ပိုင် ဖောင့် (.ttf / .otf)</label>
             <div class="row" style="margin-top:0">
@@ -502,7 +647,7 @@ button:active,.drop:active{transform:scale(.96)}
               <button class="btn small ghost hidden" id="fontReset">မူရင်း ဖောင့် ပြန်သုံးမယ်</button>
             </div>
             <input type="file" id="fontFile" accept=".ttf,.otf,.woff,.woff2" class="hidden" />
-            <div class="hint" id="fontStatus">အခု သုံးနေတာ — Noto Sans Myanmar (မူရင်း)။ ဖောင့် မသိမ်းပါ</div>
+            <div class="hint" id="fontStatus">အခု သုံးနေတာ — Noto Sans Myanmar (မူရင်း)။ ကိုယ်ပိုင်ဖောင့်က ဒီ tab ဖွင့်ထားသရွေ့ပဲ ရမယ်။</div>
           </div>
           <div class="full">
             <label class="f">Logo / Watermark ပုံ</label>
@@ -511,7 +656,7 @@ button:active,.drop:active{transform:scale(.96)}
               <button class="btn small ghost hidden" id="logoRemove">Logo ဖြုတ်မယ်</button>
             </div>
             <input type="file" id="logoFile" accept="image/*" class="hidden" />
-            <div class="hint" id="logoStatus">Logo မထည့်ရသေးဘူး။ Insert PNG files</div>
+            <div class="hint" id="logoStatus">Logo မထည့်ရသေးဘူး။ PNG (နောက်ခံ ပွင့်လင်း) ဆို အလှဆုံးပဲ။</div>
           </div>
           <div class="full">
             <label class="f">Logo နေရာ</label>
@@ -530,6 +675,7 @@ button:active,.drop:active{transform:scale(.96)}
             <label class="f" for="logoOp">Logo ပွင့်လင်းမှု <span class="val" id="logoOpVal">85%</span></label>
             <input type="range" id="logoOp" min="10" max="100" step="5" value="85" />
           </div>
+          </div></details>
         </div>
         <button class="btn primary" id="burnBtn" style="margin-top:14px">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11m0 0-4-4m4 4 4-4"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></svg>
@@ -540,7 +686,7 @@ button:active,.drop:active{transform:scale(.96)}
           <div id="burnStatus" style="font-size:13.5px;margin-top:8px;line-height:1.7"></div>
           <button class="btn small danger-ghost hidden" id="burnCancel" style="margin-top:8px">ရပ်မယ်</button>
         </div>
-        <div class="note">သတိ — ဗီဒီယိုရှည်သလောက် အချိန် ကြာမည်။ ထုတ်နေတုန်း tab မပိတ်ပါနဲ့။</div>
+        <div class="note">သတိ — အချိန်မှန်အတိုင်း ပြန်ဖွင့်ပြီး ထုတ်တာမို့ ဗီဒီယိုရှည်သလောက် ကြာမယ်။ ထုတ်နေတုန်း tab မပိတ်ပါနဲ့။</div>
       </div>
     </div>
     <div>
@@ -579,7 +725,16 @@ button:active,.drop:active{transform:scale(.96)}
 
   <h2 style="margin-top:22px">စာတန်းများ ပြင်ဆင်မယ်</h2>
   <div class="hint" style="margin-top:0">ဒေါင်းမဆွဲခင် စာသားနဲ့ အချိန်တွေ ဒီမှာ ပြင်လို့ရတယ်။ အချိန်ကို စက္ကန့် (65.5) နဲ့ရော 0:01:05.5 နဲ့ရော ရိုက်လို့ရတယ်။</div>
-  <div id="segList"></div>
+  <div class="row" style="margin-top:10px">
+<button class="btn small" type="button" id="splitAll">&#9986; ရှည်တဲ့စာတန်းတွေ အလိုအလျောက် ခွဲမယ်</button>
+<button class="btn small ghost" type="button" id="splitUndo" disabled>&#8630; ပြန်ဆုတ်မယ်</button>
+</div>
+<div class="row" style="margin-top:8px;align-items:center">
+<label class="f" for="splitMax" style="margin:0">စာတန်းတစ်ခုမှာ စာလုံးအများဆုံး</label>
+<input type="number" id="splitMax" value="40" min="12" max="120" inputmode="numeric" style="width:90px" />
+</div>
+<div class="hint">အလိုအလျောက်ခွဲရင် ကန့်သတ်ထက်ရှည်တဲ့ စာတန်းတွေကို "။" "၊" နဲ့ space ကျတဲ့နေရာမှာ ဖြတ်ပြီး အချိန်ကို စာလုံးအရေအတွက်အလိုက် ခွဲပေးတယ်။ တစ်ခုချင်းခွဲချင်ရင် စာတန်းအကွက်ထဲမှာ ခွဲချင်တဲ့နေရာကို နှိပ်ထားပြီး အပေါ်က &#9986; ကိုနှိပ်ပါ။</div>
+<div id="segList"></div>
   <div class="row">
     <button class="btn small ghost" id="addSeg">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -594,8 +749,81 @@ button:active,.drop:active{transform:scale(.96)}
 <div id="panelVideo" class="hidden">
 <section class="card" id="cardVideo">
   <h2>ဗီဒီယို ပြင်ဆင်ရန်</h2>
-  <div class="empty" id="videoEmpty">ဗီဒီယို မရှိသေးပါ။</div>
+  <div class="empty" id="videoEmpty">ဗီဒီယို မရှိသေးပါဘူး — ဘာသာပြန် tab မှာ ဗီဒီယို အရင် ဘာသာပြန်ပါ၊ ဒါမှမဟုတ် Projects tab က ပရောဂျက် ဖွင့်ပါ။</div>
   <div id="videoSlot"></div>
+</section>
+</div>
+
+<div id="panelTts" class="hidden">
+<section class="card" id="cardTts">
+  <h2>&#128266; Movie Recap မြန်မာအသံထုတ် (Gemini TTS)</h2>
+  <div class="hint" style="margin-top:0">Recap စာသား (script) ကို ဒီမှာ paste လုပ်ပြီး မြန်မာအသံဖိုင် (WAV) ထုတ်ပါ။ စာရှည်ရင် အပိုင်းလေးတွေ အလိုအလျောက် ခွဲပြီး ပြန်ဆက်ပေးမယ်။</div>
+
+  <div style="margin-top:14px">
+    <label class="f" for="ttsText">Recap စာသား</label>
+    <textarea class="my" id="ttsText" rows="10" placeholder="ဒီမှာ recap စာသား ထည့်ပါ… (စာပိုဒ်ကြားမှာ အကွာအဝေး အလိုအလျောက် ထည့်ပေးမယ်)"></textarea>
+    <div class="row" style="align-items:center">
+      <button class="btn small ghost" type="button" id="ttsLoadTxt">.txt ဖိုင်က ထည့်မယ်</button>
+      <button class="btn small ghost danger-ghost" type="button" id="ttsClearTxt">စာသား ရှင်းမယ်</button>
+      <span class="stats" id="ttsCount"></span>
+    </div>
+    <input type="file" id="ttsTxtFile" accept=".txt,text/plain" class="hidden" />
+  </div>
+
+  <div class="grid2" style="margin-top:14px">
+    <div>
+      <label class="f" for="ttsVoice">အသံ</label>
+      <select id="ttsVoice">
+        <optgroup label="ယောက်ျားအသံ">
+          <option value="Charon" selected>ယောက်ျား ၁ — Charon (တည်ငြိမ်)</option>
+          <option value="Puck">ယောက်ျား ၂ — Puck (လန်းဆန်း)</option>
+          <option value="Fenrir">ယောက်ျား ၃ — Fenrir (စိတ်အားထက်သန်)</option>
+        </optgroup>
+        <optgroup label="မိန်းမအသံ">
+          <option value="Kore">မိန်းမ ၁ — Kore (ခိုင်မာ)</option>
+          <option value="Aoede">မိန်းမ ၂ — Aoede (ပျော့ပျောင်း)</option>
+          <option value="Sulafat">မိန်းမ ၃ — Sulafat (နွေးထွေး)</option>
+        </optgroup>
+      </select>
+    </div>
+    <div>
+      <label class="f" for="ttsModel">TTS မော်ဒယ်</label>
+      <select id="ttsModel">
+        <option value="gemini-3.8-flash-lite-tts" selected>Flash-Lite TTS — မြန် / သက်သာ</option>
+        <option value="gemini-3.8-flash-tts">Flash TTS — အရည်အသွေး ပိုကောင်း</option>
+      </select>
+    </div>
+    <div>
+      <label class="f" for="ttsStyle">လေသံ (မလိုရင် ကျော်ပါ)</label>
+      <input type="text" id="ttsStyle" placeholder="ဥပမာ energetic movie narrator" autocomplete="off" spellcheck="false" />
+    </div>
+    <div>
+      <label class="f" for="ttsChunk">အပိုင်းတစ်ခုချင်း အရှည် (စာလုံး)</label>
+      <select id="ttsChunk">
+        <option value="300">၃၀၀ — request များ၊ ပိုတည်ငြိမ်</option>
+        <option value="450" selected>၄၅၀ (မူလ)</option>
+        <option value="700">၇၀၀ — request နည်း</option>
+      </select>
+    </div>
+  </div>
+  <div style="margin-top:12px">
+    <label class="f" for="ttsKey">Gemini API Key</label>
+    <input type="password" id="ttsKey" placeholder="AIza…" autocomplete="off" spellcheck="false" />
+  </div>
+  <div class="hint">Key ကို မသိမ်းဘူး — tab ပိတ်ရင် ပျက်မယ်။ Request တစ်ခုချင်းကြား စောင့်ချိန်ကို ဘာသာပြန် tab ထဲက Gemini "Pacing" နဲ့ တူတူ သုံးမယ် (မူလ ၇ စက္ကန့်)။</div>
+
+  <button class="btn primary" id="ttsAllBtn">&#128266; အသံထုတ်မယ်</button>
+  <div id="ttsProg" class="hidden" style="margin-top:12px">
+    <div class="prog"><div id="ttsBar"></div></div>
+    <div id="ttsStatus" style="font-size:13.5px;margin-top:8px;line-height:1.7"></div>
+    <button class="btn small danger-ghost" id="ttsCancel" style="margin-top:8px">ရပ်မယ်</button>
+  </div>
+  <div id="ttsResult" class="hidden" style="margin-top:14px">
+    <audio id="ttsAudio" controls style="width:100%"></audio>
+    <div class="row"><button class="btn" id="ttsDl">WAV ဒေါင်းလုဒ်ဆွဲမယ်</button></div>
+  </div>
+  <div class="row"><button class="btn small ghost" type="button" id="ttsCacheClear">မှတ်ထားတဲ့အသံ ရှင်းမယ်</button></div>
+  <div class="hint">ပျက်သွားရင် (429 စတာ) "အသံထုတ်မယ်" ကို ပြန်နှိပ်ပါ — ထုတ်ပြီးသား အပိုင်းတွေ ပြန်မထုတ်တော့ဘူး။ စာသား၊ အသံ၊ လေသံ တစ်ခုခု ပြောင်းရင်တော့ အသစ်ပြန်ထုတ်မယ်။</div>
 </section>
 </div>
 
@@ -628,7 +856,7 @@ button:active,.drop:active{transform:scale(.96)}
   <div id="cloudProjectList" style="margin-top:10px"></div>
   <details style="margin-top:16px">
     <summary>Firestore Security Rules (တစ်ခါပဲ ထည့်ရမယ်)</summary>
-    <div class="hint">Firebase Console → Firestore Database add firestore rules</div>
+    <div class="hint">Firebase Console → Firestore Database → Rules မှာ ဒီ rules ကို paste လုပ်ပါ — ကိုယ့် project ကိုယ်ပဲ ဖွင့်/သိမ်း/ဖျက်လို့ရမှာ ဖြစ်အောင်။</div>
     <pre class="rulesbox">rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -643,7 +871,7 @@ service cloud.firestore {
 
 <footer>
   <div class="credit">Power By Maxflix Team</div>
-  Translate By- Whisper / NLLB/ Gemini / Microsoft tools
+  Whisper / NLLB — အားလုံး စက်ထဲမှာပဲ၊ ဖိုင် အပြင် မထွက်ဘူး။ Gemini / Microsoft — server သို့ ပို့ရတယ်။ ဒေါင်းမဆွဲခင် စာသားတွေ တစ်ချက် ပြန်စစ်ပါ။
 </footer>
 </div>
 
@@ -823,10 +1051,12 @@ var SrtTools = (function () {
     var gem = engine === 'gemini';
     var ms = engine === 'microsoft';
     var nllb = engine === 'nllb';
-    $('engineA').setAttribute('aria-pressed', (!gem && !ms && !nllb) ? 'true' : 'false');
+    var oxion = engine === 'oxion';
+    $('engineA').setAttribute('aria-pressed', (!gem && !ms && !nllb && !oxion) ? 'true' : 'false');
     $('engineB').setAttribute('aria-pressed', gem ? 'true' : 'false');
     $('engineC').setAttribute('aria-pressed', ms ? 'true' : 'false');
     $('engineD').setAttribute('aria-pressed', nllb ? 'true' : 'false');
+    $('engineE').setAttribute('aria-pressed', oxion ? 'true' : 'false');
     $('engineA').textContent = isVideo ? (enUI ? 'Whisper — on-device (free)' : 'Whisper — စက်ထဲမှာ (အခမဲ့)') : (enUI ? 'Google Translate (free)' : 'Google Translate (အခမဲ့)');
     $('engineLabel').textContent = isVideo ? (enUI ? 'Transcription / translation engine' : 'အသံဖတ် / ဘာသာပြန် နည်း (Engine)') : (enUI ? 'Translation engine' : 'ဘာသာပြန် Engine');
     $('modelRow').classList.toggle('hidden', !isVideo || gem);
@@ -838,20 +1068,24 @@ var SrtTools = (function () {
     $('msNote').classList.toggle('hidden', !ms);
     $('nllbBox').classList.toggle('hidden', !nllb);
     $('nllbNote').classList.toggle('hidden', !nllb);
+    $('oxionBox').classList.toggle('hidden', !oxion);
+    $('oxionNote').classList.toggle('hidden', !oxion);
     $('engineDesc').textContent =
-      isVideo && engine === 'local' ? (enUI ? 'Whisper (on-device) transcribes → Google Translate translates.' : 'Whisper')
-      : isVideo && gem ? (enUI ? 'Gemini listens to the audio and writes Burmese subtitles directly — audio is sent to Google\'s servers.' : 'Gemini')
-      : isVideo && ms ? (enUI ? 'Whisper (on-device) transcribes → Microsoft translates. Text is sent to Microsoft\'s servers.' : 'Whisper')
-      : isVideo && nllb ? (enUI ? 'Whisper + NLLB — everything on-device. No key, no limits.' : 'Whisper + NLLB — all are no need key, no limit')
-      : !isVideo && engine === 'local' ? (enUI ? 'Translates with Google Translate — free, no key needed.' : 'Google Translate')
-      : !isVideo && ms ? (enUI ? 'Translates with Microsoft Translator — text is sent to Microsoft\'s servers.' : 'Microsoft Translator')
+      isVideo && engine === 'local' ? (enUI ? 'Whisper (on-device) transcribes → Google Translate translates.' : 'Whisper (စက်ထဲမှာ) အသံဖတ် → Google Translate ပြန်ဆို။')
+      : isVideo && gem ? (enUI ? 'Gemini listens to the audio and writes Burmese subtitles directly — audio is sent to Google\'s servers.' : 'Gemini က အသံနားထောင်ပြီး မြန်မာစာတန်း တိုက်ရိုက်ထုတ်တယ် — အသံကို Google server သို့ ပို့ရတယ်။')
+      : isVideo && ms ? (enUI ? 'Whisper (on-device) transcribes → Microsoft translates. Text is sent to Microsoft\'s servers.' : 'Whisper (စက်ထဲမှာ) အသံဖတ် → Microsoft ပြန်ဆို။ စာသားကို Microsoft server သို့ ပို့ရတယ်။')
+      : isVideo && nllb ? (enUI ? 'Whisper + NLLB — everything on-device. No key, no limits.' : 'Whisper + NLLB — အားလုံး စက်ထဲမှာပဲ။ Key မလို၊ limit မရှိ။')
+      : !isVideo && engine === 'local' ? (enUI ? 'Translates with Google Translate — free, no key needed.' : 'Google Translate နဲ့ ပြန်ဆို — အခမဲ့၊ key မလို။')
+      : !isVideo && ms ? (enUI ? 'Translates with Microsoft Translator — text is sent to Microsoft\'s servers.' : 'Microsoft Translator နဲ့ ပြန်ဆို — စာသားကို Microsoft server သို့ ပို့ရတယ်။')
       : !isVideo && nllb ? (enUI ? 'NLLB — translates on-device. No key, no limits.' : 'NLLB — စက်ထဲမှာပဲ ပြန်ဆို။ Key မလို၊ limit မရှိ။')
-      : (enUI ? 'Gemini understands context and translates naturally — text is sent to Google\'s servers.' : 'Gemini');
+      : oxion ? (enUI ? 'Oxion AI uses an OpenAI-compatible chat API to translate subtitle batches into natural Burmese. An API key and usage quota are required.' : 'Oxion AI API နဲ့ စာတန်းတွေကို အပိုင်းလိုက် သဘာဝကျတဲ့ မြန်မာစကားပြောပုံစံ ပြန်ဆိုမယ်။ API Key နဲ့ အသုံးပြုခွင့်ပမာဏ လိုအပ်တယ်။')
+      : (enUI ? 'Gemini understands context and translates naturally — text is sent to Google\'s servers.' : 'Gemini က အကြောင်းအရာ ဆက်စပ်နားလည်ပြီး သဘာဝကျကျ ပြန်ဆိုတယ် — စာသားကို Google server သို့ ပို့ရတယ်။');
   }
   $('engineA').addEventListener('click', function () { engine = 'local'; refreshSettings(); });
   $('engineB').addEventListener('click', function () { engine = 'gemini'; refreshSettings(); });
   $('engineC').addEventListener('click', function () { engine = 'microsoft'; refreshSettings(); });
   $('engineD').addEventListener('click', function () { engine = 'nllb'; refreshSettings(); });
+  $('engineE').addEventListener('click', function () { engine = 'oxion'; refreshSettings(); });
   refreshSettings();
   window.__mtRefreshSettings = refreshSettings; /* language toggle re-renders the engine description */
   $('modeVideo').addEventListener('click', function () { setMode('video'); });
@@ -986,6 +1220,7 @@ var SrtTools = (function () {
     keepAwake(false);
   }
   function failProgress(stepId, msg) {
+    autoFinishPending = false;
     if (stepId) setStep(stepId, 'err');
     setStatus(msg, true);
     log(msg);
@@ -1157,6 +1392,11 @@ var SrtTools = (function () {
         }
         throw err;
       }
+      if (r.status === 500 || r.status === 502 || r.status === 503 || r.status === 504) {
+        var oe = geminiError('Gemini server အလုပ်များနေပါတယ် (' + r.status + ') — ' + em, 'OVERLOAD');
+        oe.retryAfterSec = parseRetryAfter(r, j);
+        throw oe;
+      }
       throw geminiError('Gemini အမှား (' + r.status + '): ' + em);
     }
     var cand = j && j.candidates && j.candidates[0];
@@ -1175,31 +1415,37 @@ var SrtTools = (function () {
      Chunks/batches already finished by the caller stay untouched; only the
      request that hit the limit is re-sent. The user sees a live countdown
      in the status line so a long wait never looks like a frozen page. */
+  var OVERLOAD_MAX_RETRIES = 6;
   async function geminiRequestRetry(parts, model, key) {
     var tries = 0;
     for (;;) {
       try {
         return await geminiRequest(parts, model, key);
       } catch (e) {
-        if (!e || e.geminiCode !== 'QUOTA') throw e;
-        if (tries >= QUOTA_MAX_RETRIES) {
-          e.message = 'Gemini အခမဲ့ ကန့်သတ်ချက် (429) ကို ' + QUOTA_MAX_RETRIES +
-            ' ကြိမ် အလိုအလျောက် စောင့်ပြီး ပြန်ကြိုးစားပြီးပါပြီ — အခမဲ့ tier ရဲ့ တစ်နေ့တာ ကန့်သတ်ချက် ပြည့်သွားတာ ဖြစ်နိုင်ပါတယ်။ နောက်ထပ် အချိန်အတန်ကြာမှ ပြန်စမ်းပါ၊ ဒါမှမဟုတ် Billing ဖွင့်ထားတဲ့ API Key သုံးပါ / Whisper မုဒ် ပြောင်းသုံးပါ။';
+        var isQuota = !!e && e.geminiCode === 'QUOTA', isOver = !!e && e.geminiCode === 'OVERLOAD';
+        if (!isQuota && !isOver) throw e;
+        if (isQuota && $('overloadFallback') && $('overloadFallback').value && $('overloadFallback').value !== model) throw e;   /* a fallback model was chosen: switch now instead of waiting */
+        var max = isOver ? OVERLOAD_MAX_RETRIES : QUOTA_MAX_RETRIES;
+        if (tries >= max) {
+          e.message = isOver
+            ? 'Gemini server အလုပ်များနေတုန်းပါပဲ — ' + max + ' ကြိမ် အလိုအလျောက် ပြန်ကြိုးစားပြီးပါပြီ။ ခဏနေပြီး ပြန်စမ်းပါ၊ ဒါမှမဟုတ် တခြား Gemini မော်ဒယ် (ဥပမာ Flash-Lite) ရွေးပါ။'
+            : 'Gemini အခမဲ့ ကန့်သတ်ချက် (429) ကို ' + QUOTA_MAX_RETRIES + ' ကြိမ် အလိုအလျောက် စောင့်ပြီး ပြန်ကြိုးစားပြီးပါပြီ — အခမဲ့ tier ရဲ့ တစ်နေ့တာ ကန့်သတ်ချက် ပြည့်သွားတာ ဖြစ်နိုင်ပါတယ်။ နောက်ထပ် အချိန်အတန်ကြာမှ ပြန်စမ်းပါ၊ ဒါမှမဟုတ် Whisper / Google Translate မုဒ် ပြောင်းသုံးပါ။';
           throw e;
         }
         tries++;
-        var wait = e.retryAfterSec > 0 ? e.retryAfterSec
-          : Math.min(120, 15 * Math.pow(2, tries - 1));
+        var wait = isOver ? Math.min(60, 10 * Math.pow(2, tries - 1))
+          : (e.retryAfterSec > 0 ? e.retryAfterSec : Math.min(120, 15 * Math.pow(2, tries - 1)));
         wait = Math.max(5, Math.min(180, Math.ceil(wait)));
-        log('Gemini ကန့်သတ်ချက် (429) ထိသွားလို့ ' + wait + ' စက္ကန့် စောင့်ပြီး အလိုအလျောက် ပြန်ကြိုးစားပါမယ် (' + tries + '/' + QUOTA_MAX_RETRIES + ')');
+        var what = isOver ? 'Gemini server အလုပ်များနေလို့' : 'Gemini ကန့်သတ်ချက် (429) ထိသွားလို့';
+        log(what + ' ' + wait + ' စက္ကန့် စောင့်ပြီး အလိုအလျောက် ပြန်ကြိုးစားပါမယ် (' + tries + '/' + max + ')');
         for (var left = wait; left > 0; left--) {
-          setStatus('429 (limit) ထိသွားတယ် — ' + left + ' စက္ကန့်အကြာ ပြန်ကြိုးစားမယ် (' + tries + '/' + QUOTA_MAX_RETRIES + ')');
+          setStatus((isOver ? 'Gemini server အလုပ်များနေတယ်' : '429 (limit) ထိသွားတယ်') + ' — ' + left + ' စက္ကန့်အကြာ ပြန်ကြိုးစားမယ် (' + tries + '/' + max + ')');
           await sleepSec(1);
         }
       }
     }
   }
-  /* ---------- Gemini request pacing ----------
+    /* ---------- Gemini request pacing ----------
      The free tier allows roughly 10 requests per minute, and this tool
      fires requests back-to-back (one per 2-minute audio chunk, one per
      30-cue batch), so a run slams into 429s even though plenty of daily
@@ -1240,6 +1486,29 @@ var SrtTools = (function () {
     var savedPace = localStorage.getItem(PACE_KEY);
     if (savedPace != null && $('paceSec')) $('paceSec').value = savedPace;
   } catch (e) { /* storage unavailable — keep the default 7 */ }
+  try { var fbSaved = localStorage.getItem('mt_overload_fb'); if (fbSaved != null && $('overloadFallback')) $('overloadFallback').value = fbSaved; } catch (e) {}
+        try {
+          var gmSaved = localStorage.getItem('mt_gmodel'), gcSaved = localStorage.getItem('mt_gmodel_custom');
+          if (gmSaved && $('geminiModel') && Array.prototype.some.call($('geminiModel').options, function (o) { return o.value === gmSaved; })) $('geminiModel').value = gmSaved;
+          if (gcSaved && $('geminiModelCustom')) $('geminiModelCustom').value = gcSaved;
+        } catch (e) {}
+        if ($('geminiModel')) $('geminiModel').addEventListener('change', function () { try { localStorage.setItem('mt_gmodel', this.value); } catch (e) {} });
+        if ($('geminiModelCustom')) $('geminiModelCustom').addEventListener('input', function () { try { localStorage.setItem('mt_gmodel_custom', this.value); } catch (e) {} });
+        try {
+          var gpSaved = localStorage.getItem('mt_gpipe'), bsSaved = localStorage.getItem('mt_bsize');
+          if ($('geminiPipe')) $('geminiPipe').value = gpSaved || 'whisper';
+          var afS = localStorage.getItem('mt_autofin'), abS = localStorage.getItem('mt_autobk');
+          if (afS !== null && $('autoFinish')) $('autoFinish').checked = afS === '1';
+          if (abS !== null && $('autoBackup')) $('autoBackup').checked = abS === '1';
+          if (bsSaved !== null && $('batchSize')) $('batchSize').value = bsSaved;
+        } catch (e) {}
+        if ($('geminiPipe')) $('geminiPipe').addEventListener('change', function () { try { localStorage.setItem('mt_gpipe', this.value); } catch (e) {} });
+        ['autoFinish', 'autoBackup'].forEach(function (id) { if ($(id)) $(id).addEventListener('change', function () { try { localStorage.setItem(id === 'autoFinish' ? 'mt_autofin' : 'mt_autobk', this.checked ? '1' : '0'); } catch (e) {} }); });
+        if ($('batchSize')) $('batchSize').addEventListener('change', function () { try { localStorage.setItem('mt_bsize', this.value); } catch (e) {} });
+        if ($('trMemClear')) $('trMemClear').addEventListener('click', function () { var n = Object.keys(trMem).length; trMem = {}; try { localStorage.removeItem('mt_trmem'); } catch (e) {} toast('မှတ်ဉာဏ် ' + n + ' ခု ရှင်းပြီးပါပြီ'); });
+        try { var chSaved = localStorage.getItem('mt_chunk'); if (chSaved && $('geminiChunk')) $('geminiChunk').value = chSaved; } catch (e) {}
+        if ($('geminiChunk')) $('geminiChunk').addEventListener('change', function () { try { localStorage.setItem('mt_chunk', this.value); } catch (e) {} });
+        if ($('overloadFallback')) $('overloadFallback').addEventListener('change', function () { try { localStorage.setItem('mt_overload_fb', this.value); } catch (e) {} });
   if ($('paceSec')) $('paceSec').addEventListener('change', function () {
     var v = parseFloat($('paceSec').value);
     if (!isFinite(v) || v < 0) v = 0;
@@ -1247,18 +1516,35 @@ var SrtTools = (function () {
     $('paceSec').value = String(v);
     try { localStorage.setItem(PACE_KEY, String(v)); } catch (e) {}
   });
+  /* free-text model id (e.g. gemini-3.6-flash); only safe characters are accepted */
+  function customGeminiModel() {
+    var el = $('geminiModelCustom'); if (!el) return '';
+    var v = String(el.value || '').trim().replace(/^models\//, '');
+    return /^[A-Za-z0-9._-]{3,64}$/.test(v) ? v : '';
+  }
   async function geminiGenerate(parts) {
+    parts = styleParts(parts);
     var key = $('geminiKey').value.trim();
     if (!key) throw geminiError('အရင်ဆုံး Gemini API Key ထည့်ပေးပါ — Google AI Studio မှာ အခမဲ့ ထုတ်ယူလို့ ရပါတယ်။', 'NO_KEY');
     await applyPacing();
-    var model = $('geminiModel').value;
+    var model = customGeminiModel() || $('geminiModel').value;
     try {
       return await geminiRequestRetry(parts, model, key);
     } catch (e) {
+      if (e && (e.geminiCode === 'OVERLOAD' || e.geminiCode === 'QUOTA')) {
+        var alt = ($('overloadFallback') && $('overloadFallback').value) || '';
+    if (!alt || alt === model) throw e;
+        log(model + ' က ' + (e.geminiCode === 'QUOTA' ? 'quota (429) ပြည့်နေလို့ ' : 'အလုပ်များနေတုန်းမို့ ') + alt + ' နဲ့ ပြောင်းပြီး ဆက်လုပ်ပါမယ်…');
+        toast(alt + ' နဲ့ ပြောင်းပြီး ဆက်လုပ်နေပါတယ်');
+        $('geminiModel').value = alt;
+    if ($('geminiModelCustom')) $('geminiModelCustom').value = '';
+        return await geminiRequestRetry(parts, alt, key);
+      }
       if (!e || e.geminiCode !== 'MODEL_UNAVAILABLE') throw e;
       var fallback = (e.suggestedModel && e.suggestedModel !== model) ? e.suggestedModel
         : (model !== DEFAULT_GEMINI_MODEL ? DEFAULT_GEMINI_MODEL : '');
       if (!fallback) throw geminiError(modelUnavailableMessage(), 'MODEL_UNAVAILABLE');
+    if ($('geminiModelCustom') && $('geminiModelCustom').value) { log('ကိုယ်တိုင်ရိုက်ထားတဲ့ မော်ဒယ်က မရလို့ ' + fallback + ' ကို ပြောင်းသုံးပါမယ်'); $('geminiModelCustom').value = ''; }
       log('ရွေးထားတဲ့ မော်ဒယ် (' + model + ') ကို Google က မပေးတော့လို့ ' + fallback + ' နဲ့ အလိုအလျောက် ပြန်စမ်းနေပါတယ်…');
       toast('မော်ဒယ် မရတော့လို့ ' + fallback + ' နဲ့ ပြန်စမ်းနေပါတယ်');
       /* keep the picker on the working model so later chunks/batches in this run use it too */
@@ -1317,13 +1603,56 @@ var SrtTools = (function () {
     if (typeof v === 'number') return v;
     return SrtTools.parseTimeInput(v);
   }
+  /* the user's own style guide + example lines are added to every Gemini translation request */
+  function styleParts(parts) {
+    var st = ($('styleText') && $('styleText').value || '').trim();
+    if (!st) return parts;
+    var out = parts.slice(), k = -1;
+    for (var i = 0; i < out.length; i++) { if (out[i].text && /translat/i.test(out[i].text) && /Burmese/.test(out[i].text)) { k = i; break; } }
+    if (k < 0) return parts;
+    out[k] = { text: out[k].text + '\n\nSTYLE GUIDE from the user — follow it closely (tone, pronouns, politeness level, sentence length) and imitate the example lines if any:\n' + st };
+    return out;
+  }
+  /* ---------- translation memory: reuse finished lines (resume after a failure) + send identical lines once ---------- */
+  var trMem = {};
+  try { trMem = JSON.parse(localStorage.getItem('mt_trmem') || '{}') || {}; } catch (e) { trMem = {}; }
+  function trHash(s) { var h = 5381; for (var i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0; return h.toString(36); }
+  function trSig(kind) {
+    var model = kind === 'oxion' ? (customOxionModel() || ($('oxionModel') && $('oxionModel').value) || '') : (customGeminiModel() || $('geminiModel').value);
+    return kind + ':' + model + ':' + trHash(($('styleText') ? $('styleText').value : '') + '||' + (glossaryPromptText() || '') + '||' + ($('srcLang').value || ''));
+  }
+  function normKey(s) { return String(s).replace(/\s+/g, ' ').trim(); }
+  function memGet(sig, text) { return trMem[sig + '\u0001' + normKey(text)]; }
+  function memSet(sig, text, my) { if (my) trMem[sig + '\u0001' + normKey(text)] = String(my); }
+  function memSave() {
+    var ks = Object.keys(trMem);
+    if (ks.length > 1500) ks.slice(0, ks.length - 1500).forEach(function (k) { delete trMem[k]; });
+    try { localStorage.setItem('mt_trmem', JSON.stringify(trMem)); } catch (e) {}
+  }
+  function memPrep(todo, sig) {
+    var all = [], dupOf = {}, uniq = [], reused = 0;
+    todo.forEach(function (s) {
+      var hit = memGet(sig, s.text);
+      if (hit) { s.my = hit; s.failed = false; reused++; return; }
+      all.push(s); var k = normKey(s.text);
+      if (dupOf[k] === undefined) { dupOf[k] = s; uniq.push(s); }
+    });
+    return { uniq: uniq, all: all, dupOf: dupOf, reused: reused };
+  }
+  function memFinish(p) {
+    p.all.forEach(function (s) { var r = p.dupOf[normKey(s.text)]; if (r && r !== s) { s.my = r.my; s.failed = r.failed; } });
+    memSave();
+  }
+  function batchSizeVal(def) { var v = parseInt(($('batchSize') && $('batchSize').value) || '', 10); return v > 0 ? v : def; }
+  function geminiViaAudio() { var s = $('geminiPipe'); return !s || s.value !== 'whisper'; }
   async function translateSegmentsGemini(list, onProgress) {
-    var BATCH = 30, failed = 0, done = 0;
+    var BATCH = batchSizeVal(30), failed = 0, done = 0, reused = 0, sig = trSig('gemini');
     var lang = LANG_NAME[$('srcLang').value];
     var langPhrase = lang ? ('in ' + lang) : 'in the source language (detect it from the text itself)';
     for (var i = 0; i < list.length; i += BATCH) {
       var batch = list.slice(i, i + BATCH);
       var todo = batch.filter(function (s) { return !!s.text; });
+    var mp = memPrep(todo, sig); todo = mp.uniq; reused += mp.reused;
       batch.forEach(function (s) { if (!s.text) { s.my = ''; s.failed = false; } });
       if (todo.length) {
         var payload = todo.map(function (s) { return { text: s.text }; });
@@ -1333,13 +1662,16 @@ var SrtTools = (function () {
           'Reply with ONLY a JSON array of exactly the same length and order, each item {"my": "<Burmese translation>"}. Lines:\n' +
           JSON.stringify(payload);
         try {
-          var gres = await geminiGenerate([{ text: prompt }]);
+          var prevCtx = list.slice(Math.max(0, i - 4), i).filter(function (s) { return s.text && s.my && !s.failed; }).map(function (s) { return { text: s.text, my: s.my }; });
+        var nextCtx = list.slice(i + BATCH, i + BATCH + 2).filter(function (s) { return s.text; }).map(function (s) { return s.text; });
+        if (prevCtx.length || nextCtx.length) prompt += '\n\nCONTEXT ONLY — do NOT translate or include these in the output. Previous lines already translated (stay consistent with names, pronouns and politeness level): ' + JSON.stringify(prevCtx) + '. Lines right after this batch: ' + JSON.stringify(nextCtx) + '.';
+        var gres = await geminiGenerate([{ text: prompt }]);
           if (gres.finishReason === 'MAX_TOKENS') throw new Error('BAD_BATCH');
           var arr = parseJsonArray(gres.text);
           if (!arr || arr.length !== todo.length) throw new Error('BAD_BATCH');
           todo.forEach(function (s, k) {
             var my = arr[k] && (arr[k].my || arr[k].translation || '');
-            if (my) { s.my = String(my); s.failed = false; }
+            if (my) { s.my = String(my); s.failed = false; memSet(sig, s.text, s.my); }
             else { if (!s.my) s.my = s.text; s.failed = true; failed++; }
           });
         } catch (e) {
@@ -1347,9 +1679,11 @@ var SrtTools = (function () {
           todo.forEach(function (s) { if (!s.my) s.my = s.text; s.failed = true; failed++; });
         }
       }
-      done += batch.length;
+      memFinish(mp);
+    done += batch.length;
       if (onProgress) onProgress(done, list.length);
     }
+    if (reused) log('ဘာသာပြန်ပြီးသား မှတ်ဉာဏ်ကနေ ' + reused + ' ကြောင်း ပြန်သုံးထားတယ် (request မကုန်ဘူး)');
     return failed;
   }
   /* ---------- Microsoft Translator (Azure AI Translator) ----------
@@ -1462,6 +1796,97 @@ var SrtTools = (function () {
     }
     return failed;
   }
+  /* ---------- Oxion AI (OpenAI-compatible text translation API) ----------
+     Text-only engine. Video mode transcribes locally with Whisper, then sends
+     subtitle text batches to Oxion AI. The key is read from the current input
+     only and is never written to localStorage or project snapshots. */
+  function oxionError(msg, code) {
+    var e = new Error(msg);
+    e.isOxion = true;
+    if (code) e.oxionCode = code;
+    return e;
+  }
+  function customOxionModel() {
+    var el = $('oxionModelCustom');
+    var v = String(el && el.value || '').trim();
+    return /^[A-Za-z0-9._-]{3,100}$/.test(v) ? v : '';
+  }
+  async function oxionGenerate(prompt, model, key) {
+    var response;
+    try {
+      response = await fetch('https://www.oxionai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: model,
+          messages: [
+            { role: 'system', content: 'You are a professional short-drama subtitle translator. Translate into natural, concise, conversational Burmese (Myanmar). Preserve meaning, emotion, names, and subtitle order. Follow the requested JSON output format exactly.' },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.2
+        })
+      });
+    } catch (e) {
+      throw oxionError('Oxion AI ဆီ ချိတ်ဆက်မရပါဘူး။ အင်တာနက်နဲ့ API ဝန်ဆောင်မှုကို စစ်ပြီး ပြန်စမ်းပါ။');
+    }
+    var data = null;
+    try { data = await response.json(); } catch (e) {}
+    if (!response.ok) {
+      var detail = data && data.error && (data.error.message || data.error.code);
+      if (response.status === 401 || response.status === 403) throw oxionError('Oxion AI API Key မမှန်ပါဘူး၊ သို့မဟုတ် ခွင့်ပြုချက်မရှိပါဘူး။ Key ကို စစ်ပါ။', 'AUTH');
+      if (response.status === 402) throw oxionError('Oxion AI အကောင့်ရဲ့ token / balance မလုံလောက်နိုင်ပါဘူး။ Dashboard မှာ usage ကို စစ်ပါ။', 'BALANCE');
+      if (response.status === 429) throw oxionError('Oxion AI rate limit ထိသွားပါတယ်။ ခဏစောင့်ပြီး ပြန်စမ်းပါ။', 'RATE_LIMIT');
+      throw oxionError('Oxion AI API အမှား (' + response.status + '): ' + String(detail || response.statusText || 'Request failed').slice(0, 220), 'API');
+    }
+    var content = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+    if (Array.isArray(content)) content = content.map(function (x) { return x && x.text || ''; }).join('');
+    if (typeof content !== 'string' || !content.trim()) throw oxionError('Oxion AI က ဘာသာပြန်စာသား မပြန်ပေးခဲ့ပါဘူး။ Model ကို ပြောင်းပြီး ပြန်စမ်းပါ။', 'EMPTY');
+    return content;
+  }
+  async function translateSegmentsOxion(list, onProgress) {
+    var key = $('oxionKey').value.trim();
+    if (!key) throw oxionError('အရင်ဆုံး Oxion AI API Key ထည့်ပေးပါ။', 'NO_KEY');
+    var model = customOxionModel() || $('oxionModel').value || 'qwen3.8-27b';
+    var BATCH = 20, failed = 0, done = 0, reused = 0, sig = trSig('oxion');
+    var lang = LANG_NAME[$('srcLang').value];
+    var langPhrase = lang ? ('The source language is ' + lang + '.') : 'Detect the source language from each line.';
+    for (var i = 0; i < list.length; i += BATCH) {
+      var batch = list.slice(i, i + BATCH);
+      var todo = batch.filter(function (s) { return !!s.text; });
+    var mp = memPrep(todo, sig); todo = mp.uniq; reused += mp.reused;
+      batch.forEach(function (s) { if (!s.text) { s.my = ''; s.failed = false; } });
+      if (todo.length) {
+        var previous = list.slice(Math.max(0, i - 4), i).filter(function (s) { return s.text && s.my && !s.failed; }).map(function (s) { return { source: s.text, burmese: s.my }; });
+        var next = list.slice(i + BATCH, i + BATCH + 2).filter(function (s) { return s.text; }).map(function (s) { return s.text; });
+        var prompt = 'Translate the following subtitle lines into natural spoken Burmese (Myanmar) for a short drama. ' + langPhrase +
+          ' Keep each line concise enough for subtitles. Preserve the exact order and count. Do not add explanations. ' +
+          (glossaryPromptText() ? 'Use these exact Burmese spellings for names/terms: ' + glossaryPromptText() + '. ' : '') +
+          ($('styleText').value.trim() ? 'Follow this style guide: ' + $('styleText').value.trim() + '. ' : '') +
+          'Return ONLY a valid JSON array with one object per input line, each object shaped as {"my":"Burmese translation"}. Input lines: ' + JSON.stringify(todo.map(function (s) { return { text: s.text }; }));
+        if (previous.length) prompt += '\n\nContext only (already translated; do not include in output): ' + JSON.stringify(previous);
+        if (next.length) prompt += '\n\nNext lines for context only (do not include in output): ' + JSON.stringify(next);
+        try {
+          var raw = await oxionGenerate(prompt, model, key);
+          var arr = parseJsonArray(raw);
+          if (!arr || arr.length !== todo.length) throw oxionError('Oxion AI ရဲ့ JSON အဖြေ မပြည့်စုံပါဘူး။ Model ကို ပြောင်းပြီး ပြန်စမ်းပါ။', 'BAD_JSON');
+          todo.forEach(function (seg, k) {
+            var value = arr[k] && (arr[k].my || arr[k].translation || arr[k].burmese || '');
+            if (value) { seg.my = String(value).trim(); seg.failed = false; memSet(sig, seg.text, seg.my); }
+            else { if (!seg.my) seg.my = seg.text; seg.failed = true; failed++; }
+          });
+        } catch (e) {
+          if (e && e.isOxion) throw e;
+          todo.forEach(function (seg) { if (!seg.my) seg.my = seg.text; seg.failed = true; failed++; });
+        }
+      }
+      memFinish(mp);
+    done += batch.length;
+      if (onProgress) onProgress(done, list.length);
+    }
+    if (reused) log('ဘာသာပြန်ပြီးသား မှတ်ဉာဏ်ကနေ ' + reused + ' ကြောင်း ပြန်သုံးထားတယ် (request မကုန်ဘူး)');
+    return failed;
+  }
+
   /* ---------- NLLB (Meta's No Language Left Behind, fully on-device) ----------
      Translation runs in the browser via the same Transformers.js build that
      Whisper uses — no account, no API key, no quota, and nothing leaves the
@@ -1531,11 +1956,46 @@ var SrtTools = (function () {
     }
     return failed;
   }
-  function translateSegmentsAuto(list, sl, onProgress) {
-    if (engine === 'gemini') return translateSegmentsGemini(list, onProgress);
-    if (engine === 'microsoft') return translateSegmentsMS(list, onProgress);
-    if (engine === 'nllb') return translateSegmentsNllb(list, onProgress);
+  var engineOverride = '';
+  function translateSegmentsOne(list, sl, onProgress) {
+    var eng = engineOverride || engine;
+    if (eng === 'gemini') return translateSegmentsGemini(list, onProgress);
+    if (eng === 'microsoft') return translateSegmentsMS(list, onProgress);
+    if (eng === 'nllb') return translateSegmentsNllb(list, onProgress);
+    if (eng === 'oxion') return translateSegmentsOxion(list, onProgress);
     return translateSegments(list, sl, onProgress);
+  }
+  /* one-click: if the chosen engine fails (503 / 429 / bad key …) the lines that are still untranslated continue on the next available engine */
+  function autoChain() {
+    var c = [engine];
+    if (!($('autoBackup') && $('autoBackup').checked)) return c;
+    function add(e, ok) { if (ok && c.indexOf(e) < 0) c.push(e); }
+    add('gemini', !!($('geminiKey') && $('geminiKey').value.trim()));
+    add('oxion', !!($('oxionKey') && $('oxionKey').value.trim()));
+    add('microsoft', !!($('msKey') && $('msKey').value.trim()));
+    add('local', true);                                   /* Google Translate needs no key — last resort */
+    return c;
+  }
+  async function translateSegmentsAuto(list, sl, onProgress) {
+    var chain = autoChain(), firstErr = null, i;
+    function pending() { return list.filter(function (s) { return s.text && (!s.my || s.failed || s.my === s.text); }); }
+    for (i = 0; i < chain.length; i++) {
+      var todo = i === 0 ? list : pending();
+      if (!todo.length) break;
+      engineOverride = chain[i];
+      var base = list.length - todo.length;
+      try {
+        await translateSegmentsOne(todo, sl, function (d) { if (onProgress) onProgress(Math.min(list.length, base + d), list.length); });
+        if (!pending().length) break;
+        if (i < chain.length - 1) log('တချို့စာတန်း မအောင်သေးလို့ ' + chain[i + 1] + ' နဲ့ ဆက်လုပ်ပါမယ်');
+      } catch (e) {
+        if (!firstErr) firstErr = e;
+        if (i < chain.length - 1) log('«' + chain[i] + '» မအောင်မြင်လို့ «' + chain[i + 1] + '» နဲ့ ဆက်လုပ်ပါမယ် — ' + String(e && e.message).slice(0, 110));
+        else { engineOverride = ''; throw firstErr; }
+      }
+    }
+    engineOverride = '';
+    return list.filter(function (s) { return s.text && s.failed; }).length;
   }
 
   /* ---------- start: video mode ---------- */
@@ -1603,7 +2063,7 @@ var SrtTools = (function () {
       showResult();
     } catch (e) {
       console.error(e);
-      var msg = (e.isGemini || e.isMs || e.isNllb) ? e.message
+      var msg = (e.isGemini || e.isMs || e.isNllb || e.isOxion) ? e.message
         : e.message === 'AUDIO_DECODE'
         ? 'ဒီဖိုင်ရဲ့ အသံကို ဖတ်မရပါဘူး။ mp4 / mp3 အဖြစ် ပြောင်းပြီးမှ ပြန်စမ်းကြည့်ပါ။'
         : e.message === 'NO_SPEECH'
@@ -1618,6 +2078,18 @@ var SrtTools = (function () {
      updateStats turns a big leftover gap into an on-screen warning). */
   var coverageGapSec = 0;
 
+  /* Gemini sometimes returns times that run past the length of the clip it was sent (its sense of time stretches).
+     Accepting them as-is pushes every later subtitle late and past the end of the video — so stretch them back. */
+  function fitCuesToClip(rel, dur) {
+    var mx = 0; rel.forEach(function (r) { if (r.en > mx) mx = r.en; });
+    var k = (mx > dur + 1.5) ? dur / mx : 1, out = [];
+    rel.forEach(function (r) {
+      var st = r.st * k, en = Math.min(r.en * k, dur);
+      if (st >= dur - 0.1) return;
+      out.push(Object.assign({}, r, { st: st, en: Math.max(st + 0.2, en) }));
+    });
+    return { list: out, k: k, over: mx - dur };
+  }
   async function runVideoGemini() {
     var srcLang = $('srcLang').value;
     coverageGapSec = 0;
@@ -1641,7 +2113,7 @@ var SrtTools = (function () {
          clip overflows Gemini's output limit — the answer stops mid-JSON and
          every later line of the video silently goes missing. Shorter chunks
          plus the gap-fill pass below keep the whole video covered. */
-      var CHUNK = 120;
+      var CHUNK = Math.max(30, parseInt(($('geminiChunk') && $('geminiChunk').value) || '120', 10) || 120);
       var chunks = Math.max(1, Math.ceil(totalSec / CHUNK));
       var lang = LANG_NAME[srcLang];
       var langPhrase = lang ? ('The spoken language is ' + lang + '.') : 'Detect the spoken language from the audio.';
@@ -1670,6 +2142,7 @@ var SrtTools = (function () {
           if (arr) salvaged = true;
         }
         if (arr) {
+          var rel = [];
           arr.forEach(function (it) {
             if (!it) return;
             var st = coerceTime(it.start), en = coerceTime(it.end);
@@ -1677,8 +2150,11 @@ var SrtTools = (function () {
             if (!isFinite(en) || en <= st) en = st + 2;
             var my = String(it.my || it.translation || '').trim();
             if (!my) return;
-            cues.push({ start: st + fromSec, end: en + fromSec, text: String(it.original || '').trim(), my: my, failed: false });
+            rel.push({ st: st, en: en, text: String(it.original || '').trim(), my: my });
           });
+          var fit = fitCuesToClip(rel, slice.length / 16000);
+          if (fit.k < 1) log('Gemini ပေးတဲ့ အချိန်တွေက အသံအပိုင်းရဲ့ အရှည်ထက် ' + Math.round(fit.over) + ' စက္ကန့်ခန့် ကျော်နေလို့ ပြန်ချုံ့ပေးပါတယ် (×' + fit.k.toFixed(3) + ')');
+          fit.list.forEach(function (r) { cues.push({ start: r.st + fromSec, end: r.en + fromSec, text: r.text, my: r.my, failed: false }); });
         } else {
           /* fallback: model answered with plain SRT instead of JSON — treat it as the Burmese track */
           SrtTools.parseSrt(gres.text).forEach(function (p) {
@@ -1754,7 +2230,7 @@ var SrtTools = (function () {
       showResult();
     } catch (e) {
       console.error(e);
-      var msg = (e.isGemini || e.isMs || e.isNllb) ? e.message
+      var msg = (e.isGemini || e.isMs || e.isNllb || e.isOxion) ? e.message
         : e.message === 'AUDIO_DECODE'
         ? 'ဒီဖိုင်ရဲ့ အသံကို ဖတ်မရပါဘူး။ mp4 / mp3 အဖြစ် ပြောင်းပြီးမှ ပြန်စမ်းကြည့်ပါ။'
         : e.message === 'NO_SPEECH'
@@ -1811,7 +2287,7 @@ var SrtTools = (function () {
       showResult();
     } catch (e) {
       console.error(e);
-      var msg = (e.isGemini || e.isMs || e.isNllb) ? e.message
+      var msg = (e.isGemini || e.isMs || e.isNllb || e.isOxion) ? e.message
         : e.message === 'NO_CUES'
         ? 'ဒီဖိုင်ထဲမှာ စာတန်းအချိန်တွေ မတွေ့မိပါဘူး။ စံချိန်ကိုက် .srt / .vtt ဖိုင် ဖြစ်ကြောင်း စစ်ကြည့်ပါ။'
         : 'အမှားတစ်ခု ဖြစ်သွားပါတယ်: ' + e.message + ' — အင်တာနက် ချိတ်ဆက်မှု စစ်ပြီး ပြန်စမ်းကြည့်ပါ။';
@@ -1832,11 +2308,18 @@ var SrtTools = (function () {
       $('msKey').focus();
       return;
     }
+    if (engine === 'oxion' && !$('oxionKey').value.trim()) {
+      toast('အရင်ဆုံး Oxion AI API Key ထည့်ပေးပါ');
+      $('oxionKey').focus();
+      return;
+    }
     if (mode === 'video') {
       if (!videoFile) { toast('အရင်ဆုံး ဗီဒီယို / အသံဖိုင် ရွေးပေးပါ'); return; }
-      if (engine === 'gemini') runVideoGemini(); else runVideo();
+      autoFinishPending = !!($('autoFinish') && $('autoFinish').checked);
+      if (engine === 'gemini' && geminiViaAudio()) runVideoGemini(); else runVideo();
     } else {
       if (!srtFile) { toast('အရင်ဆုံး .srt / .vtt ဖိုင် ရွေးပေးပါ'); return; }
+      autoFinishPending = !!($('autoFinish') && $('autoFinish').checked);
       runSrt();
     }
   });
@@ -1860,8 +2343,27 @@ var SrtTools = (function () {
       warn.classList.add('hidden');
     }
   }
+  /* ---------- one-click: after a run, tidy the subtitles and download the SRT without any further clicks ---------- */
+  var autoFinishPending = false;
+  async function autoFinishNow() {
+    if (!segments.length) return;
+    var v = $('preview'), notes = [];
+    if (mode === 'video' && !(isFinite(v.duration) && v.duration > 0)) {
+      await new Promise(function (res) { var done = false; function f() { if (!done) { done = true; res(); } } v.addEventListener('loadedmetadata', f, { once: true }); setTimeout(f, 5000); });
+    }
+    var dur = v.duration, last = lastEndSec();
+    if (mode === 'video' && isFinite(dur) && dur > 0 && last > dur + 2) { syncFit(); notes.push('အချိန်ကို ဗီဒီယိုအရှည်နဲ့ ကိုက်အောင် ချုံ့'); }
+    var before = segments.length; splitAllLong();
+    if (segments.length > before) notes.push('ရှည်တဲ့စာတန်း ' + (segments.length - before) + ' ခု ခွဲ');
+    $('dlSrt').click();
+    var bad = failedCount();
+    toast('အဆင်သင့်ပါ — SRT ဒေါင်းလုဒ်လုပ်ပြီးပါပြီ' + (notes.length ? ' (' + notes.join('၊ ') + ')' : '') + (bad ? ' · ' + bad + ' ကြောင်း ဘာသာပြန်မရလို့ မူရင်းအတိုင်းထားတယ်' : '') + ' — မဆင်းရင် အနီခလုတ်ကို နှိပ်ပါ');
+  }
   function showResult() {
+    var runAuto = autoFinishPending; autoFinishPending = false;
+    if (runAuto) setTimeout(autoFinishNow, 600);
     $('cardResult').classList.remove('hidden');
+    segments.forEach(function (s) { if (s.mt === undefined) s.mt = s.my || ''; });
     activeIdx = -1;
     var isVideoMode = mode === 'video';
     $('previewCol').classList.toggle('hidden', !isVideoMode);
@@ -1885,21 +2387,24 @@ var SrtTools = (function () {
     updateVideoEmpty();
     if (!batchRunning) { switchTab('edit'); $('cardResult').scrollIntoView({ behavior: 'smooth' }); }
   }
-  $('preview').addEventListener('timeupdate', function () {
-    var v = $('preview'), t = v.currentTime;
-    var idx = -1;
-    for (var i = 0; i < segments.length; i++) {
-      if (t >= segments[i].start && t <= segments[i].end) { idx = i; break; }
-    }
-    $('cueText').textContent = idx >= 0 ? SrtTools.splitLines(segments[idx].my || '', maxCharsVal).join('\n') : '';
-    applyCueStyle();
+  var lastCueText = null, cueRaf = 0;
+  function updateCue() {
+    var t = $('preview').currentTime, ids = [];
+    for (var i = 0; i < segments.length; i++) { if (t >= segments[i].start && t < segments[i].end) ids.push(i); }
+    var idx = ids.length ? ids[0] : -1;
+    var txt = ids.slice(-2).map(function (k) { return SrtTools.splitLines(segments[k].my || '', maxCharsVal).join('\n'); }).filter(Boolean).join('\n');
+    if (txt !== lastCueText) { lastCueText = txt; $('cueText').textContent = txt; applyCueStyle(); }
     if (idx !== activeIdx) {
       var rows = $('segList').children;
       if (activeIdx >= 0 && rows[activeIdx]) rows[activeIdx].classList.remove('active');
       if (idx >= 0 && rows[idx]) rows[idx].classList.add('active');
       activeIdx = idx;
     }
-  });
+  }
+  function cueLoop() { updateCue(); var v = $('preview'); cueRaf = (!v.paused && !v.ended) ? requestAnimationFrame(cueLoop) : 0; }
+  $('preview').addEventListener('timeupdate', updateCue);
+  $('preview').addEventListener('seeked', updateCue);
+  $('preview').addEventListener('play', function () { if (!cueRaf) cueLoop(); });
 
   function escapeHtml(t) {
     var d = document.createElement('div');
@@ -1910,13 +2415,116 @@ var SrtTools = (function () {
   var ICON_RETRY = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.3L3 8"/><path d="M3 3v5h5"/></svg>';
   var ICON_DEL = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 
+  /* ---------- split long subtitles into separate, timed rows ---------- */
+  var splitSnap = null;
+  function gchars(s) {
+    try { return Array.from(new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(String(s)), function (x) { return x.segment; }); }
+    catch (e) { return Array.from(String(s)); }
+  }
+  function chunkText(text, limit) {
+    var chars = gchars(String(text || '').trim().replace(/\s+/g, ' ')), out = [], tests = [/[။!?.。！？]/, /[၊,;:，；：]/, /\s/];
+    while (chars.length > limit) {
+      var lo = Math.floor(limit * 0.45), cut = -1;
+      for (var k = 0; k < 3 && cut < 0; k++) { for (var i = limit - 1; i >= lo; i--) { if (tests[k].test(chars[i])) { cut = i + 1; break; } } }
+      if (cut < 0) cut = limit;
+      out.push(chars.slice(0, cut).join('').trim());
+      chars = chars.slice(cut);
+      while (chars.length && /\s/.test(chars[0])) chars.shift();
+    }
+    if (chars.length) out.push(chars.join('').trim());
+    return out.filter(Boolean);
+  }
+  function splitRefresh(msg) {
+    activeIdx = -1; renderEditor(); updateStats();
+    if (typeof scheduleSave === 'function') scheduleSave();
+    var u = $('splitUndo'); if (u) u.disabled = !splitSnap;
+    if (msg) toast(msg);
+  }
+  function splitSegAt(i, pos) {
+    var s = segments[i], txt = String(s.my || '');
+    if (gchars(txt).length < 2) { toast('ခွဲစရာ စာသား မလုံလောက်ပါဘူး'); return; }
+    var at = pos;
+    if (!(at > 0 && at < txt.length)) {              /* no caret chosen: break at the punctuation / space nearest the middle */
+      var mid0 = Math.floor(txt.length / 2), bd = 1e9; at = mid0;
+      for (var k = 1; k < txt.length; k++) { if (/[။၊!?.,;\s]/.test(txt[k - 1]) && Math.abs(k - mid0) < bd) { bd = Math.abs(k - mid0); at = k; } }
+    }
+    var a = txt.slice(0, at).trim(), b = txt.slice(at).trim();
+    if (!a || !b) { toast('ခွဲစရာ နေရာ မရှိပါဘူး — စာကြားထဲမှာ cursor ထားပါ'); return; }
+    var na = gchars(a).length, nb = gchars(b).length, mid = s.start + (s.end - s.start) * na / (na + nb);
+    splitSnap = JSON.stringify(segments);
+    segments.splice(i, 1, Object.assign({}, s, { end: mid, my: a, failed: false }), Object.assign({}, s, { start: mid, my: b, text: '', failed: false }));
+    splitRefresh('ခွဲပြီးပါပြီ');
+  }
+  function splitAllLong() {
+    var lim = Math.max(12, parseInt($('splitMax').value, 10) || 40), added = 0, out = [], snap = JSON.stringify(segments);
+    segments.forEach(function (s) {
+      var txt = String(s.my || '').trim(), len = gchars(txt).length;
+      if (len <= lim) { out.push(s); return; }
+      var parts = chunkText(txt, Math.ceil(len / Math.ceil(len / lim)) + 3);
+      if (parts.length < 2) { out.push(s); return; }
+      var total = 0, w = parts.map(function (q) { var c = gchars(q).length; total += c; return c; }), acc = 0, dur = s.end - s.start;
+      parts.forEach(function (q, k) {
+        var st = s.start + dur * acc / total; acc += w[k];
+        out.push(Object.assign({}, s, { start: st, end: k === parts.length - 1 ? s.end : s.start + dur * acc / total, my: q, text: k === 0 ? s.text : '', failed: false }));
+      });
+      added += parts.length - 1;
+    });
+    if (!added) { toast('ခွဲစရာ ရှည်တဲ့စာတန်း မရှိပါဘူး'); return; }
+    splitSnap = snap; segments.length = 0; out.forEach(function (s) { segments.push(s); });
+    splitRefresh('စာတန်းအသစ် ' + added + ' ခု ထပ်ခွဲပြီးပါပြီ (ပြန်ဆုတ်လို့ရတယ်)');
+  }
+  function splitUndoNow() {
+    if (!splitSnap) return;
+    var arr = JSON.parse(splitSnap); splitSnap = null;
+    segments.length = 0; arr.forEach(function (s) { segments.push(s); });
+    splitRefresh('ပြန်ဆုတ်ပြီးပါပြီ');
+  }
+  /* ---------- timing sync: fixes subtitles that drift out of step with the video ---------- */
+  function fmtT(s) { s = Math.max(0, s || 0); var m = Math.floor(s / 60), r = Math.floor(s % 60); return m + ':' + (r < 10 ? '0' : '') + r; }
+  function lastEndSec() { var l = 0; segments.forEach(function (s) { if (s.end > l) l = s.end; }); return l; }
+  function syncInfo() {
+    var el = $('syncInfo'); if (!el) return;
+    if (!segments.length) { el.textContent = ''; return; }
+    var dur = $('preview').duration, last = lastEndSec(), msg = 'စာတန်းအားလုံး ' + fmtT(last) + ' မှာ ပြီးတယ်';
+    if (isFinite(dur) && dur > 0) {
+      msg += ' · ဗီဒီယိုအရှည် ' + fmtT(dur);
+      if (last - dur > 2) msg += ' — စာတန်းက ' + Math.round(last - dur) + ' စက္ကန့် ပိုရှည်နေတယ် (အချိန်လွဲနေတာ)';
+    }
+    el.textContent = msg;
+  }
+  function syncRowText(k) {
+    var n = parseInt($('syncN' + k).value, 10), s = segments[n - 1];
+    $('syncT' + k).textContent = s ? ('“' + String(s.my || s.text || '').slice(0, 42) + '” — စာတန်းအစ ' + fmtT(s.start)) : '';
+  }
+  function syncSnapshot() { splitSnap = JSON.stringify(segments); }
+  function syncApply() {
+    var n1 = parseInt($('syncN1').value, 10), n2 = parseInt($('syncN2').value, 10), r1 = parseFloat($('syncR1').value), r2 = parseFloat($('syncR2').value);
+    var s1 = segments[n1 - 1], s2 = segments[n2 - 1];
+    if (!s1 || !s2 || n1 === n2 || !isFinite(r1) || !isFinite(r2)) { toast('စာတန်းအမှတ် ၂ ခုနဲ့ အချိန် ၂ ခု ထည့်ပါ'); return; }
+    var o1 = s1.start, o2 = s2.start;
+    if (Math.abs(o2 - o1) < 5) { toast('စာတန်း ၂ ခုက အချိန် နီးလွန်းတယ် — အစပိုင်း၊ အဆုံးပိုင်းကနေ ရွေးပါ'); return; }
+    var a = (r2 - r1) / (o2 - o1), b = r1 - a * o1;
+    if (!(a > 0.3 && a < 3)) { toast('တွက်ထားတာ မဖြစ်နိုင်ပါဘူး — အချိန်တွေ ပြန်စစ်ပါ'); return; }
+    syncSnapshot();
+    segments.forEach(function (s) { var st = Math.max(0, a * s.start + b), en = a * s.end + b; s.start = st; s.end = Math.max(st + 0.2, en); });
+    splitRefresh('အချိန်ညှိပြီးပါပြီ (အချိုး ×' + a.toFixed(4) + ') — မကြိုက်ရင် ပြန်ဆုတ်လို့ရတယ်'); syncInfo();
+  }
+  function syncFit() {
+    var dur = $('preview').duration, last = lastEndSec();
+    if (!(isFinite(dur) && dur > 0)) { toast('ဗီဒီယို မတင်ရသေးပါဘူး'); return; }
+    if (last <= dur - 0.5) { toast('စာတန်းက ဗီဒီယိုအရှည်ထက် မကျော်ပါဘူး — အချက် ၂ ခုနဲ့ ညှိပါ'); return; }
+    var k = (dur - 0.3) / last;
+    syncSnapshot();
+    segments.forEach(function (s) { s.start *= k; s.end *= k; });
+    splitRefresh('ဗီဒီယိုအရှည်နဲ့ ကိုက်အောင် ချုံ့ပြီးပါပြီ (×' + k.toFixed(4) + ')'); syncInfo();
+  }
   function renderEditor() {
     var list = $('segList');
     list.innerHTML = '';
     if (!segments.length) {
       var empty = document.createElement('div');
       empty.className = 'empty';
-      empty.textContent = 'စာကြောင်း မရှိသေးပါ';
+      empty.textContent = 'စာကြောင်း မရှိသေးပါဘူး — အောက်က ခလုတ်နဲ့ အသစ်ထည့်လို့ ရပါတယ်။';
       list.appendChild(empty);
       return;
     }
@@ -1926,7 +2534,8 @@ var SrtTools = (function () {
       var head = '<div class="seg-head"><span class="seg-num">#' + (i + 1) + '</span>' + cpsBadgeHtml(s) + '<span class="sp"></span>';
       if (mode === 'video') head += '<button class="iconbtn seek" title="ဒီနေရာကနေ ဖွင့်ကြည့်မယ်" aria-label="ဒီနေရာကနေ ဖွင့်ကြည့်မယ်">' + ICON_PLAY + '</button>';
       if (s.failed) head += '<button class="iconbtn retry" title="ဒီစာကြောင်း ပြန်ဆိုမယ်" aria-label="ဒီစာကြောင်း ပြန်ဆိုမယ်">' + ICON_RETRY + '</button>';
-      head += '<button class="iconbtn red del" title="ဖျက်မယ်" aria-label="စာကြောင်း ဖျက်မယ်">' + ICON_DEL + '</button></div>';
+      head += '<button class="iconbtn split" title="cursor ရှိတဲ့နေရာမှာ ခွဲမယ်" aria-label="စာတန်း ခွဲမယ်">&#9986;</button>';
+head += '<button class="iconbtn red del" title="ဖျက်မယ်" aria-label="စာကြောင်း ဖျက်မယ်">' + ICON_DEL + '</button></div>';
       var dur = Math.max(0, s.end - s.start).toFixed(1);
       d.innerHTML = head +
         '<div class="times"><input class="t0" value="' + s.start.toFixed(2) + '" inputmode="decimal" aria-label="စတင်ချိန် (စက္ကန့်)">' +
@@ -1966,7 +2575,8 @@ var SrtTools = (function () {
         renderEditor();
         updateStats();
       });
-      var seekBtn = d.querySelector('.seek');
+      d.querySelector('.split').addEventListener('click', function () { splitSegAt(i, ta.selectionStart || 0); });
+var seekBtn = d.querySelector('.seek');
       if (seekBtn) seekBtn.addEventListener('click', function () {
         switchTab('video');
         var v = $('preview');
@@ -1992,7 +2602,7 @@ var SrtTools = (function () {
   }
 
   /* ---------- burned-in video (style controls + canvas render) ---------- */
-  var burn = { pos: 'bottom', off: 0, fontFrac: 0.048, color: '#ffffff', bg: '#000000', bgOp: 0.55, bold: true,
+  var burn = { pos: 'bottom', off: 0, fontFrac: 0.036, color: '#ffffff', bg: '#000000', bgOp: 0.55, bold: false,
     quality: '1080p', ratio: 'original', fill: 'blur', fontFamily: '"Noto Sans Myanmar",sans-serif', fontName: '' };
   var logo = { img: null, url: '', corner: 'tr', sizeFrac: 0.18, op: 0.85 };
   var burnRender = null;
@@ -2005,7 +2615,9 @@ var SrtTools = (function () {
   function applyCueStyle() {
     var cue = $('cue'), span = $('cueText'), v = $('preview');
     var h = v.clientHeight || 0;
-    cue.style.fontSize = Math.max(11, Math.round(h ? burn.fontFrac * h : 19)) + 'px';
+    var fpx = Math.round((h ? burn.fontFrac * h : burn.fontFrac * 360) * 10) / 10;
+    cue.style.fontSize = fpx + 'px';
+    span.style.visibility = fpx < 0.3 ? 'hidden' : 'visible';
     cue.style.fontWeight = burn.bold ? '700' : '400';
     cue.style.color = burn.color;
     cue.style.fontFamily = burn.fontFamily;
@@ -2024,17 +2636,24 @@ var SrtTools = (function () {
     var span = $('cueText'), cue = $('cue');
     if (!span.textContent) return;
     var wrapW = cue.clientWidth || 0;
-    var fs = parseInt(cue.style.fontSize, 10) || 0;
+    var fs = parseFloat(cue.style.fontSize) || 0;
     if (!wrapW || !fs) return;
     var w = span.getBoundingClientRect().width;
     var maxW = wrapW - 28;
     if (w > maxW && w > 0) {
-      cue.style.fontSize = Math.max(10, Math.floor(fs * maxW / w)) + 'px';
+      cue.style.fontSize = (fs * maxW / w) + 'px';
     }
   }
   /* frame the preview exactly like the exported video when a ratio is picked:
      the wrap becomes the output frame, the video is contained (pad) or covered (crop),
      and a blurred copy of the same video fills the empty space in blur mode */
+  /* video stays pinned at the top of the Video tab; capped so the edit tools below stay visible */
+  function fitStickyOriginal(wrap, v) {
+    var pw = wrap.parentElement ? wrap.parentElement.clientWidth : 0;
+    if (!pw || !v.videoWidth) return;
+    wrap.style.aspectRatio = v.videoWidth + ' / ' + v.videoHeight;
+    wrap.style.width = Math.min(pw, Math.round(window.innerHeight * 0.42 * v.videoWidth / v.videoHeight)) + 'px';
+  }
   function applyRatioPreview() {
     var wrap = $('vwrap'), v = $('preview');
     if (!wrap || !v) return;
@@ -2045,6 +2664,7 @@ var SrtTools = (function () {
       v.classList.remove('contain', 'cover');
       var bg0 = $('previewBg');
       if (bg0) { try { bg0.pause(); } catch (e) {} }
+      fitStickyOriginal(wrap, v);
       applyCueStyle();
       return;
     }
@@ -2057,7 +2677,7 @@ var SrtTools = (function () {
     wrap.style.aspectRatio = parts[0] + ' / ' + parts[1];
     var parentW = wrap.parentElement ? wrap.parentElement.clientWidth : 0;
     if (parentW > 0) {
-      var maxH = Math.round(window.innerHeight * 0.62);
+      var maxH = Math.round(window.innerHeight * 0.42);
       var w = parentW;
       if (Math.round(w / r) > maxH) w = Math.max(160, Math.round(maxH * r));
       wrap.style.width = w + 'px';
@@ -2072,8 +2692,10 @@ var SrtTools = (function () {
     $('posBottom').setAttribute('aria-pressed', burn.pos === 'bottom' ? 'true' : 'false');
     $('burnOff').value = String(burn.off);
     $('burnOffVal').textContent = burn.off + '%';
-    $('burnFont').value = String(Math.round(burn.fontFrac * 1000) / 10);
-    $('burnFontVal').textContent = (Math.round(burn.fontFrac * 1000) / 10) + '%';
+    var fpx0 = Math.round(burn.fontFrac * 1080 * 10) / 10;
+    $('burnFont').value = String(fpx0);
+    if (document.activeElement !== $('burnFontNum')) $('burnFontNum').value = String(fpx0);
+    $('burnFontVal').textContent = fpx0 + ' px';
     $('burnColor').value = burn.color;
     $('burnBg').value = burn.bg;
     $('burnOp').value = String(Math.round(burn.bgOp * 100));
@@ -2113,11 +2735,21 @@ var SrtTools = (function () {
     $('burnOffVal').textContent = burn.off + '%';
     applyCueStyle();
   });
-  $('burnFont').addEventListener('input', function (e) {
-    burn.fontFrac = (parseFloat(e.target.value) || 4.8) / 100;
-    $('burnFontVal').textContent = e.target.value + '%';
-    applyCueStyle();
+  function setFontPx(v) {
+    v = parseFloat(v);
+    if (!isFinite(v) || v < 0) v = 0;
+    v = Math.min(300, v);
+    burn.fontFrac = v / 1080;
+    syncBurnControls();
+  }
+  $('burnFont').addEventListener('input', function (e) { setFontPx(e.target.value); });
+  $('burnFontNum').addEventListener('input', function (e) {
+    if (e.target.value === '') return;
+    setFontPx(e.target.value);
   });
+  $('burnFontNum').addEventListener('change', function (e) { if (e.target.value === '') setFontPx(0); syncBurnControls(); });
+  $('fontMinus').addEventListener('click', function () { var c = Math.round(burn.fontFrac * 1080 * 10) / 10; setFontPx(Math.max(0, c <= 10 ? c - 0.5 : c - 1)); });
+  $('fontPlus').addEventListener('click', function () { var c = Math.round(burn.fontFrac * 1080 * 10) / 10; setFontPx(c < 10 ? c + 0.5 : c + 1); });
   $('burnColor').addEventListener('input', function (e) { burn.color = e.target.value; applyCueStyle(); });
   $('burnBg').addEventListener('input', function (e) { burn.bg = e.target.value; applyCueStyle(); });
   $('burnOp').addEventListener('input', function (e) {
@@ -2127,7 +2759,7 @@ var SrtTools = (function () {
   });
   $('burnBold').addEventListener('click', function () { burn.bold = !burn.bold; syncBurnControls(); });
   $('burnPreset').addEventListener('click', function () {
-    burn.pos = 'bottom'; burn.off = 0; burn.fontFrac = 0.05;
+    burn.pos = 'bottom'; burn.off = 0; burn.fontFrac = 0.038;
     burn.color = '#ffffff'; burn.bg = '#d80f1e'; burn.bgOp = 0.88; burn.bold = true;
     syncBurnControls();
     toast('MaxFlix အနီ theme နဲ့ ချိန်ပြီးပါပြီ');
@@ -2275,21 +2907,18 @@ var SrtTools = (function () {
   syncBurnControls();
 
   function drawBurnSub(cx, W, H, t) {
-    var seg = null;
-    for (var i = 0; i < segments.length; i++) {
-      if (t >= segments[i].start && t <= segments[i].end) { seg = segments[i]; break; }
-    }
-    if (!seg) return;
-    var text = String(seg.my || '').trim();
-    if (!text) return;
-    var lines = SrtTools.splitLines(text, maxCharsVal);
+    var act = [], lines = [];
+    for (var i = 0; i < segments.length; i++) { if (t >= segments[i].start && t < segments[i].end) act.push(segments[i]); }
+    act.slice(-2).forEach(function (s) { var tx = String(s.my || '').trim(); if (tx) lines = lines.concat(SrtTools.splitLines(tx, maxCharsVal)); });
+    if (!lines.length) return;
     /* safe area: the subtitle box must stay inside the frame — margins on every side,
        and the font shrinks when the longest line would otherwise overflow */
     var safeMx = Math.round(W * 0.04);
     var safeTop = Math.round(H * 0.02);
     var safeBot = Math.round(H * 0.98);
     var availW = Math.max(40, W - safeMx * 2);
-    var fs = Math.max(12, Math.round(burn.fontFrac * H));
+    var fs = burn.fontFrac * H;
+    if (fs < 0.4) return;
     function setFont() { cx.font = (burn.bold ? '700 ' : '400 ') + fs + 'px ' + burn.fontFamily; }
     setFont();
     cx.textAlign = 'center';
@@ -2297,7 +2926,7 @@ var SrtTools = (function () {
     var maxW = 0;
     lines.forEach(function (l) { maxW = Math.max(maxW, cx.measureText(l).width); });
     if (maxW > availW && maxW > 0) {
-      fs = Math.max(10, Math.floor(fs * availW / maxW));
+      fs = fs * availW / maxW;
       setFont();
       maxW = 0;
       lines.forEach(function (l) { maxW = Math.max(maxW, cx.measureText(l).width); });
@@ -2749,6 +3378,11 @@ var SrtTools = (function () {
       $('msKey').focus();
       return;
     }
+    if (engine === 'oxion' && !$('oxionKey').value.trim()) {
+      toast('အရင်ဆုံး Oxion AI API Key ထည့်ပေးပါ');
+      $('oxionKey').focus();
+      return;
+    }
     maxCharsVal = Math.max(20, Math.min(80, parseInt($('maxChars').value, 10) || 42));
     batchRunning = true;
     var btn = $('batchStart');
@@ -2765,7 +3399,7 @@ var SrtTools = (function () {
       segments = [];
       activeIdx = -1;
       try {
-        if (engine === 'gemini') await runVideoGemini(); else await runVideo();
+        if (engine === 'gemini' && geminiViaAudio()) await runVideoGemini(); else await runVideo();
       } catch (e) { console.error(e); }
       /* the run functions report failure through the progress card instead of
          throwing — success means the result card is showing with cues in it */
@@ -2885,7 +3519,7 @@ var SrtTools = (function () {
     restoreProject(p);
   });
   function restoreProject(p) {
-    engine = (p.engine === 'local' || p.engine === 'microsoft' || p.engine === 'nllb') ? p.engine : 'gemini';
+    engine = (p.engine === 'local' || p.engine === 'microsoft' || p.engine === 'nllb' || p.engine === 'oxion') ? p.engine : 'gemini';
     if (p.mode) setMode(p.mode); /* setMode also refreshes the settings UI */
     refreshSettings();
     if (p.srcLang) $('srcLang').value = p.srcLang;
@@ -2948,13 +3582,13 @@ var SrtTools = (function () {
   var currentLocalId = null, currentCloudId = null;
   function switchTab(name) {
     currentTab = name;
-    var panels = { translate: 'panelTranslate', edit: 'panelEdit', video: 'panelVideo', projects: 'panelProjects' };
+    var panels = { translate: 'panelTranslate', edit: 'panelEdit', video: 'panelVideo', projects: 'panelProjects', tts: 'panelTts' };
     Object.keys(panels).forEach(function (k) { $(panels[k]).classList.toggle('hidden', k !== name); });
-    [['tabTranslate', 'translate'], ['tabEdit', 'edit'], ['tabVideo', 'video'], ['tabProjects', 'projects']].forEach(function (pr) {
+    [['tabTranslate', 'translate'], ['tabEdit', 'edit'], ['tabVideo', 'video'], ['tabProjects', 'projects'], ['tabTts', 'tts']].forEach(function (pr) {
       $(pr[0]).setAttribute('aria-pressed', pr[1] === name ? 'true' : 'false');
     });
     if (name === 'edit') $('editEmpty').classList.toggle('hidden', !$('cardResult').classList.contains('hidden'));
-    if (name === 'video') { updateVideoEmpty(); applyRatioPreview(); }
+    if (name === 'video') { updateVideoEmpty(); applyRatioPreview(); syncInfo(); }
     if (name === 'projects') { refreshLocalList(); if (fbUser) refreshCloudList(); }
   }
   function updateVideoEmpty() {
@@ -2965,6 +3599,8 @@ var SrtTools = (function () {
   $('tabEdit').addEventListener('click', function () { switchTab('edit'); });
   $('tabVideo').addEventListener('click', function () { switchTab('video'); });
   $('tabProjects').addEventListener('click', function () { switchTab('projects'); });
+  $('tabTts').addEventListener('click', function () { switchTab('tts'); });
+  window.addEventListener('resize', applyRatioPreview);
   /* the video preview + burn-in editor live in the Video tab now */
   $('videoSlot').appendChild($('previewCol'));
   $('previewCol').classList.add('hidden');
@@ -3169,26 +3805,30 @@ var SrtTools = (function () {
   }
   $('fbRetry').addEventListener('click', function () { fbEnsure({ toast: true }); });
   function fbSignInMessage(e) {
-    var c = (e && e.code) || '';
-    var host = location.hostname || location.protocol;
+    var c = (e && e.code) || '', host = location.hostname || location.protocol;
     if (c === 'auth/unauthorized-domain') return 'ဒီ website (' + host + ') ကို Firebase Console → Authentication → Settings → Authorized domains ထဲ ထည့်ပါ';
     if (c === 'auth/operation-not-allowed') return 'Firebase Console → Authentication → Sign-in method မှာ Google ကို ဖွင့်ပါ (Enable)';
     if (c === 'auth/popup-closed-by-user' || c === 'auth/cancelled-popup-request') return 'Sign in ကို ပယ်ဖျက်လိုက်တယ် (popup ပိတ်သွားတယ်) — ပြန်စမ်းပါ';
-    if (c === 'auth/network-request-failed') return 'ကွန်ရက်ချိတ်မရပါဘူး — VPN ဖွင့်ထားလား စစ်ပါ (Google/Firebase ကို VPN မပါရင် မရနိုင်ပါ)';
-    if (c === 'auth/operation-not-supported-in-this-environment' || c === 'auth/web-storage-unsupported')
-      return 'ဒီ browser / ဖွင့်ပုံနဲ့ sign in မရပါဘူး — https website အဖြစ်ဖွင့်ပါ၊ Telegram ထဲက browser မဟုတ်ဘဲ Chrome မှာ ဖွင့်ပါ';
+    if (c === 'auth/network-request-failed') return 'ကွန်ရက်ချိတ်မရပါဘူး — VPN ဖွင့်ထားလား စစ်ပါ';
+    if (c === 'auth/operation-not-supported-in-this-environment' || c === 'auth/web-storage-unsupported') return 'ဒီ browser / ဖွင့်ပုံနဲ့ sign in မရပါဘူး — https website အဖြစ်ဖွင့်ပါ၊ Telegram ထဲက browser မဟုတ်ဘဲ Chrome မှာ ဖွင့်ပါ';
     return 'Sign in မရပါဘူး (' + (c || (e && e.message) || 'unknown') + ') — Chrome မှာ ဖွင့်ပြီး popup ခွင့်ပြုကာ ပြန်စမ်းပါ';
   }
+  try { var stSaved = localStorage.getItem('mt_style'); if (stSaved) $('styleText').value = stSaved; } catch (e) {}
+  $('styleText').addEventListener('input', function () { try { localStorage.setItem('mt_style', this.value); } catch (e) {} });
+  $('exportCorr').addEventListener('click', function () {
+    var rows = segments.filter(function (s) { return s.mt !== undefined && String(s.my || '') !== String(s.mt || ''); })
+      .map(function (s) { return JSON.stringify({ source: s.text || '', machine: s.mt || '', edited: s.my || '', start: s.start, end: s.end }); });
+    if (!rows.length) { toast('ပြင်ထားတဲ့ စာတန်း မရှိသေးပါဘူး'); return; }
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([rows.join('\n') + '\n'], { type: 'application/x-ndjson' }));
+    a.download = 'subtitle-corrections.jsonl'; document.body.appendChild(a); a.click(); a.remove();
+    toast(rows.length + ' ကြောင်း ထုတ်ပြီးပါပြီ');
+  });
   $('fbSignIn').addEventListener('click', async function () {
-    if (location.protocol !== 'http:' && location.protocol !== 'https:') {
-      toast('ဖိုင်ကို တိုက်ရိုက်ဖွင့်ထားလို့ Google sign in မရပါဘူး — GitHub Pages လို https website ပေါ်တင်ပြီး ဖွင့်ပါ');
-      return;
-    }
+    if (location.protocol !== 'http:' && location.protocol !== 'https:') { toast('ဖိုင်ကို တိုက်ရိုက်ဖွင့်ထားလို့ Google sign in မရပါဘူး — GitHub Pages လို https website ပေါ်တင်ပြီး ဖွင့်ပါ'); return; }
     if (!fbApp && !(await fbEnsure())) return;
     var provider = new firebase.auth.GoogleAuthProvider();
-    try {
-      await fbAuth.signInWithPopup(provider);
-    } catch (e) {
+    try { await fbAuth.signInWithPopup(provider); }
+    catch (e) {
       console.error(e);
       if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment')) {
         try { await fbAuth.signInWithRedirect(provider); return; } catch (e2) { console.error(e2); e = e2; }
@@ -3368,7 +4008,226 @@ var SrtTools = (function () {
     renderEditor();
     toast('စာတန်းအချိန်အားလုံး ' + shift + ' စက္ကန့် ရွှေ့ပြီးပါပြီ');
   });
-  $('addSeg').addEventListener('click', function () {
+  /* ---------- Gemini TTS tab (Movie Recap voice-over) ---------- */
+  var ttsCache = {}, ttsRun = null, ttsUrl = '', ttsWavOut = null;
+  function ttsVoice() { return $('ttsVoice').value || 'Charon'; }
+  function ttsModel() { return $('ttsModel').value || 'gemini-3.8-flash-lite-tts'; }
+  function ttsStyle() { return ($('ttsStyle').value || '').trim(); }
+  function ttsKeyVal() { return ($('ttsKey').value || '').trim() || ($('geminiKey').value || '').trim(); }
+  function optHas(sel, v) { return Array.prototype.some.call($(sel).options, function (o) { return o.value === v; }); }
+  try {
+    var tv = localStorage.getItem('mt_tts_voice'), tm = localStorage.getItem('mt_tts_model'), ts = localStorage.getItem('mt_tts_style'), tc = localStorage.getItem('mt_tts_chunk'), tt = localStorage.getItem('mt_tts_text');
+    if (tv && optHas('ttsVoice', tv)) $('ttsVoice').value = tv;
+    if (tm && optHas('ttsModel', tm)) $('ttsModel').value = tm;
+    if (tc && optHas('ttsChunk', tc)) $('ttsChunk').value = tc;
+    if (ts) $('ttsStyle').value = ts;
+    if (tt) $('ttsText').value = tt;
+  } catch (e) {}
+  $('ttsVoice').addEventListener('change', function () { try { localStorage.setItem('mt_tts_voice', this.value); } catch (e) {} });
+  $('ttsModel').addEventListener('change', function () { try { localStorage.setItem('mt_tts_model', this.value); } catch (e) {} });
+  $('ttsChunk').addEventListener('change', function () { try { localStorage.setItem('mt_tts_chunk', this.value); } catch (e) {} ttsCount(); });
+  $('ttsStyle').addEventListener('input', function () { try { localStorage.setItem('mt_tts_style', this.value); } catch (e) {} });
+  $('ttsKey').addEventListener('input', function () { $('geminiKey').value = this.value; });
+  $('geminiKey').addEventListener('input', function () { $('ttsKey').value = this.value; });
+  $('ttsKey').value = $('geminiKey').value;
+  $('ttsCacheClear').addEventListener('click', function () { var n = Object.keys(ttsCache).length; ttsCache = {}; toast('မှတ်ထားတဲ့အသံ ' + n + ' ခု ရှင်းပြီးပါပြီ'); });
+
+  /* script -> chunks: split by paragraph, then pack whole sentences up to the limit */
+  function buildTtsChunks(text, limit) {
+    var out = [];
+    String(text || '').replace(/\r\n?/g, '\n').split(/\n+/).forEach(function (para) {
+      para = para.trim();
+      if (!para) return;
+      var sents = para.match(/[^။!?！？.。]+[။!?！？.。]*/g) || [para];
+      var parts = [], cur = '';
+      sents.forEach(function (sn) {
+        sn = sn.trim();
+        if (!sn) return;
+        if (gchars(sn).length > limit) {
+          if (cur) { parts.push(cur); cur = ''; }
+          chunkText(sn, limit).forEach(function (q) { parts.push(q); });
+          return;
+        }
+        if (cur && gchars(cur + ' ' + sn).length > limit) { parts.push(cur); cur = sn; }
+        else cur = cur ? cur + ' ' + sn : sn;
+      });
+      if (cur) parts.push(cur);
+      parts.forEach(function (q, k) { out.push({ text: q, paraEnd: k === parts.length - 1 }); });
+    });
+    return out;
+  }
+  function ttsCount() {
+    var t = $('ttsText').value, n = gchars(t.replace(/\s+/g, '')).length;
+    $('ttsCount').textContent = n ? ('စာလုံး ' + n + ' · အပိုင်း ~' + buildTtsChunks(t, parseInt($('ttsChunk').value, 10) || 450).length + ' ခု') : '';
+  }
+  var ttsCountTimer = null;
+  $('ttsText').addEventListener('input', function () {
+    clearTimeout(ttsCountTimer);
+    ttsCountTimer = setTimeout(function () { ttsCount(); try { localStorage.setItem('mt_tts_text', $('ttsText').value); } catch (e) {} }, 400);
+  });
+  ttsCount();
+  $('ttsClearTxt').addEventListener('click', function () { $('ttsText').value = ''; try { localStorage.removeItem('mt_tts_text'); } catch (e) {} ttsCount(); });
+  $('ttsLoadTxt').addEventListener('click', function () { $('ttsTxtFile').click(); });
+  $('ttsTxtFile').addEventListener('change', async function (e) {
+    var f = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!f) return;
+    try { $('ttsText').value = await readFileText(f); try { localStorage.setItem('mt_tts_text', $('ttsText').value); } catch (e2) {} ttsCount(); toast('စာသား ထည့်ပြီးပါပြီ'); }
+    catch (err) { toast('ဖိုင်ဖတ်မရပါဘူး'); }
+  });
+
+  function pcm16ToWav(bytes, rate) {
+    var n = bytes.length, buf = new ArrayBuffer(44 + n), v = new DataView(buf);
+    function w(o, str) { for (var i = 0; i < str.length; i++) v.setUint8(o + i, str.charCodeAt(i)); }
+    w(0, 'RIFF'); v.setUint32(4, 36 + n, true); w(8, 'WAVE'); w(12, 'fmt ');
+    v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+    w(36, 'data'); v.setUint32(40, n, true);
+    new Uint8Array(buf, 44).set(bytes);
+    return new Uint8Array(buf);
+  }
+  function b64ToBytes(b64) {
+    var bin = atob(b64), u = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+    return u;
+  }
+  /* Docs show `voiceConfig.voice`; if Google rejects that shape with a 400 we retry once with the older prebuiltVoiceConfig.voiceName shape. */
+  async function ttsRequestOnce(text, voice, model, style, key, legacy) {
+    var part = { text: text };
+    if (style) part.speech_metadata = { style: style };
+    var speech = legacy ? { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } : { voiceConfig: { voice: voice } };
+    var r;
+    try {
+      r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+        body: JSON.stringify({ contents: [{ role: 'user', parts: [part] }], generationConfig: { responseModalities: ['AUDIO'], speechConfig: speech } })
+      });
+    } catch (e) {
+      throw geminiError('Gemini ဆီ ချိတ်ဆက် မရပါဘူး — အင်တာနက် စစ်ပြီး ပြန်စမ်းပါ။');
+    }
+    var j = null;
+    try { j = await r.json(); } catch (e) {}
+    if (!r.ok) {
+      var em = (j && j.error && j.error.message) || ('HTTP ' + r.status);
+      if (r.status === 400 && /API_KEY_INVALID|API key not valid/i.test(em)) throw geminiError('Gemini API Key မှားနေပါတယ် — စစ်ပြီး ပြန်ထည့်ပေးပါ။', 'BAD_KEY');
+      if (r.status === 400 && !legacy) throw geminiError('Gemini TTS အမှား (400): ' + em, 'BADFMT');
+      if (r.status === 403) throw geminiError('ဒီ API Key မှာ Gemini TTS သုံးခွင့် မရှိပါဘူး (403)။', 'FORBIDDEN');
+      if (r.status === 404) throw geminiError('ရွေးထားတဲ့ TTS မော်ဒယ် (' + model + ') ကို Google က မပေးပါဘူး (404) — တခြား TTS မော်ဒယ် ရွေးပါ။', 'MODEL_UNAVAILABLE');
+      if (r.status === 429) { var qe = geminiError('Gemini ကန့်သတ်ချက် (429) ထိသွားပါပြီ', 'QUOTA'); qe.retryAfterSec = parseRetryAfter(r, j); throw qe; }
+      if (r.status >= 500) { var oe = geminiError('Gemini server အလုပ်များနေပါတယ် (' + r.status + ')', 'OVERLOAD'); oe.retryAfterSec = parseRetryAfter(r, j); throw oe; }
+      throw geminiError('Gemini TTS အမှား (' + r.status + '): ' + em);
+    }
+    var cand = j && j.candidates && j.candidates[0];
+    var parts = cand && cand.content && cand.content.parts;
+    var inl = null;
+    if (parts) for (var i = 0; i < parts.length; i++) { if (parts[i].inlineData && parts[i].inlineData.data) { inl = parts[i].inlineData; break; } }
+    if (!inl) throw geminiError('Gemini က အသံ ပြန်မပေးပါဘူး — ပြန်နှိပ်ကြည့်ပါ။');
+    var bytes = b64ToBytes(inl.data), mime = String(inl.mimeType || inl.mime_type || '').toLowerCase();
+    if (mime.indexOf('wav') >= 0 || (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46)) return bytes;
+    var rm = mime.match(/rate=(\d+)/);
+    return pcm16ToWav(bytes, rm ? parseInt(rm[1], 10) : 24000);
+  }
+  async function ttsSynth(text, voice, model, style, key) {
+    var ck = [voice, model, style, text].join('\u0001');
+    if (ttsCache[ck]) return ttsCache[ck];
+    await applyPacing();
+    var legacy = false, tries = 0;
+    for (;;) {
+      if (ttsRun && ttsRun.cancelled) throw new Error('CANCELLED');
+      try {
+        var wav = await ttsRequestOnce(text, voice, model, style, key, legacy);
+        ttsCache[ck] = wav;
+        return wav;
+      } catch (e) {
+        if (e && e.geminiCode === 'BADFMT' && !legacy) { legacy = true; continue; }
+        if (e && (e.geminiCode === 'QUOTA' || e.geminiCode === 'OVERLOAD') && tries < 5) {
+          tries++;
+          var wait = Math.max(5, Math.min(120, Math.ceil(e.retryAfterSec > 0 ? e.retryAfterSec : 15 * Math.pow(2, tries - 1))));
+          for (var left = wait; left > 0; left--) {
+            if (ttsRun && ttsRun.cancelled) throw new Error('CANCELLED');
+            $('ttsStatus').textContent = (e.geminiCode === 'QUOTA' ? '429 (limit) ထိသွားတယ်' : 'Gemini server အလုပ်များနေတယ်') + ' — ' + left + ' စက္ကန့်အကြာ ပြန်ကြိုးစားမယ် (' + tries + '/5)';
+            await sleepSec(1);
+          }
+          continue;
+        }
+        throw e;
+      }
+    }
+  }
+  async function ttsGenerateAll() {
+    if (ttsRun) return;
+    var text = $('ttsText').value.trim();
+    if (!text) { toast('အရင်ဆုံး recap စာသား ထည့်ပေးပါ'); $('ttsText').focus(); return; }
+    var key = ttsKeyVal();
+    if (!key) { toast('အရင်ဆုံး Gemini API Key ထည့်ပေးပါ'); $('ttsKey').focus(); return; }
+    var voice = ttsVoice(), model = ttsModel(), style = ttsStyle();
+    var chunks = buildTtsChunks(text, parseInt($('ttsChunk').value, 10) || 450);
+    if (!chunks.length) { toast('အသံထုတ်စရာ စာသား မရှိပါဘူး'); return; }
+    var state = { cancelled: false };
+    ttsRun = state;
+    var btn = $('ttsAllBtn'); btn.disabled = true;
+    $('ttsProg').classList.remove('hidden');
+    $('ttsResult').classList.add('hidden');
+    $('ttsBar').style.width = '0%';
+    keepAwake(true);
+    var ctx = null;
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      try { ctx = new AC({ sampleRate: 24000 }); } catch (e0) { ctx = new AC(); }
+      var SR = ctx.sampleRate, pieces = [], total = 0;
+      for (var i = 0; i < chunks.length; i++) {
+        if (state.cancelled) throw new Error('CANCELLED');
+        $('ttsStatus').textContent = 'အသံ ထုတ်နေပါတယ်… ' + (i + 1) + '/' + chunks.length;
+        var wav = await ttsSynth(chunks[i].text, voice, model, style, key);
+        var buf = await ctx.decodeAudioData(wav.buffer.slice(wav.byteOffset, wav.byteOffset + wav.byteLength));
+        var data = new Float32Array(buf.getChannelData(0));
+        var gap = Math.round(SR * (chunks[i].paraEnd ? 0.7 : 0.25));
+        pieces.push({ data: data, gap: i === chunks.length - 1 ? 0 : gap });
+        total += data.length + pieces[pieces.length - 1].gap;
+        $('ttsBar').style.width = Math.round((i + 1) / chunks.length * 95) + '%';
+      }
+      var all = new Float32Array(total), pos = 0;
+      pieces.forEach(function (pc) { all.set(pc.data, pos); pos += pc.data.length + pc.gap; });
+      ttsWavOut = encodeWav(all, SR);
+      if (ttsUrl) URL.revokeObjectURL(ttsUrl);
+      ttsUrl = URL.createObjectURL(new Blob([ttsWavOut], { type: 'audio/wav' }));
+      $('ttsAudio').src = ttsUrl;
+      $('ttsResult').classList.remove('hidden');
+      $('ttsBar').style.width = '100%';
+      $('ttsStatus').textContent = 'ပြီးပါပြီ — အပိုင်း ' + chunks.length + ' ခု · ကြာချိန် ' + fmtT(total / SR) + ' · ' + voice;
+      toast('မြန်မာအသံ အဆင်သင့်ပါပြီ');
+    } catch (e) {
+      console.error(e);
+      $('ttsStatus').textContent = (e && e.message === 'CANCELLED') ? 'ရပ်လိုက်ပါပြီ — ထုတ်ပြီးသား အပိုင်းတွေ မှတ်ထားတယ်၊ ပြန်နှိပ်ရင် ဆက်လုပ်မယ်။'
+        : ((e && e.isGemini) ? e.message : 'အမှားတစ်ခု ဖြစ်သွားပါတယ်: ' + (e && e.message)) + ' — ပြန်နှိပ်ရင် ထုတ်ပြီးသား အပိုင်းတွေ ပြန်မထုတ်ဘဲ ဆက်လုပ်မယ်။';
+    } finally {
+      if (ctx) { try { ctx.close(); } catch (_) {} }
+      ttsRun = null;
+      btn.disabled = false;
+      if (!processing) keepAwake(false);
+    }
+  }
+  $('ttsAllBtn').addEventListener('click', ttsGenerateAll);
+  $('ttsCancel').addEventListener('click', function () { if (ttsRun) ttsRun.cancelled = true; });
+  $('ttsDl').addEventListener('click', function () {
+    if (!ttsWavOut) return;
+    download(new Blob([ttsWavOut], { type: 'audio/wav' }), 'recap-voice-' + ttsVoice() + '.wav');
+    toast('WAV ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
+  });
+
+  $('splitAll').addEventListener('click', splitAllLong);
+$('syncFit').addEventListener('click', syncFit);
+$('syncGo').addEventListener('click', syncApply);
+$('syncCheck').addEventListener('click', syncInfo);
+$('syncUndo').addEventListener('click', function () { splitUndoNow(); syncInfo(); });
+[1, 2].forEach(function (k) {
+  $('syncN' + k).addEventListener('input', function () { syncRowText(k); });
+  $('syncS' + k).addEventListener('click', function () { $('syncR' + k).value = ($('preview').currentTime || 0).toFixed(1); });
+});
+$('preview').addEventListener('loadedmetadata', syncInfo);
+$('splitUndo').addEventListener('click', splitUndoNow);
+$('addSeg').addEventListener('click', function () {
     var lastEnd = segments.length ? segments[segments.length - 1].end : 0;
     segments.push({ start: lastEnd, end: lastEnd + 2, text: '', my: '', failed: false });
     renderEditor();
@@ -3510,6 +4369,21 @@ var SrtTools = (function () {
   themeBtn.addEventListener('click', function () { var t = eff() === 'dark' ? 'light' : 'dark'; root.setAttribute('data-theme', t); set('mt_theme', t); paint(); });
   if (mq.addEventListener) mq.addEventListener('change', paint);
   paint();
+})();
+</script>
+<script>
+/* long hints / notes fold to one line; tap to expand */
+(function () {
+  var skip = { syncInfo: 1, syncT1: 1, syncT2: 1, deviceHint: 1, engineDesc: 1, coverageWarn: 1, restoreNote: 1, cloudStatus: 1, projBanner: 1, status: 1 };
+  document.querySelectorAll('.hint,.note').forEach(function (el) {
+    if (el.id && skip[el.id]) return;
+    if ((el.textContent || '').trim().length < 60) return;
+    el.classList.add('fold');
+    el.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('a')) return;
+      el.classList.toggle('open');
+    });
+  });
 })();
 </script>
 </body>
