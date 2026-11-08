@@ -171,12 +171,16 @@ select:focus,input:focus,textarea:focus{border-color:var(--blue);outline:none;bo
 .tlTrack:last-child{border-bottom:0}
 .tlTag{flex:none;width:64px;padding:13px 4px;font-size:12px;color:var(--mut);text-align:center}
 .tlLane{position:relative;flex:1;height:46px}
-.tlClip,.tlSub{position:absolute;top:5px;height:36px;border-radius:8px;overflow:hidden;cursor:grab;touch-action:none;white-space:nowrap}
+.tlClip,.tlSub,.tlTitle{position:absolute;top:5px;height:36px;border-radius:8px;overflow:hidden;cursor:grab;touch-action:none;white-space:nowrap}
 .tlClip{background:linear-gradient(180deg,#3b82f6,#1d4ed8);border:1px solid #60a5fa;color:#fff}
 .tlSub{background:linear-gradient(180deg,#f59e0b,#b45309);border:1px solid #fbbf24;color:#fff}
-.tlClip.sel,.tlSub.sel{outline:2px solid #fff;outline-offset:1px}
+.tlTitle{background:linear-gradient(180deg,#a855f7,#7e22ce);border:1px solid #c084fc;color:#fff}
+.tlClip.sel,.tlSub.sel,.tlTitle.sel{outline:2px solid #fff;outline-offset:1px}
 .tlSub.dead{opacity:.35}
-.tlClipTxt,.tlSubTxt{display:block;padding:9px 12px;font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+.tlClipTxt,.tlSubTxt,.tlTitleTxt{display:block;padding:9px 12px;font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+#titleCue{position:absolute;left:0;right:0;top:6%;text-align:center;padding:0 14px;font-size:19px;font-weight:700;color:#fff;
+  text-shadow:0 2px 6px #000,0 0 2px #000;pointer-events:none;line-height:1.55;z-index:2;visibility:hidden}
+#titleText{display:inline-block;padding:.16em .55em;border-radius:.3em;white-space:pre-line;max-width:100%;overflow-wrap:break-word}
 .tlHandle{position:absolute;top:0;bottom:0;width:12px;cursor:ew-resize;z-index:2}
 .tlHandle.l{left:0}.tlHandle.r{right:0}
 .tlHandle::after{content:'';position:absolute;top:6px;bottom:6px;left:4px;width:3px;border-radius:2px;background:rgba(255,255,255,.75)}
@@ -312,7 +316,7 @@ body{background-attachment:fixed}
 <div class="topbar"><button type="button" id="langBtn" aria-label="Language">EN</button><button type="button" id="themeBtn" aria-label="Theme">&#9680;</button></div>
 <div id="pageHead">
 <h1>ဗီဒီယိုကနေ မြန်မာစာတန်းထိုး SRT ထုတ်မယ်</h1>
-<p class="lede">ဗီဒီယို / အသံဖိုင် (သို့) SRT ဖိုင် ထည့်လိုက်ရင် မြန်မာ စာတန်းထိုး (.srt / .vtt) ထုတ်ပေးပါတယ်။</p>
+<p class="lede">ဗီဒီယို / အသံဖိုင် (သို့) SRT ဖိုင် ထည့်လိုက်ရင် မြန်မာ စာတန်းထိုး (.srt / .vtt) ထုတ်ပေးပါတယ်။ Google Gemini AI နဲ့ ဘာသာပြန်ပေးပါတယ်။</p>
 </div>
 
 <div class="tabbar" role="group" aria-label="အပိုင်းများ ရွေးရန်">
@@ -379,7 +383,7 @@ body{background-attachment:fixed}
     </div>
     <div style="max-width:230px">
       <label class="f" for="maxChars">စာတန်းတစ်ကြောင်းလျှင် စာလုံးအများဆုံး</label>
-      <input type="number" id="maxChars" value="40" min="20" max="80" inputmode="numeric" />
+      <input type="number" id="maxChars" value="42" min="20" max="80" inputmode="numeric" />
     </div>
   </div>
 
@@ -417,7 +421,7 @@ body{background-attachment:fixed}
 <option value="100">၁၀၀ ကြောင်း (request အနည်းဆုံး၊ ပျက်ရင် ပိုဆုံး)</option>
 </select>
 <div class="row"><button class="btn small ghost" type="button" id="trMemClear">ဘာသာပြန်မှတ်ဉာဏ် ရှင်းမယ်</button></div>
-<div class="hint">New Session</div>
+<div class="hint">ဘာသာပြန်ပြီးသား စာတန်းတွေကို မှတ်ထားပြီး ပျက်လို့ ပြန်လုပ်ရင် မပို့တော့ဘူး၊ စာသားတူတာကို တစ်ခါပဲ ပို့တယ်။ Model၊ ပုံစံ box၊ Glossary ပြောင်းရင် အလိုအလျောက် အသစ်ပြန်ဘာသာပြန်မယ်။</div>
 <label class="f" for="geminiChunk">Gemini ကို အသံအပိုင်းလိုက် ပို့တဲ့ အရှည်</label>
 <select id="geminiChunk">
 <option value="60">၆၀ စက္ကန့် (အချိန် ပိုတိကျ၊ request ပိုများ)</option>
@@ -429,14 +433,14 @@ body{background-attachment:fixed}
     </details>
     <div class="hint">Key မရှိရင် <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> မှာ အခမဲ့ ထုတ်ပါ။ Key ကို ဘယ်မှာမှ မသိမ်းဘူး — tab ပိတ်ရင် ပျက်မယ်။</div>
   </div>
-  <div class="note" id="geminiNote">Gemini မုဒ်မှာ 429 ထိရင် အလိုအလျောက် စောင့်ပြီး ပြန်ကြိုးစားပေးမယ်။</div>
+  <div class="note" id="geminiNote">Gemini မုဒ်မှာ အကြောင်းအရာကို Google server သို့ ပို့ရတယ်။ 429 ထိရင် အလိုအလျောက် စောင့်ပြီး ပြန်ကြိုးစားပေးမယ်။</div>
 
   <details class="adv"><summary>ဘာသာပြန်ပုံစံ (Style) နဲ့ နာမည်မှတ်တမ်း (Glossary) — မလိုရင် ကျော်ပါ</summary>
 <div style="margin-top:16px">
 <label class="f" for="styleText">ကိုယ်ပိုင် ဘာသာပြန်ပုံစံ (Style)</label>
 <textarea class="my" id="styleText" rows="5" placeholder="ဥပမာ —&#10;စကားပြောလေသံ၊ ကျွန်တော်/ကျွန်မ သုံးပုံ၊ စာတိုတိုရေးပုံ&#10;နမူနာ — 你怎么来了 → မင်း ဘာလို့ လာတာလဲ"></textarea>
 <div class="row"><button class="btn small ghost" type="button" id="exportCorr">ပြင်ထားတဲ့စာတန်းတွေ ဒေတာအဖြစ် ထုတ်မယ် (JSONL)</button></div>
-<div class="hint">Update Session</div>
+<div class="hint">ဒီစာကို Gemini ဘာသာပြန်တိုင်း ထည့်ပေးမယ်၊ ဒီ browser မှာ မှတ်ထားမယ်။ ပြင်ဆင်ရေးထဲမှာ ပြင်ခဲ့တဲ့ စာတန်းတွေကို မူရင်း၊ စက်ပြန်၊ သင်ပြင်တာ အတွဲလိုက် ထုတ်ပေးတာက နမူနာအသစ်တွေ ရေးဖို့ အသုံးဝင်တယ်။</div>
 </div>
 <div style="margin-top:16px">
     <label class="f" for="glossaryText">ဇာတ်ကောင်နာမည် / ဝေါဟာရ မှတ်တမ်း (Glossary)</label>
@@ -450,7 +454,7 @@ body{background-attachment:fixed}
 
 </details>
   <div class="hint" style="margin-top:14px">
-<label style="display:flex;gap:8px;align-items:flex-start;margin:0 0 6px"><input type="checkbox" id="autoFinish" checked /> <span><b>One-click</b> — ပြီးတာနဲ့ အချိန်ကိုက်ညှိပြီး SRT ကို ဒေါင်းလုဒ်ချမယ်</span></label>
+<label style="display:flex;gap:8px;align-items:flex-start;margin:0 0 6px"><input type="checkbox" id="autoFinish" checked /> <span><b>One-click</b> — ပြီးတာနဲ့ ရှည်တဲ့စာတန်းတွေ အလိုအလျောက်ခွဲ၊ အချိန်ကိုက်ညှိပြီး SRT ကို ဒေါင်းလုဒ်ချမယ်</span></label>
 </div>
 <button class="btn primary" id="startBtn">
     <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
@@ -506,6 +510,7 @@ body{background-attachment:fixed}
         <video id="previewBg" muted playsinline preload="metadata" aria-hidden="true"></video>
         <video id="preview" controls playsinline preload="metadata"></video>
         <div id="cue"><span id="cueText"></span></div>
+        <div id="titleCue"><span id="titleText"></span></div>
         <img id="logoImg" class="hidden" alt="" />
       </div>
       <div class="hint">ဗီဒီယို ဖွင့်ရင် စာတန်းတွေ အပေါ်မှာ တက်ပြမယ်။</div>
@@ -517,7 +522,13 @@ body{background-attachment:fixed}
 <button class="btn small" type="button" id="syncFit">ဗီဒီယိုအရှည်ကိုက်အောင် အလိုအလျောက် ချုံ့မယ်</button>
 <button class="btn small ghost" type="button" id="syncCheck">စစ်မယ်</button>
 </div>
-<div class="hint">စာတန်းထိုးတွေ အချိန်တိကျအောင် ညှိမယ်။</div>
+<div class="row" style="margin-top:8px">
+<input type="number" id="syncShiftSec" value="0.5" step="0.1" min="-5" max="5" style="width:84px" aria-label="ရွှေ့မယ့် စက္ကန့်" />
+<span style="align-self:center">စက္ကန့်</span>
+<button class="btn small" type="button" id="syncShift">စာတန်းအားလုံး ရွှေ့မယ်</button>
+</div>
+<div class="hint">စာတန်း စောနေရင် <b>+</b> ထည့်ပါ (ဥပမာ +0.5 — စာတန်း နောက်ကျသွားမယ်)၊ နောက်ကျနေရင် <b>−</b> ထည့်ပါ။ ပြန်ဆုတ်ချင်ရင် အောက်က ↩ ပြန်ဆုတ်မယ် ကို နှိပ်ပါ။</div>
+<div class="hint">တိကျအောင် ညှိချင်ရင် — စာတန်းအစပိုင်းက တစ်ကြောင်း၊ အဆုံးပိုင်းက တစ်ကြောင်း ရွေးပါ။ စာတန်းအမှတ်ကို ထည့်ပြီး ဗီဒီယိုကို အဲဒီစကားပြောတဲ့နေရာကို ရွှေ့ကာ ⏱ ကိုနှိပ်ပါ။ ညှိမယ်ကို နှိပ်ရင် စာတန်းအားလုံးရဲ့ အချိန်ကို အချိုးကျ ပြန်တွက်ပေးမယ်။</div>
 <div class="grid2">
 <div><label class="f" for="syncN1">အချက် A — စာတန်းအမှတ် (အစပိုင်း)</label><input type="number" id="syncN1" min="1" inputmode="numeric" /><div class="hint" id="syncT1"></div>
 <label class="f" for="syncR1">ဗီဒီယိုမှာ တကယ်ပေါ်တဲ့ အချိန် (စက္ကန့်)</label><input type="number" id="syncR1" step="0.1" /><button class="btn small ghost" type="button" id="syncS1" style="margin-top:6px">⏱ ယခုနေရာ</button></div>
@@ -556,15 +567,15 @@ body{background-attachment:fixed}
             <div class="hint">နံပါတ်က ဗီဒီယိုအမြင့် 1080 px အပေါ် အခြေခံတဲ့ ဖောင့်ဆိုဒ်ပါ (ဥပမာ 24 = သေးသေး၊ 39 = ပုံမှန်၊ 60 = ကြီး)။ ဒသမ ရိုက်လို့ရတယ် (ဥပမာ 0.5)။ 0 ထည့်ရင် စာတန်း လုံးဝ မမြင်ရတော့ဘူး။ ဗီဒီယိုအရွယ်ကွာရင်လည်း အချိုးကျ ပြောင်းပေးမယ်။</div>
           </div>
           <div>
-            <label class="f" for="burnColor">Text Color</label>
+            <label class="f" for="burnColor">စာသား အရောင်</label>
             <input type="color" id="burnColor" value="#ffffff" />
           </div>
           <div>
-            <label class="f" for="burnBg">Background Color</label>
+            <label class="f" for="burnBg">နောက်ခံ အရောင်</label>
             <input type="color" id="burnBg" value="#000000" />
           </div>
           <div>
-            <label class="f" for="burnOp">BG Transparency<span class="val" id="burnOpVal">55%</span></label>
+            <label class="f" for="burnOp">နောက်ခံ ပွင့်လင်းမှု <span class="val" id="burnOpVal">55%</span></label>
             <input type="range" id="burnOp" min="0" max="100" step="5" value="55" />
           </div>
           <div style="display:flex;align-items:flex-end">
@@ -591,15 +602,15 @@ body{background-attachment:fixed}
           <div class="full">
             <button class="btn small ghost" id="burnPreset" style="width:100%">MaxFlix အနီ theme နဲ့ ချိန်မယ်</button>
           </div>
-          <details class="full adv"><summary>Aspect Ratio(TikTok / YouTube…)</summary><div class="burngrid">
+          <details class="full adv"><summary>ဗီဒီယို အချိုးအစား (TikTok / YouTube…)</summary><div class="burngrid">
           <div class="full">
             <label class="f">ဗီဒီယို အချိုးအစား (Ratio)</label>
             <div class="enginebar wrap" role="group" aria-label="ဗီဒီယို အချိုးအစား ရွေးရန်">
               <button id="ratioOrig" aria-pressed="true">မူရင်း</button>
-              <button id="ratio916" aria-pressed="false">TikTok</button>
-              <button id="ratio169" aria-pressed="false">YouTube</button>
-              <button id="ratio11" aria-pressed="false">Square</button>
-              <button id="ratio45" aria-pressed="false">Facebook</button>
+              <button id="ratio916" aria-pressed="false">9:16 · TikTok</button>
+              <button id="ratio169" aria-pressed="false">16:9 · YouTube</button>
+              <button id="ratio11" aria-pressed="false">1:1 · စတုရန်း</button>
+              <button id="ratio45" aria-pressed="false">4:5 · Facebook</button>
             </div>
             <div class="hint">9:16 = TikTok/Reels · 16:9 = YouTube · 1:1 / 4:5 = ပို့စ်။</div>
           </div>
@@ -616,9 +627,9 @@ body{background-attachment:fixed}
           <div class="full">
             <label class="f">ဗီဒီယို အရည်အသွေး (Quality)</label>
             <div class="enginebar" role="group" aria-label="ဗီဒီယို အရည်အသွေး ရွေးရန်">
-              <button id="q720" aria-pressed="false">720p</button>
-              <button id="q1080" aria-pressed="true">1080p</button>
-              <button id="qOrig" aria-pressed="false">Original Quality</button>
+              <button id="q720" aria-pressed="false">720p — မြန်</button>
+              <button id="q1080" aria-pressed="true">1080p — ကြည်</button>
+              <button id="qOrig" aria-pressed="false">မူရင်းအရွယ် — အကြည်ဆုံး</button>
             </div>
             <div class="hint">ကြည်လေ ဖိုင်ကြီးပြီး ကြာလေပဲ။ မူရင်းထက် သေးရင် မူရင်းအရွယ်အတိုင်းပဲ ထုတ်မယ်။</div>
           </div>
@@ -631,6 +642,7 @@ body{background-attachment:fixed}
             </div>
             <input type="file" id="fontFile" accept=".ttf,.otf,.woff,.woff2" class="hidden" />
             <div class="hint" id="fontStatus">အခု သုံးနေတာ — Noto Sans Myanmar (မူရင်း)။ ကိုယ်ပိုင်ဖောင့်က ဒီ tab ဖွင့်ထားသရွေ့ပဲ ရမယ်။</div>
+            <div id="fontSample" style="margin-top:6px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;font-size:17px;line-height:1.6">မြန်မာစာတန်းထိုး — ABC 123</div>
           </div>
           <div class="full">
             <label class="f">Logo / Watermark ပုံ</label>
@@ -639,7 +651,7 @@ body{background-attachment:fixed}
               <button class="btn small ghost hidden" id="logoRemove">Logo ဖြုတ်မယ်</button>
             </div>
             <input type="file" id="logoFile" accept="image/*" class="hidden" />
-            <div class="hint" id="logoStatus">Enter Logo</div>
+            <div class="hint" id="logoStatus">Logo မထည့်ရသေးဘူး။ PNG (နောက်ခံ ပွင့်လင်း) ဆို အလှဆုံးပဲ။</div>
           </div>
           <div class="full">
             <label class="f">Logo နေရာ</label>
@@ -707,7 +719,7 @@ body{background-attachment:fixed}
   </div>
 
   <h2 style="margin-top:22px">စာတန်းများ ပြင်ဆင်မယ်</h2>
-  <div class="hint" style="margin-top:0">ဒေါင်းမဆွဲခင် စာသားနဲ့ အချိန်တွေ ဒီမှာ ပြင်လို့ရတယ်။</div>
+  <div class="hint" style="margin-top:0">ဒေါင်းမဆွဲခင် စာသားနဲ့ အချိန်တွေ ဒီမှာ ပြင်လို့ရတယ်။ အချိန်ကို စက္ကန့် (65.5) နဲ့ရော 0:01:05.5 နဲ့ရော ရိုက်လို့ရတယ်။</div>
   <div class="row" style="margin-top:10px">
 <button class="btn small" type="button" id="splitAll">&#9986; ရှည်တဲ့စာတန်းတွေ အလိုအလျောက် ခွဲမယ်</button>
 <button class="btn small ghost" type="button" id="splitUndo" disabled>&#8630; ပြန်ဆုတ်မယ်</button>
@@ -736,11 +748,12 @@ body{background-attachment:fixed}
   <div id="videoSlot"></div>
 </section>
 <section class="card hidden" id="cardTimeline">
-  <h2>⏱ Timeline Editor</h2>
+  <h2>⏱ Timeline — CapCut လို ဖြတ်ညှပ်မယ်</h2>
   <div class="hint" style="margin-top:0">ဗီဒီယို အပိုင်းကို ခွဲ / ဖြတ် / ဖျက်ပြီး၊ စာတန်း အကွက်တွေကို ဆွဲရွှေ့ / အစ-အဆုံး ဖြတ်လို့ရတယ်။ ဖြတ်ထားတဲ့ အတိုင်းပဲ စာတန်းထိုးပြီး ဗီဒီယိုထုတ်မယ် (burn-in) နဲ့ SRT / VTT ပါ လိုက်ထုတ်ပေးမယ်။</div>
   <div class="row" style="margin-top:10px">
     <button class="btn small" id="tlSplitVideo" type="button">✂ ဗီဒီယို ခွဲမယ်</button>
     <button class="btn small" id="tlSplitSub" type="button">✂ စာတန်း ခွဲမယ်</button>
+    <button class="btn small" id="tlAddTitle" type="button">＋ စာသား ထည့်မယ်</button>
     <button class="btn small ghost" id="tlDelSel" type="button">ရွေးထားတာ ဖျက်မယ်</button>
     <button class="btn small ghost" id="tlResetCuts" type="button">ဗီဒီယို ပြန်ဆက်မယ်</button>
     <span style="flex:1"></span>
@@ -753,8 +766,22 @@ body{background-attachment:fixed}
       <div id="tlRuler"></div>
       <div class="tlTrack"><div class="tlTag">🎬 ဗီဒီယို</div><div class="tlLane" id="tlVideoLane"></div></div>
       <div class="tlTrack"><div class="tlTag">💬 စာတန်း</div><div class="tlLane" id="tlSubLane"></div></div>
+      <div class="tlTrack"><div class="tlTag">📝 စာသား</div><div class="tlLane" id="tlTitleLane"></div></div>
       <div id="tlPlayhead"></div>
     </div>
+  </div>
+  <div id="tlTitleEdit" class="hidden" style="margin-top:10px">
+    <label class="f" for="tlTitleText">ရွေးထားတဲ့ စာသား — ရိုက်ပြီး ပြင်လို့ရတယ်</label>
+    <div class="row">
+      <input type="text" id="tlTitleText" placeholder="ခေါင်းစဉ် ရိုက်ထည့်ပါ…" style="flex:1" />
+      <select id="tlTitlePos" style="max-width:110px">
+        <option value="top">အပေါ်</option>
+        <option value="middle">အလယ်</option>
+        <option value="bottom">အောက်</option>
+      </select>
+      <button class="btn small ghost danger-ghost" id="tlTitleDel" type="button">ဖျက်မယ်</button>
+    </div>
+    <div class="hint" id="tlTitleMeta"></div>
   </div>
   <div class="hint" id="tlInfo"></div>
 </section>
@@ -762,7 +789,7 @@ body{background-attachment:fixed}
 
 <div id="panelTts" class="hidden">
 <section class="card" id="cardTts">
-  <h2>&#128266; Movie Recap Text To Speech(TTS)</h2>
+  <h2>&#128266; Movie Recap မြန်မာအသံထုတ် (TTS)</h2>
   <div class="hint" style="margin-top:0">Recap စာသား (script) ကို ဒီမှာ paste လုပ်ပြီး မြန်မာအသံဖိုင် (WAV) ထုတ်ပါ။ စာရှည်ရင် အပိုင်းလေးတွေ အလိုအလျောက် ခွဲပြီး ပြန်ဆက်ပေးမယ်။ Engine ၃ မျိုး ရွေးလို့ရတယ်။</div>
 
   <div style="margin-top:14px">
@@ -791,14 +818,14 @@ body{background-attachment:fixed}
         <label class="f" for="ttsVoice">အသံ</label>
         <select id="ttsVoice">
           <optgroup label="ယောက်ျားအသံ">
-            <option value="Charon" selected>Charon (M) (တည်ငြိမ်)</option>
-            <option value="Puck">Puck (M) (လန်းဆန်း)</option>
-            <option value="Fenrir">Fenrir (M) (စိတ်အားထက်သန်)</option>
+            <option value="Charon" selected>ယောက်ျား ၁ — Charon (တည်ငြိမ်)</option>
+            <option value="Puck">ယောက်ျား ၂ — Puck (လန်းဆန်း)</option>
+            <option value="Fenrir">ယောက်ျား ၃ — Fenrir (စိတ်အားထက်သန်)</option>
           </optgroup>
           <optgroup label="မိန်းမအသံ">
-            <option value="Kore">Kore (F) (ခိုင်မာ)</option>
-            <option value="Aoede">Aoede (F) (ပျော့ပျောင်း)</option>
-            <option value="Sulafat">Sulafat (F) (နွေးထွေး)</option>
+            <option value="Kore">မိန်းမ ၁ — Kore (ခိုင်မာ)</option>
+            <option value="Aoede">မိန်းမ ၂ — Aoede (ပျော့ပျောင်း)</option>
+            <option value="Sulafat">မိန်းမ ၃ — Sulafat (နွေးထွေး)</option>
           </optgroup>
         </select>
       </div>
@@ -842,14 +869,14 @@ body{background-attachment:fixed}
         <label class="f" for="elVoice">အသံ (Voice)</label>
         <select id="elVoice">
           <option value="21m00Tcm4TlvDq8ikWAM" selected>Rachel (မိန်းမ)</option>
-          <option value="EXAVITQu4vr4xnSDxMaL">Sarah (F)</option>
-          <option value="pNInz6obpgDQGcFmaJgB">Adam (M)</option>
-          <option value="JBFqnCBsd6RMkjVDRZzb">George (M)</option>
+          <option value="EXAVITQu4vr4xnSDxMaL">Sarah (မိန်းမ)</option>
+          <option value="pNInz6obpgDQGcFmaJgB">Adam (ယောက်ျား)</option>
+          <option value="JBFqnCBsd6RMkjVDRZzb">George (ယောက်ျား)</option>
         </select>
-        <div class="row"><button class="btn small ghost" type="button" id="elLoadVoices">Download Voice List From My Elevenlab</button></div>
+        <div class="row"><button class="btn small ghost" type="button" id="elLoadVoices">ကိုယ့်အကောင့်က Voice စာရင်း ဆွဲမယ်</button></div>
       </div>
       <div>
-        <label class="f" for="elVoiceCustom">Enter Voice Clone ID</label>
+        <label class="f" for="elVoiceCustom">ဒါမှမဟုတ် Voice ID ကိုယ်တိုင်ထည့်ပါ</label>
         <input type="text" id="elVoiceCustom" placeholder="ဥပမာ 21m00Tcm4TlvDq8ikWAM" autocomplete="off" spellcheck="false" />
       </div>
     </div>
@@ -861,8 +888,8 @@ body{background-attachment:fixed}
       <div>
         <label class="f" for="edgeVoice">အသံ</label>
         <select id="edgeVoice">
-          <option value="my-MM-ThihaNeural" selected>Thiha — (မြန်မာ)</option>
-          <option value="my-MM-NilarNeural">Nilar — (မြန်မာ)</option>
+          <option value="my-MM-ThihaNeural" selected>Thiha — ယောက်ျား (မြန်မာ)</option>
+          <option value="my-MM-NilarNeural">Nilar — မိန်းမ (မြန်မာ)</option>
         </select>
       </div>
       <div>
@@ -876,7 +903,7 @@ body{background-attachment:fixed}
         </select>
       </div>
     </div>
-    <div class="hint">Microsoft Edge ရဲ့ Read Aloud မြန်မာအသံ (Thiha / Nilar) — No API Key, Unlimited, Free</div>
+    <div class="hint">Microsoft Edge ရဲ့ Read Aloud မြန်မာအသံ (Thiha / Nilar) — API Key မလို၊ အခမဲ့၊ limit မရှိ။ စာသားကို Microsoft server သို့ ပို့ရတယ်။ မရရင် စက်နာရီ (အချိန်) မှန်မမှန်နဲ့ အင်တာနက်ကို စစ်ပါ။</div>
   </div>
 
   <div class="grid2" style="margin-top:12px">
@@ -958,8 +985,8 @@ service cloud.firestore {
     <div>
       <label class="f" for="aiImgProvider">သုံးမယ့် AI</label>
       <select id="aiImgProvider">
-        <option value="gemini">Gemini Nano Banana - (Gemini Key လို)</option>
-        <option value="elevenlabs">ElevenLabs — (ElevenLabs Key လို)</option>
+        <option value="gemini">Gemini Nano Banana — အရည်အသွေးကောင်း (Gemini Key လို)</option>
+        <option value="elevenlabs">ElevenLabs — ပုံမော်ဒယ် အစုံ (ElevenLabs Key လို)</option>
         <option value="pollinations">Pollinations — အခမဲ့၊ Key မလို</option>
       </select>
     </div>
@@ -1930,18 +1957,27 @@ var SrtTools = (function () {
   /* Gemini sometimes returns times that run past the length of the clip it was sent (its sense of time stretches).
      Accepting them as-is pushes every later subtitle late and past the end of the video — so stretch them back. */
   function fitCuesToClip(rel, dur) {
-    var mx = 0; rel.forEach(function (r) { if (r.en > mx) mx = r.en; });
-    var k = (mx > dur + 1.5) ? dur / mx : 1, out = [];
+    /* Gemini often stretches the LAST line past the end of the clip while the
+       rest of the timestamps are right. Compressing the whole chunk for that
+       one line shifts every subtitle earlier — so rescale only when the last
+       line's START is also past the end (a genuine uniform stretch); when
+       only the ends overrun, just clamp the ends and drop lines that start
+       past the end. */
+    var mx = 0, ms = 0;
+    rel.forEach(function (r) { if (r.en > mx) mx = r.en; if (r.st > ms) ms = r.st; });
+    var stretched = mx > dur + 1.5 && ms > dur;
+    var k = stretched ? dur / mx : 1, out = [];
     rel.forEach(function (r) {
       var st = r.st * k, en = Math.min(r.en * k, dur);
       if (st >= dur - 0.1) return;
       out.push(Object.assign({}, r, { st: st, en: Math.max(st + 0.2, en) }));
     });
-    return { list: out, k: k, over: mx - dur };
+    return { list: out, k: k, over: mx - dur, clamped: !stretched && mx > dur };
   }
   async function runVideoGemini() {
     var srcLang = $('srcLang').value;
     coverageGapSec = 0;
+    titleTexts = []; tlSel = null;   /* titles belong to the previous video */
     beginProgress([
       { id: 'audio', label: 'အသံထုတ်ယူ' },
       { id: 'gem', label: 'Gemini ပြန်ဆို' }
@@ -1977,7 +2013,7 @@ var SrtTools = (function () {
           : 'Transcribe every spoken line, and translate each line into natural, conversational Burmese (Myanmar) — the way native speakers actually talk in dramas, keeping the meaning, tone and emotion rather than translating word-for-word. ' +
           'Use correct standard Burmese spelling (Myanmar Unicode). Never repeat the same word or syllable over and over inside a line — a repetition loop is a failure; every line must read as one natural sentence. If a word is uncertain, use a simpler common word instead of repeating. ' +
           'Reply with ONLY a JSON array (no markdown, no explanation). Each item: {"start": <number>, "end": <number>, "original": "<line transcribed in the spoken language>", "my": "<natural Burmese translation>"}. ') +
-        'start/end are seconds from the beginning of THIS audio clip; cues must be in chronological order, each lasting about 1 to 7 seconds and covering one spoken line — split long lines at natural pauses. Keep transcribing until the audio ends. If there is no speech at all, reply with [].';
+        'start/end are seconds from the beginning of THIS audio clip; cues must be in chronological order, each lasting about 1 to 7 seconds and covering one spoken line — split long lines at natural pauses. Do not stretch the last line to the end of the clip — end it when the speech actually stops. Keep transcribing until the audio ends. If there is no speech at all, reply with [].';
       var glossVp = glossaryPromptText();
       if (glossVp && !gtMode) prompt += ' For character names and terms, always use these exact Burmese forms: ' + glossVp + '.';
 
@@ -2011,6 +2047,7 @@ var SrtTools = (function () {
           });
           var fit = fitCuesToClip(rel, slice.length / 16000);
           if (fit.k < 1) log('Gemini ပေးတဲ့ အချိန်တွေက အသံအပိုင်းရဲ့ အရှည်ထက် ' + Math.round(fit.over) + ' စက္ကန့်ခန့် ကျော်နေလို့ ပြန်ချုံ့ပေးပါတယ် (×' + fit.k.toFixed(3) + ')');
+          else if (fit.clamped) log('Gemini ပေးတဲ့ နောက်ဆုံးစာကြောင်းရဲ့ အဆုံးက အသံအပိုင်းထက် ကျော်နေလို့ အဆုံးကိုပဲ ဖြတ်ပေးထားတယ် — ကျန်စာကြောင်းတွေရဲ့ အချိန်ကို မထိထားဘူး');
           fit.list.forEach(function (r) { cues.push({ start: r.st + fromSec, end: r.en + fromSec, text: r.text, my: r.my, failed: false }); });
         } else {
           /* fallback: model answered with plain SRT instead of JSON — treat it as the Burmese track
@@ -2124,6 +2161,7 @@ var SrtTools = (function () {
   async function runSrt() {
     var srcLang = $('srcLang').value;
     coverageGapSec = 0;
+    titleTexts = []; tlSel = null;   /* titles belong to the previous video */
     beginProgress([
       { id: 'parse', label: 'ဖိုင်ဖတ်' },
       { id: 'tr', label: 'မြန်မာပြန်ဆို' }
@@ -2258,12 +2296,21 @@ var SrtTools = (function () {
     if (!batchRunning) { switchTab('edit'); $('cardResult').scrollIntoView({ behavior: 'smooth' }); }
   }
   var lastCueText = null, cueRaf = 0;
+  var lastTitleText = null, curTitleObj = null;
   function updateCue() {
     var t = $('preview').currentTime, ids = [];
     for (var i = 0; i < segments.length; i++) { if (t >= segments[i].start && t < segments[i].end) ids.push(i); }
     var idx = ids.length ? ids[0] : -1;
     var txt = ids.slice(-2).map(function (k) { return SrtTools.splitLines(segments[k].my || '', maxCharsVal).join('\n'); }).filter(Boolean).join('\n');
     if (txt !== lastCueText) { lastCueText = txt; $('cueText').textContent = txt; applyCueStyle(); }
+    var titleNow = null;
+    for (var ti = 0; ti < titleTexts.length; ti++) { if (t >= titleTexts[ti].start && t < titleTexts[ti].end) { titleNow = titleTexts[ti]; break; } }
+    var titleTxt = titleNow ? titleNow.text : '';
+    if (titleTxt !== lastTitleText || titleNow !== curTitleObj) {
+      lastTitleText = titleTxt; curTitleObj = titleNow;
+      $('titleText').textContent = titleTxt;
+      applyTitleStyle();
+    }
     if (idx !== activeIdx) {
       var rows = $('segList').children;
       if (activeIdx >= 0 && rows[activeIdx]) rows[activeIdx].classList.remove('active');
@@ -2343,6 +2390,7 @@ var SrtTools = (function () {
   function splitRefresh(msg) {
     activeIdx = -1; renderEditor(); updateStats();
     if (typeof scheduleSave === 'function') scheduleSave();
+    if (typeof renderTimeline === 'function') renderTimeline();
     var u = $('splitUndo'); if (u) u.disabled = !splitSnap;
     if (msg) toast(msg);
   }
@@ -2416,13 +2464,38 @@ var SrtTools = (function () {
     splitRefresh('အချိန်ညှိပြီးပါပြီ (အချိုး ×' + a.toFixed(4) + ') — မကြိုက်ရင် ပြန်ဆုတ်လို့ရတယ်'); syncInfo();
   }
   function syncFit() {
-    var dur = $('preview').duration, last = lastEndSec();
+    var dur = $('preview').duration, last = 0, lastStart = 0;
+    segments.forEach(function (s) { if (s.end > last) { last = s.end; lastStart = s.start; } });
     if (!(isFinite(dur) && dur > 0)) { toast('ဗီဒီယို မတင်ရသေးပါဘူး'); return; }
     if (last <= dur - 0.5) { toast('စာတန်းက ဗီဒီယိုအရှည်ထက် မကျော်ပါဘူး — အချက် ၂ ခုနဲ့ ညှိပါ'); return; }
-    var k = (dur - 0.3) / last;
+    /* only the last line's end overruns (the usual Gemini case): clamping its
+       end is enough — rescaling everything would shift every subtitle
+       earlier. Rescale only when the last line's start is past the video too. */
     syncSnapshot();
-    segments.forEach(function (s) { s.start *= k; s.end *= k; });
-    splitRefresh('ဗီဒီယိုအရှည်နဲ့ ကိုက်အောင် ချုံ့ပြီးပါပြီ (×' + k.toFixed(4) + ')'); syncInfo();
+    if (lastStart > dur) {
+      var k = (dur - 0.3) / last;
+      segments.forEach(function (s) { s.start *= k; s.end *= k; });
+      splitRefresh('ဗီဒီယိုအရှည်နဲ့ ကိုက်အောင် ချုံ့ပြီးပါပြီ (×' + k.toFixed(4) + ')');
+    } else {
+      segments.forEach(function (s) { if (s.end > dur - 0.3) s.end = dur - 0.3; });
+      splitRefresh('နောက်ဆုံးစာကြောင်းရဲ့ အဆုံးက ဗီဒီယိုထက် ကျော်နေလို့ အဆုံးကိုပဲ ဖြတ်ပေးထားတယ် — ကျန်စာကြောင်းတွေရဲ့ အချိန်ကို မထိထားဘူး');
+    }
+    syncInfo();
+  }
+  /* shift every subtitle by the same amount — for a consistent early/late
+     bias in Gemini's timestamps. Positive = later (fixes subtitles that
+     appear too early), negative = earlier. Undo with the ↩ button below. */
+  function syncShift() {
+    var d = parseFloat(($('syncShiftSec') && $('syncShiftSec').value) || '0');
+    if (!isFinite(d) || d === 0) { toast('ရွှေ့မယ့် စက္ကန့် ထည့်ပါ — စောနေရင် +၊ နောက်ကျနေရင် −'); return; }
+    if (!segments.length) { toast('ရွှေ့စရာ စာတန်း မရှိသေးပါဘူး'); return; }
+    syncSnapshot();
+    segments.forEach(function (s) {
+      s.start = Math.max(0, s.start + d);
+      s.end = Math.max(s.start + 0.2, s.end + d);
+    });
+    splitRefresh('စာတန်းအားလုံး ' + (d > 0 ? '+' : '') + d + ' စက္ကန့် ရွှေ့ပြီးပါပြီ');
+    syncInfo();
   }
   function renderEditor() {
     var list = $('segList');
@@ -2568,6 +2641,28 @@ var seekBtn = d.querySelector('.seek');
     var sw = burn.stroke > 0 ? burn.stroke * (h || 360) / 1080 : 0;
     span.style.webkitTextStroke = sw > 0 ? sw.toFixed(1) + 'px ' + burn.strokeColor : '';
     fitPreviewCue();
+    applyTitleStyle();
+  }
+  /* custom title overlay in the preview — same burn style as the subtitles,
+     but 1.5x bigger, at the position picked for that title */
+  function applyTitleStyle() {
+    var el = $('titleCue'), span = $('titleText'), v = $('preview');
+    if (!el || !span || !v) return;
+    var h = v.clientHeight || 0;
+    var fpx = Math.round((h ? burn.fontFrac * h : burn.fontFrac * 360) * 1.5 * 10) / 10;
+    el.style.fontSize = fpx + 'px';
+    el.style.fontFamily = burn.fontFamily;
+    el.style.fontWeight = burn.bold ? '700' : '400';
+    el.style.color = burn.color;
+    el.style.top = 'auto'; el.style.bottom = 'auto'; el.style.transform = 'none';
+    var pos = (curTitleObj && curTitleObj.pos) || 'top';
+    if (pos === 'middle') { el.style.top = '50%'; el.style.transform = 'translateY(-50%)'; }
+    else if (pos === 'bottom') el.style.bottom = '16%';
+    else el.style.top = '6%';
+    span.style.background = burn.bgOp > 0 ? hexToRgba(burn.bg, burn.bgOp) : 'transparent';
+    var sw = burn.stroke > 0 ? burn.stroke * (h || 360) / 1080 * 1.5 : 0;
+    span.style.webkitTextStroke = sw > 0 ? sw.toFixed(1) + 'px ' + burn.strokeColor : '';
+    el.style.visibility = (lastTitleText && fpx >= 0.3) ? 'visible' : 'hidden';
   }
   /* keep the preview cue inside the frame: shrink the font if the current line is wider than the video */
   function fitPreviewCue() {
@@ -2774,13 +2869,30 @@ var seekBtn = d.querySelector('.seek');
       var buf = await f.arrayBuffer();
       var face = new FontFace(family, buf, { weight: '400 700' });
       await face.load();
+      /* same file name uploaded again: drop the old face first, otherwise the
+         browser may keep using the first one it registered under this name */
+      try {
+        document.fonts.forEach(function (old) { if (old.family === family) document.fonts.delete(old); });
+      } catch (err2) { /* older browsers — adding still works */ }
       document.fonts.add(face);
       burn.fontFamily = '"' + family + '","Noto Sans Myanmar",sans-serif';
       burn.fontName = family;
       $('fontReset').classList.remove('hidden');
-      $('fontStatus').textContent = 'အခု သုံးနေတာ — ' + f.name + ' (ကိုယ်ပိုင်ဖောင့်)။ ဒီ tab ဖွင့်ထားသရွေ့ပဲ ရမယ်။';
+      /* does this font actually contain Burmese letters? If not, Burmese
+         subtitles silently fall back to Noto and look unchanged — the most
+         common reason a custom font "doesn't change" anything */
+      var hasMy = true;
+      try { hasMy = document.fonts.check('40px "' + family + '"', 'မြန်မာစာတန်းထိုး'); } catch (err3) { hasMy = true; }
+      var sample = $('fontSample');
+      if (sample) sample.style.fontFamily = burn.fontFamily;
+      if (hasMy) {
+        $('fontStatus').textContent = 'အခု သုံးနေတာ — ' + f.name + ' (ကိုယ်ပိုင်ဖောင့်)။ ဒီ tab ဖွင့်ထားသရွေ့ပဲ ရမယ်။';
+        toast('ဖောင့် ထည့်ပြီးပါပြီ — ' + family);
+      } else {
+        $('fontStatus').textContent = 'အခု သုံးနေတာ — ' + f.name + ' (ကိုယ်ပိုင်ဖောင့်)။ သတိ — ဒီဖောင့်မှာ မြန်မာစာ မပါဘူး၊ ဒါကြောင့် မြန်မာစာတန်းတွေက မူရင်းဖောင့်အတိုင်းပဲ ပေါ်မယ်။ မြန်မာစာပါတဲ့ ဖောင့် (ဥပမာ Pyidaungsu, Myanmar3, Noto Sans Myanmar) သုံးပေးပါ။';
+        toast('ဒီဖောင့်မှာ မြန်မာစာ မပါဘူး — မြန်မာစာတန်းက မပြောင်းဘူး ဖြစ်နေမယ်');
+      }
       applyCueStyle();
-      toast('ဖောင့် ထည့်ပြီးပါပြီ — ' + family);
     } catch (err) {
       console.error(err);
       toast('ဒီဖောင့်ဖိုင်ကို သုံးမရပါဘူး — .ttf / .otf ဖိုင် ဖြစ်ကြောင်း စစ်ပြီး ပြန်စမ်းပါ');
@@ -2791,6 +2903,8 @@ var seekBtn = d.querySelector('.seek');
     burn.fontName = '';
     $('fontReset').classList.add('hidden');
     $('fontStatus').textContent = 'အခု သုံးနေတာ — Noto Sans Myanmar (မူရင်း)။';
+    var sample = $('fontSample');
+    if (sample) sample.style.fontFamily = burn.fontFamily;
     applyCueStyle();
     toast('မူရင်း ဖောင့် ပြန်သုံးပါပြီ');
   });
@@ -2941,6 +3055,72 @@ var seekBtn = d.querySelector('.seek');
     cx.shadowOffsetY = 0;
   }
 
+  /* custom title overlay burned into the export — same style as the subtitles,
+     but 1.5x bigger, at the position picked for that title */
+  function drawTitleText(cx, W, H, t) {
+    var act = null;
+    for (var i = 0; i < titleTexts.length; i++) {
+      if (t >= titleTexts[i].start && t < titleTexts[i].end) { act = titleTexts[i]; break; }
+    }
+    if (!act || !act.text) return;
+    var safeMx = Math.round(W * 0.04);
+    var availW = Math.max(40, W - safeMx * 2);
+    var fs = burn.fontFrac * H * 1.5;
+    if (fs < 0.4) return;
+    function setFont() { cx.font = (burn.bold ? '700 ' : '400 ') + fs + 'px ' + burn.fontFamily; }
+    setFont();
+    cx.textAlign = 'center';
+    cx.textBaseline = 'middle';
+    var lines = SrtTools.splitLines(act.text, maxCharsVal);
+    var maxW = 0;
+    lines.forEach(function (l) { maxW = Math.max(maxW, cx.measureText(l).width); });
+    if (maxW > availW && maxW > 0) {
+      fs = fs * availW / maxW;
+      setFont();
+      maxW = 0;
+      lines.forEach(function (l) { maxW = Math.max(maxW, cx.measureText(l).width); });
+    }
+    var lh = fs * 1.5, padX = fs * 0.55, padY = fs * 0.3;
+    var boxW = Math.min(availW, maxW + padX * 2);
+    var boxH = lines.length * lh + padY * 2;
+    var x0 = Math.max(safeMx, Math.min(W - safeMx - boxW, (W - boxW) / 2));
+    var y0;
+    if (act.pos === 'middle') y0 = Math.round((H - boxH) / 2);
+    else if (act.pos === 'bottom') y0 = Math.round(H * 0.98) - Math.round(H * 0.16) - Math.round(boxH);
+    else y0 = Math.round(H * 0.06);
+    if (burn.bgOp > 0) {
+      cx.fillStyle = hexToRgba(burn.bg, burn.bgOp);
+      if (typeof cx.roundRect === 'function') {
+        cx.beginPath();
+        cx.roundRect(x0, y0, boxW, boxH, Math.max(2, fs * 0.18));
+        cx.fill();
+      } else cx.fillRect(x0, y0, boxW, boxH);
+    }
+    if (burn.bgOp < 0.35) {
+      cx.shadowColor = 'rgba(0,0,0,0.9)';
+      cx.shadowBlur = Math.max(2, fs * 0.12);
+      cx.shadowOffsetY = Math.max(1, fs * 0.04);
+    }
+    cx.fillStyle = burn.color;
+    if (burn.stroke > 0) {
+      cx.save();
+      cx.shadowColor = 'transparent'; cx.shadowBlur = 0; cx.shadowOffsetY = 0;
+      cx.strokeStyle = burn.strokeColor;
+      cx.lineWidth = Math.max(1, burn.stroke * H / 1080 * 1.5);
+      cx.lineJoin = 'round';
+      lines.forEach(function (l, li) {
+        cx.strokeText(l, x0 + boxW / 2, y0 + padY + lh * (li + 0.5), availW);
+      });
+      cx.restore();
+    }
+    lines.forEach(function (l, li) {
+      cx.fillText(l, x0 + boxW / 2, y0 + padY + lh * (li + 0.5), availW);
+    });
+    cx.shadowColor = 'transparent';
+    cx.shadowBlur = 0;
+    cx.shadowOffsetY = 0;
+  }
+
   async function renderBurned() {
     if (burnRender) return;
     var btn = $('burnBtn');
@@ -3078,6 +3258,7 @@ var seekBtn = d.querySelector('.seek');
           }
         } catch (e) {}
         drawBurnSub(cx, W, H, vid.currentTime);
+        drawTitleText(cx, W, H, vid.currentTime);
         drawBurnLogo(cx, W, H);
         barEl.style.width = exportPct() + '%';
         if (!vid.ended && !state.cancelled) raf = requestAnimationFrame(draw);
@@ -3479,6 +3660,7 @@ var seekBtn = d.querySelector('.seek');
         bgOp: burn.bgOp, bold: burn.bold, stroke: burn.stroke, strokeColor: burn.strokeColor,
         quality: burn.quality, ratio: burn.ratio, fill: burn.fill },
       clips: vclips ? vclips.map(function (c) { return { start: c.start, end: c.end }; }) : null,
+      titles: titleTexts.map(function (tt) { return { start: tt.start, end: tt.end, text: tt.text || '', pos: tt.pos || 'top' }; }),
       logoCfg: { corner: logo.corner, sizeFrac: logo.sizeFrac, op: logo.op }
     };
   }
@@ -3548,7 +3730,12 @@ var seekBtn = d.querySelector('.seek');
         .map(function (c) { return { start: c.start, end: c.end }; });
       if (cs.length) { vclips = cs; tlClipsKey = p.videoFileName || ''; }
     }
-    if (p.burn || p.logoCfg || p.clips) { syncBurnControls(); renderTimeline(); }
+    /* custom title texts saved with the project */
+    if (p.titles && Array.isArray(p.titles)) {
+      titleTexts = p.titles.filter(function (tt) { return tt && typeof tt.start === 'number' && typeof tt.end === 'number' && tt.end > tt.start; })
+        .map(function (tt) { return { start: tt.start, end: tt.end, text: tt.text || '', pos: tt.pos || 'top' }; });
+    }
+    if (p.burn || p.logoCfg || p.clips || p.titles) { syncBurnControls(); renderTimeline(); }
     showResult();
     if (mode === 'video' && !videoFile) {
       /* the file itself can't be stored — edit/download works now, and the
@@ -3620,6 +3807,8 @@ var seekBtn = d.querySelector('.seek');
 
   /* ---------- timeline editor (CapCut / VN style) ---------- */
   var vclips = null;      /* [{start,end}] source-time ranges kept for export; null = whole video */
+  var titleTexts = [];    /* custom overlay text / titles: [{start,end,text,pos}] */
+  var tlEditTitleIdx = -1;
   var tlClipsKey = '';    /* file name the current vclips belong to */
   var tlPps = 0;          /* px per second; 0 = fit to width */
   var tlSel = null;       /* {kind:'video'|'sub', idx} */
@@ -3711,10 +3900,30 @@ var seekBtn = d.querySelector('.seek');
         '<span class="tlHandle l" data-edge="l"></span><span class="tlSubTxt">' + escapeHtml((s.my || '').split('\n')[0] || '…') + '</span><span class="tlHandle r" data-edge="r"></span></div>';
     });
     $('tlSubLane').innerHTML = sh;
+    var th = '';
+    titleTexts.forEach(function (tt, i) {
+      th += '<div class="tlTitle' + (tlSel && tlSel.kind === 'title' && tlSel.idx === i ? ' sel' : '') + '" data-i="' + i + '" style="left:' + Math.round(tt.start * pps) + 'px;width:' + Math.max(4, Math.round((tt.end - tt.start) * pps)) + 'px">' +
+        '<span class="tlHandle l" data-edge="l"></span><span class="tlTitleTxt">' + escapeHtml(tt.text || '…') + '</span><span class="tlHandle r" data-edge="r"></span></div>';
+    });
+    $('tlTitleLane').innerHTML = th;
     $('tlInfo').textContent = hasCuts()
       ? 'ဖြတ်ထားတယ် — ထုတ်မယ့် အရှည် ' + fmtTl(totalKept()) + ' (မူလ ' + fmtTl(d) + ') · ဖျက်ထားတဲ့ အပိုင်းထဲက စာတန်းတွေ ထုတ်မယ့် ဗီဒီယိုမှာ မပါဘူး'
       : 'ဗီဒီယို အရှည် ' + fmtTl(d) + ' · စာတန်း ' + segments.length + ' ကြောင်း · အကွက်ကို ဆွဲရွှေ့လို့ရတယ်၊ အစွန်းကို ဆွဲရင် အစ/အဆုံး ဖြတ်လို့ရတယ်';
+    if (titleTexts.length) $('tlInfo').textContent += ' · စာသား ' + titleTexts.length + ' ခု';
+    syncTitleEditor();
     movePlayhead();
+  }
+  function syncTitleEditor() {
+    var ed = $('tlTitleEdit'); if (!ed) return;
+    var sel = tlSel && tlSel.kind === 'title' ? titleTexts[tlSel.idx] : null;
+    ed.classList.toggle('hidden', !sel);
+    if (!sel) { tlEditTitleIdx = -1; return; }
+    if (tlSel.idx !== tlEditTitleIdx) {
+      tlEditTitleIdx = tlSel.idx;
+      $('tlTitleText').value = sel.text || '';
+      $('tlTitlePos').value = sel.pos || 'top';
+    }
+    $('tlTitleMeta').textContent = 'အချိန် ' + fmtTl(sel.start) + ' – ' + fmtTl(sel.end) + ' · အကွက်ကို ဆွဲရွှေ့လို့ရတယ်၊ အစွန်းကို ဆွဲရင် အစ/အဆုံး ဖြတ်လို့ရတယ်';
   }
   function movePlayhead() {
     var v = $('preview'); if (!v || !vidDur()) return;
@@ -3732,6 +3941,9 @@ var seekBtn = d.querySelector('.seek');
     if (dg.kind === 'sub') {
       var s = segments[dg.idx]; if (!s) return;
       s.start = dg.ns; s.end = dg.ne;
+    } else if (dg.kind === 'title') {
+      var tt = titleTexts[dg.idx]; if (!tt) return;
+      tt.start = dg.ns; tt.end = dg.ne;
     } else if (dg.kind === 'video') {
       var c = vclips[dg.idx]; if (!c) return;
       c.start = dg.ns; c.end = dg.ne;
@@ -3745,18 +3957,18 @@ var seekBtn = d.querySelector('.seek');
     var d = vidDur(); if (!d) return;
     var pps = tlPpsNow();
     var handle = e.target.closest ? e.target.closest('.tlHandle') : null;
-    var block = e.target.closest ? e.target.closest('.tlClip, .tlSub') : null;
+    var block = e.target.closest ? e.target.closest('.tlClip, .tlSub, .tlTitle') : null;
     if (block) {
-      var kind = block.classList.contains('tlClip') ? 'video' : 'sub';
+      var kind = block.classList.contains('tlClip') ? 'video' : block.classList.contains('tlTitle') ? 'title' : 'sub';
       var idx = parseInt(block.getAttribute('data-i'), 10);
-      var mode = handle ? (handle.getAttribute('data-edge') === 'l' ? 'trimL' : 'trimR') : (kind === 'sub' ? 'move' : 'body');
+      var mode = handle ? (handle.getAttribute('data-edge') === 'l' ? 'trimL' : 'trimR') : (kind === 'video' ? 'body' : 'move');
       if (kind === 'video') initClips();
-      var o = kind === 'video' ? vclips[idx] : segments[idx];
+      var o = kind === 'video' ? vclips[idx] : kind === 'title' ? titleTexts[idx] : segments[idx];
       if (!o) return;
       tlDrag = { kind: kind, idx: idx, mode: mode, el: block, startX: e.clientX,
         os: o.start, oe: o.end, ns: o.start, ne: o.end, moved: false };
       var prevEnd = 0, nextStart = d;
-      var list = kind === 'video' ? vclips : segments;
+      var list = kind === 'video' ? vclips : kind === 'title' ? titleTexts : segments;
       list.forEach(function (it, i) {
         if (i === idx) return;
         if (it.start < o.start) prevEnd = Math.max(prevEnd, it.end);
@@ -3807,7 +4019,7 @@ var seekBtn = d.querySelector('.seek');
     if (dg.kind === 'scrub') { renderTimeline(); return; }
     if (!dg.moved) {
       tlSel = { kind: dg.kind, idx: dg.idx };
-      var o = dg.kind === 'video' ? vclips[dg.idx] : segments[dg.idx];
+      var o = dg.kind === 'video' ? vclips[dg.idx] : dg.kind === 'title' ? titleTexts[dg.idx] : segments[dg.idx];
       if (o) $('preview').currentTime = o.start;
       renderTimeline();
       return;
@@ -3816,6 +4028,9 @@ var seekBtn = d.querySelector('.seek');
       renderEditor();
       var s2 = segments[dg.idx];
       if (s2) $('preview').currentTime = s2.start;
+    } else if (dg.kind === 'title') {
+      var t2 = titleTexts[dg.idx];
+      if (t2) $('preview').currentTime = t2.start;
     }
     scheduleSave();
     renderTimeline();
@@ -3865,6 +4080,11 @@ var seekBtn = d.querySelector('.seek');
       vclips.splice(tlSel.idx, 1);
       tlSel = null;
       toast('ဗီဒီယို ' + fmtTl(c.start) + '–' + fmtTl(c.end) + ' အပိုင်း ဖျက်ပြီးပါပြီ — ထုတ်တဲ့အခါ မပါတော့ဘူး');
+    } else if (tlSel.kind === 'title') {
+      titleTexts.splice(tlSel.idx, 1);
+      tlSel = null; tlEditTitleIdx = -1;
+      updateCue();
+      toast('စာသား ဖျက်ပြီးပါပြီ');
     } else {
       var s = segments[tlSel.idx];
       if (!s) return;
@@ -3879,6 +4099,39 @@ var seekBtn = d.querySelector('.seek');
     vclips = null; tlSel = null;
     initClips(); scheduleSave(); renderTimeline();
     toast('ဗီဒီယို ဖြတ်ထားတာ အားလုံး ပြန်ဆက်ပြီးပါပြီ');
+  });
+  $('tlAddTitle').addEventListener('click', function () {
+    var d = vidDur(); if (!d) return;
+    var t = $('preview').currentTime;
+    var start = Math.max(0, Math.min(d - 0.5, t));
+    var nt = { start: start, end: Math.min(d, start + 3), text: 'ခေါင်းစဉ်', pos: 'top' };
+    titleTexts.push(nt);
+    titleTexts.sort(function (a, b) { return a.start - b.start; });
+    tlSel = { kind: 'title', idx: titleTexts.indexOf(nt) };
+    scheduleSave(); renderTimeline();
+    toast('စာသား ထည့်ပြီးပါပြီ — အောက်က အကွက်မှာ စာရိုက်ပြီး ပြင်လို့ရတယ်');
+  });
+  $('tlTitleText').addEventListener('input', function (e) {
+    var sel = tlSel && tlSel.kind === 'title' ? titleTexts[tlSel.idx] : null;
+    if (!sel) return;
+    sel.text = e.target.value;
+    var span = document.querySelector('.tlTitle[data-i="' + tlSel.idx + '"] .tlTitleTxt');
+    if (span) span.textContent = sel.text || '…';
+    updateCue();
+  });
+  $('tlTitleText').addEventListener('change', function () { scheduleSave(); });
+  $('tlTitlePos').addEventListener('change', function (e) {
+    var sel = tlSel && tlSel.kind === 'title' ? titleTexts[tlSel.idx] : null;
+    if (!sel) return;
+    sel.pos = e.target.value;
+    updateCue(); scheduleSave();
+  });
+  $('tlTitleDel').addEventListener('click', function () {
+    if (!tlSel || tlSel.kind !== 'title') return;
+    titleTexts.splice(tlSel.idx, 1);
+    tlSel = null; tlEditTitleIdx = -1;
+    updateCue(); scheduleSave(); renderTimeline();
+    toast('စာသား ဖျက်ပြီးပါပြီ');
   });
   $('tlZoomIn').addEventListener('click', function () { tlPps = Math.min(300, (tlPps > 0 ? tlPps : tlFitPps()) * 1.5); renderTimeline(); });
   $('tlZoomOut').addEventListener('click', function () { tlPps = Math.max(10, (tlPps > 0 ? tlPps : tlFitPps()) / 1.5); renderTimeline(); });
@@ -4720,6 +4973,7 @@ var seekBtn = d.querySelector('.seek');
 
   $('splitAll').addEventListener('click', splitAllLong);
 $('syncFit').addEventListener('click', syncFit);
+$('syncShift').addEventListener('click', syncShift);
 $('syncGo').addEventListener('click', syncApply);
 $('syncCheck').addEventListener('click', syncInfo);
 $('syncUndo').addEventListener('click', function () { splitUndoNow(); syncInfo(); });
