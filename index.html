@@ -431,7 +431,7 @@ body{background-attachment:fixed}
 <label style="display:flex;gap:8px;align-items:flex-start;margin:14px 0 6px"><input type="checkbox" id="autoModelSwitch" checked /> <span><b>မော်ဒယ် အလိုအလျောက် ပြောင်းမယ်</b> — ရွေးထားတဲ့ မော်ဒယ် မရရင် (404 / 429 / 503) နောက်ထပ် ရနိုင်တဲ့ Gemini မော်ဒယ်ဆီ တစ်ခုပြီးတစ်ခု ပြောင်းပြီး ဆက်ဘာသာပြန်မယ်</span></label>
 <label style="display:flex;gap:8px;align-items:flex-start;margin:14px 0 6px"><input type="checkbox" id="gtPolish" /> <span><b>Google Translate နဲ့ အရင် ပြန်ပြီး Gemini နဲ့ ပြင်မယ်</b> — Google (အခမဲ့၊ key မလို) က မြန်မြန် ပြန်ပြီး၊ Gemini က မြန်မာစာကို သဘာဝကျကျ ပြန်ပြင်ပေးမယ်။ Gemini quota သက်သာတယ်။ Google မရရင် Gemini အစကနေ ပြန်ဆိုတဲ့ လမ်းကြောင်း အတိုင်း အလိုအလျောက် ပြောင်းလုပ်မယ်။ SRT mode ရော ဗီဒီယို mode မှာပါ သုံးတယ်။</span></label>
     </details>
-    <div class="hint">Key မရှိရင် <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> မှာ အခမဲ့ ထုတ်ပါ။ Key ကို ဘယ်မှာမှ မသိမ်းဘူး — tab ပိတ်ရင် ပျက်မယ်။</div>
+    <div class="hint">Key မရှိရင် <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> မှာ အခမဲ့ ထုတ်ပါ။ Key ကို ဒီ browser မှာ မှတ်ထားမယ် — browser ပိတ်ပြီး ပြန်ဖွင့်လည်း ကျန်နေမယ်။ ဖျက်ချင်ရင် အကွက်ထဲက စာကို ဖျက်လိုက်ပါ။</div>
   </div>
   <div class="note" id="geminiNote">Gemini မုဒ်မှာ အကြောင်းအရာကို Google server သို့ ပို့ရတယ်။ 429 ထိရင် အလိုအလျောက် စောင့်ပြီး ပြန်ကြိုးစားပေးမယ်။</div>
 
@@ -859,7 +859,7 @@ body{background-attachment:fixed}
         <input type="password" id="ttsKey" placeholder="AIza…" autocomplete="off" spellcheck="false" />
       </div>
     </div>
-    <div class="hint">Key ကို မသိမ်းဘူး — tab ပိတ်ရင် ပျက်မယ်။ Request တစ်ခုချင်းကြား စောင့်ချိန်ကို ဘာသာပြန် tab ထဲက Gemini "Pacing" နဲ့ တူတူ သုံးမယ် (မူလ ၇ စက္ကန့်)။ မော်ဒယ် မရရင် (404 / 429 / 503) တခြား TTS မော်ဒယ်ကို အလိုအလျောက် ပြောင်းပေးမယ် ("မော်ဒယ် အလိုအလျောက် ပြောင်းမယ်" ကို ဖွင့်ထားရင်)။</div>
+    <div class="hint">Key ကို ဒီ browser မှာ မှတ်ထားမယ် — browser ပိတ်ပြီး ပြန်ဖွင့်လည်း ကျန်နေမယ်။ ဖျက်ချင်ရင် အကွက်ထဲက စာကို ဖျက်လိုက်ပါ။ Request တစ်ခုချင်းကြား စောင့်ချိန်ကို ဘာသာပြန် tab ထဲက Gemini "Pacing" နဲ့ တူတူ သုံးမယ် (မူလ ၇ စက္ကန့်)။ မော်ဒယ် မရရင် (404 / 429 / 503) တခြား TTS မော်ဒယ်ကို အလိုအလျောက် ပြောင်းပေးမယ် ("မော်ဒယ် အလိုအလျောက် ပြောင်းမယ်" ကို ဖွင့်ထားရင်)။</div>
   </div>
 
   <div id="ttsBoxE" class="hidden">
@@ -892,7 +892,7 @@ body{background-attachment:fixed}
         <input type="text" id="elVoiceCustom" placeholder="ဥပမာ 21m00Tcm4TlvDq8ikWAM" autocomplete="off" spellcheck="false" />
       </div>
     </div>
-    <div class="hint">Key ကို <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" rel="noopener">ElevenLabs</a> မှာ ထုတ်ပါ။ Key ကို မသိမ်းဘူး — tab ပိတ်ရင် ပျက်မယ်။ မြန်မာစာကို Eleven v3 / v4 နဲ့ပဲ ဖတ်နိုင်တယ်။ Free plan မှာ ကိုယ့်အကောင့်ထဲ ရှိပြီးသား Voice တွေပဲ API နဲ့ သုံးလို့ရတယ် (Library voice တွေက အခကြေးငွေ plan လိုတယ်)။ Voice ID ရိုက်ထည့်ထားရင် အပေါ်က ရွေးထားတာထက် ဒါကို အရင်သုံးမယ်။</div>
+    <div class="hint">Key ကို <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" rel="noopener">ElevenLabs</a> မှာ ထုတ်ပါ။ Key ကို ဒီ browser မှာ မှတ်ထားမယ် — browser ပိတ်ပြီး ပြန်ဖွင့်လည်း ကျန်နေမယ်။ ဖျက်ချင်ရင် အကွက်ထဲက စာကို ဖျက်လိုက်ပါ။ မြန်မာစာကို Eleven v3 / v4 နဲ့ပဲ ဖတ်နိုင်တယ်။ Free plan မှာ ကိုယ့်အကောင့်ထဲ ရှိပြီးသား Voice တွေပဲ API နဲ့ သုံးလို့ရတယ် (Library voice တွေက အခကြေးငွေ plan လိုတယ်)။ Voice ID ရိုက်ထည့်ထားရင် အပေါ်က ရွေးထားတာထက် ဒါကို အရင်သုံးမယ်။</div>
   </div>
 
   <div id="ttsBoxM" class="hidden">
@@ -5138,9 +5138,30 @@ var seekBtn = d.querySelector('.seek');
   $('edgeRate').addEventListener('change', function () { try { localStorage.setItem('mt_edge_rate', this.value); } catch (e) {} });
   $('ttsChunk').addEventListener('change', function () { try { localStorage.setItem('mt_tts_chunk', this.value); } catch (e) {} ttsCount(); });
   $('ttsStyle').addEventListener('input', function () { try { localStorage.setItem('mt_tts_style', this.value); } catch (e) {} });
-  $('ttsKey').addEventListener('input', function () { $('geminiKey').value = this.value; });
-  $('geminiKey').addEventListener('input', function () { $('ttsKey').value = this.value; });
-  $('ttsKey').value = $('geminiKey').value;
+  /* API keys remembered across sessions (localStorage) — enter once and the
+     key stays even after the browser is closed and reopened. Stored only in
+     this browser on this device; clearing a key field also clears the saved key. */
+  var GEMINI_KEY_LS = 'mt_gemini_key', EL_KEY_LS = 'mt_el_key';
+  function saveKeys() {
+    try {
+      var gk = ($('geminiKey').value || '').trim();
+      if (gk) localStorage.setItem(GEMINI_KEY_LS, gk); else localStorage.removeItem(GEMINI_KEY_LS);
+      var ek = ($('elKey').value || '').trim();
+      if (ek) localStorage.setItem(EL_KEY_LS, ek); else localStorage.removeItem(EL_KEY_LS);
+    } catch (e) {}
+  }
+  function loadKeys() {
+    try {
+      var gk = localStorage.getItem(GEMINI_KEY_LS);
+      if (gk) { $('geminiKey').value = gk; $('ttsKey').value = gk; }
+      var ek = localStorage.getItem(EL_KEY_LS);
+      if (ek) $('elKey').value = ek;
+    } catch (e) {}
+  }
+  $('ttsKey').addEventListener('input', function () { $('geminiKey').value = this.value; saveKeys(); });
+  $('geminiKey').addEventListener('input', function () { $('ttsKey').value = this.value; saveKeys(); });
+  $('elKey').addEventListener('input', saveKeys);
+  loadKeys();
   $('ttsCacheClear').addEventListener('click', function () { var n = Object.keys(ttsCache).length; ttsCache = {}; toast('မှတ်ထားတဲ့အသံ ' + n + ' ခု ရှင်းပြီးပါပြီ'); });
 
   /* script -> chunks: split by paragraph, then pack whole sentences up to the limit */
