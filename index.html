@@ -633,6 +633,14 @@ body{background-attachment:fixed}
             </div>
             <div class="hint">ကြည်လေ ဖိုင်ကြီးပြီး ကြာလေပဲ။ မူရင်းထက် သေးရင် မူရင်းအရွယ်အတိုင်းပဲ ထုတ်မယ်။</div>
           </div>
+          <div class="full">
+            <label class="f">ထုတ်မယ့် ဖိုင် ပုံစံ</label>
+            <div class="enginebar" role="group" aria-label="ထုတ်မယ့် ဖိုင် ပုံစံ ရွေးရန်">
+              <button id="fmtWebm" aria-pressed="true">WebM — ပုံမှန်</button>
+              <button id="fmtMp4" aria-pressed="false">MP4 မြန်မြန် — TikTok / FB / CapCut</button>
+            </div>
+            <div class="hint">WebM — Gallery မှာ ဖွင့်လို့ရ၊ ဒါပေမဲ့ TikTok / Facebook / CapCut မှာ တင်မရဘူး။ MP4 — ဆိုရှယ်မီဒီယာတိုင်းမှာ တင်လို့ရ၊ 2x မြန်မြန် ထုတ်ပေးတယ် (ပထမအကြိမ် converter ဒေါင်းလုဒ်လုပ်ရမယ်)။</div>
+          </div>
           <details class="full adv"><summary>ကိုယ်ပိုင်ဖောင့် / Logo ထည့်ရန်</summary><div class="burngrid">
           <div class="full">
             <label class="f">ကိုယ်ပိုင် ဖောင့် (.ttf / .otf)</label>
@@ -681,7 +689,7 @@ body{background-attachment:fixed}
           <div id="burnStatus" style="font-size:13.5px;margin-top:8px;line-height:1.7"></div>
           <button class="btn small danger-ghost hidden" id="burnCancel" style="margin-top:8px">ရပ်မယ်</button>
         </div>
-        <div class="note">သတိ — အချိန်မှန်အတိုင်း ပြန်ဖွင့်ပြီး ထုတ်တာမို့ ဗီဒီယိုရှည်သလောက် ကြာမယ်။ ထုတ်နေတုန်း tab မပိတ်ပါနဲ့။</div>
+        <div class="note">သတိ — WebM က အချိန်မှန်အတိုင်း ပြန်ဖွင့်ပြီး ထုတ်တာမို့ ဗီဒီယိုရှည်သလောက် ကြာမယ်။ MP4 က 2x မြန်မြန် ထုတ်ပေးတယ်။ ထုတ်နေတုန်း tab မပိတ်ပါနဲ့။</div>
       </div>
     </div>
     <div>
@@ -2583,7 +2591,7 @@ var seekBtn = d.querySelector('.seek');
   /* ---------- burned-in video (style controls + canvas render) ---------- */
   var burn = { pos: 'bottom', off: 0, fontFrac: 0.036, color: '#ffffff', bg: '#000000', bgOp: 0.55, bold: false,
     stroke: 0, strokeColor: '#000000',
-    quality: '1080p', ratio: 'original', fill: 'blur', fontFamily: '"Noto Sans Myanmar",sans-serif', fontName: '' };
+    quality: '1080p', format: 'webm', ratio: 'original', fill: 'blur', fontFamily: '"Noto Sans Myanmar",sans-serif', fontName: '' };
   var logo = { img: null, url: '', corner: 'tr', sizeFrac: 0.18, op: 0.85 };
   var burnRender = null;
   /* burn-in style remembered across sessions (localStorage) — so a stroke /
@@ -2595,7 +2603,7 @@ var seekBtn = d.querySelector('.seek');
       localStorage.setItem(BURN_KEY, JSON.stringify({ pos: burn.pos, off: burn.off, fontFrac: burn.fontFrac,
         color: burn.color, bg: burn.bg, bgOp: burn.bgOp, bold: burn.bold,
         stroke: burn.stroke, strokeColor: burn.strokeColor,
-        quality: burn.quality, ratio: burn.ratio, fill: burn.fill }));
+        quality: burn.quality, format: burn.format, ratio: burn.ratio, fill: burn.fill }));
     } catch (e) { /* private mode etc. — remembering is best-effort */ }
   }
   function loadBurnStyle() {
@@ -2612,6 +2620,7 @@ var seekBtn = d.querySelector('.seek');
     if (typeof b.stroke === 'number') burn.stroke = Math.max(0, Math.min(12, b.stroke));
     if (typeof b.strokeColor === 'string' && /^#[0-9a-fA-F]{6}$/.test(b.strokeColor)) burn.strokeColor = b.strokeColor;
     if (b.quality === '720p' || b.quality === '1080p' || b.quality === 'original') burn.quality = b.quality;
+    if (b.format === 'webm' || b.format === 'mp4') burn.format = b.format;
     if (b.ratio === 'original' || b.ratio === '9:16' || b.ratio === '16:9' || b.ratio === '1:1' || b.ratio === '4:5') burn.ratio = b.ratio;
     if (b.fill === 'blur' || b.fill === 'black' || b.fill === 'crop') burn.fill = b.fill;
   }
@@ -2741,6 +2750,8 @@ var seekBtn = d.querySelector('.seek');
     $('q720').setAttribute('aria-pressed', burn.quality === '720p' ? 'true' : 'false');
     $('q1080').setAttribute('aria-pressed', burn.quality === '1080p' ? 'true' : 'false');
     $('qOrig').setAttribute('aria-pressed', burn.quality === 'original' ? 'true' : 'false');
+    $('fmtWebm').setAttribute('aria-pressed', burn.format === 'webm' ? 'true' : 'false');
+    $('fmtMp4').setAttribute('aria-pressed', burn.format === 'mp4' ? 'true' : 'false');
     $('ratioOrig').setAttribute('aria-pressed', burn.ratio === 'original' ? 'true' : 'false');
     $('ratio916').setAttribute('aria-pressed', burn.ratio === '9:16' ? 'true' : 'false');
     $('ratio169').setAttribute('aria-pressed', burn.ratio === '16:9' ? 'true' : 'false');
@@ -2827,6 +2838,9 @@ var seekBtn = d.querySelector('.seek');
   $('q720').addEventListener('click', function () { setBurnQuality('720p'); });
   $('q1080').addEventListener('click', function () { setBurnQuality('1080p'); });
   $('qOrig').addEventListener('click', function () { setBurnQuality('original'); });
+  function setBurnFormat(f) { burn.format = f; syncBurnControls(); }
+  $('fmtWebm').addEventListener('click', function () { setBurnFormat('webm'); });
+  $('fmtMp4').addEventListener('click', function () { setBurnFormat('mp4'); });
 
   /* ---------- output ratio / fill mode controls ---------- */
   function setBurnRatio(r) { burn.ratio = r; syncBurnControls(); }
@@ -3121,6 +3135,61 @@ var seekBtn = d.querySelector('.seek');
     cx.shadowOffsetY = 0;
   }
 
+  /* ---------- shared burn-render helpers (used by both export paths) ---------- */
+  function burnOutputSize(srcW, srcH) {
+    var framed = burn.ratio !== 'original';
+    var W, H;
+    if (!framed) {
+      var capH = burn.quality === '720p' ? 720 : burn.quality === '1080p' ? 1080 : Infinity;
+      var scale = Math.min(1, capH / srcH);
+      W = Math.max(2, Math.round(srcW * scale));
+      H = Math.max(2, Math.round(srcH * scale));
+    } else {
+      /* output frame at the chosen ratio: the frame's short edge follows the
+         quality pick (720p -> 720, 1080p -> 1080, original -> the source's own
+         short edge), so 9:16 at 1080p is 1080x1920 and 16:9 is 1920x1080.
+         The short edge never exceeds the source's, so nothing is upscaled. */
+      var rp = burn.ratio.split(':');
+      var rr = parseInt(rp[0], 10) / parseInt(rp[1], 10);
+      var shortCap = burn.quality === '720p' ? 720 : burn.quality === '1080p' ? 1080 : Infinity;
+      var shortEdge = Math.min(shortCap, Math.min(srcW, srcH));
+      if (rr >= 1) { H = shortEdge; W = Math.round(shortEdge * rr); }
+      else { W = shortEdge; H = Math.round(shortEdge / rr); }
+      W = Math.max(2, Math.round(W / 2) * 2);
+      H = Math.max(2, Math.round(H / 2) * 2);
+    }
+    return { W: W, H: H, framed: framed };
+  }
+  /* draw one output frame: the video picture (with ratio/fill handling) plus
+     the subtitle line, title text and logo for time t */
+  function drawBurnFrame(cx, W, H, vid, t, framed, srcW, srcH) {
+    try {
+      if (!framed) {
+        cx.drawImage(vid, 0, 0, W, H);
+      } else if (burn.fill === 'crop') {
+        var cs = Math.max(W / srcW, H / srcH);
+        cx.drawImage(vid, (W - srcW * cs) / 2, (H - srcH * cs) / 2, srcW * cs, srcH * cs);
+      } else {
+        if (burn.fill === 'blur') {
+          var bs = Math.max(W / srcW, H / srcH) * 1.1;
+          cx.save();
+          try { cx.filter = 'blur(' + Math.max(10, Math.round(W * 0.035)) + 'px)'; } catch (e) {}
+          cx.drawImage(vid, (W - srcW * bs) / 2, (H - srcH * bs) / 2, srcW * bs, srcH * bs);
+          cx.restore();
+          cx.fillStyle = 'rgba(0,0,0,0.35)';
+          cx.fillRect(0, 0, W, H);
+        } else {
+          cx.fillStyle = '#000';
+          cx.fillRect(0, 0, W, H);
+        }
+        var ns = Math.min(W / srcW, H / srcH);
+        cx.drawImage(vid, (W - srcW * ns) / 2, (H - srcH * ns) / 2, srcW * ns, srcH * ns);
+      }
+    } catch (e) {}
+    drawBurnSub(cx, W, H, t);
+    drawTitleText(cx, W, H, t);
+    drawBurnLogo(cx, W, H);
+  }
   async function renderBurned() {
     if (burnRender) return;
     var btn = $('burnBtn');
@@ -3159,26 +3228,8 @@ var seekBtn = d.querySelector('.seek');
       var kept = clipsFor(vid.duration);
       if (!kept.length) throw new Error('NO_CLIPS');
       var totalKeptSec = kept.reduce(function (a, c) { return a + (c.end - c.start); }, 0);
-      var W, H, framed = burn.ratio !== 'original';
-      if (!framed) {
-        var capH = burn.quality === '720p' ? 720 : burn.quality === '1080p' ? 1080 : Infinity;
-        var scale = Math.min(1, capH / srcH);
-        W = Math.max(2, Math.round(srcW * scale));
-        H = Math.max(2, Math.round(srcH * scale));
-      } else {
-        /* output frame at the chosen ratio: the frame's short edge follows the
-           quality pick (720p -> 720, 1080p -> 1080, original -> the source's own
-           short edge), so 9:16 at 1080p is 1080x1920 and 16:9 is 1920x1080.
-           The short edge never exceeds the source's, so nothing is upscaled. */
-        var rp = burn.ratio.split(':');
-        var rr = parseInt(rp[0], 10) / parseInt(rp[1], 10);
-        var shortCap = burn.quality === '720p' ? 720 : burn.quality === '1080p' ? 1080 : Infinity;
-        var shortEdge = Math.min(shortCap, Math.min(srcW, srcH));
-        if (rr >= 1) { H = shortEdge; W = Math.round(shortEdge * rr); }
-        else { W = shortEdge; H = Math.round(shortEdge / rr); }
-        W = Math.max(2, Math.round(W / 2) * 2);
-        H = Math.max(2, Math.round(H / 2) * 2);
-      }
+      var sz = burnOutputSize(srcW, srcH);
+      var W = sz.W, H = sz.H, framed = sz.framed;
       var canvas = document.createElement('canvas');
       canvas.width = W;
       canvas.height = H;
@@ -3234,32 +3285,7 @@ var seekBtn = d.querySelector('.seek');
         return Math.min(100, Math.floor(done / state.expTotal * 100));
       }
       function draw() {
-        try {
-          if (!framed) {
-            cx.drawImage(vid, 0, 0, W, H);
-          } else if (burn.fill === 'crop') {
-            var cs = Math.max(W / srcW, H / srcH);
-            cx.drawImage(vid, (W - srcW * cs) / 2, (H - srcH * cs) / 2, srcW * cs, srcH * cs);
-          } else {
-            if (burn.fill === 'blur') {
-              var bs = Math.max(W / srcW, H / srcH) * 1.1;
-              cx.save();
-              try { cx.filter = 'blur(' + Math.max(10, Math.round(W * 0.035)) + 'px)'; } catch (e) {}
-              cx.drawImage(vid, (W - srcW * bs) / 2, (H - srcH * bs) / 2, srcW * bs, srcH * bs);
-              cx.restore();
-              cx.fillStyle = 'rgba(0,0,0,0.35)';
-              cx.fillRect(0, 0, W, H);
-            } else {
-              cx.fillStyle = '#000';
-              cx.fillRect(0, 0, W, H);
-            }
-            var ns = Math.min(W / srcW, H / srcH);
-            cx.drawImage(vid, (W - srcW * ns) / 2, (H - srcH * ns) / 2, srcW * ns, srcH * ns);
-          }
-        } catch (e) {}
-        drawBurnSub(cx, W, H, vid.currentTime);
-        drawTitleText(cx, W, H, vid.currentTime);
-        drawBurnLogo(cx, W, H);
+        drawBurnFrame(cx, W, H, vid, vid.currentTime, framed, srcW, srcH);
         barEl.style.width = exportPct() + '%';
         if (!vid.ended && !state.cancelled) raf = requestAnimationFrame(draw);
       }
@@ -3344,7 +3370,277 @@ var seekBtn = d.querySelector('.seek');
       if (!processing) keepAwake(false);
     }
   }
-  $('burnBtn').addEventListener('click', renderBurned);
+  /* ---------- MP4 fast export (second choice) ----------
+     Why WebM fails on social media: on Chrome/Android, MediaRecorder can only
+     record WebM (VP9/VP8). The Gallery app plays WebM, but TikTok / Facebook /
+     Instagram / CapCut only accept MP4 (H.264 + AAC) — they show just the first
+     frame (with the logo) and the video never plays, and CapCut cannot import
+     the file at all. MP4 mode fixes that, and it is also faster: the video is
+     played at 2x while every presented frame is captured with an explicit
+     timestamp and hardware-encoded to H.264 (WebCodecs VideoEncoder), then the
+     original audio (same timeline cuts) is muxed back with ffmpeg. First use
+     downloads two small tools from the internet (mp4-muxer, ffmpeg ~30 MB) —
+     after that they stay cached in the tab. If this device cannot do the fast
+     path, it falls back to the normal WebM export. */
+  var ffmpegMod = null;
+  function loadExtScript(src) {
+    if (!loadExtScript.cache) loadExtScript.cache = {};
+    if (loadExtScript.cache[src]) return loadExtScript.cache[src];
+    var p = new Promise(function (res, rej) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = res;
+      s.onerror = function () { rej(new Error('SCRIPT')); };
+      document.head.appendChild(s);
+    });
+    loadExtScript.cache[src] = p;
+    return p;
+  }
+  async function loadFFmpeg(bStatus) {
+    if (ffmpegMod) return ffmpegMod;
+    bStatus('အသံ ထည့်ဖို့ converter ဒေါင်းလုဒ်လုပ်နေပါတယ်… (ပထမအကြိမ်သာ, ~30 MB)');
+    await loadExtScript('https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js');
+    if (!window.FFmpeg || !window.FFmpeg.createFFmpeg) throw new Error('FFMPEG');
+    var ff = window.FFmpeg.createFFmpeg({ log: false, corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js' });
+    await ff.load();
+    ffmpegMod = ff;
+    return ff;
+  }
+  /* ffmpeg filter that trims the ORIGINAL audio to the kept clips and joins
+     them in order, so the audio matches the edited video exactly.
+     Returns '' when the whole file is kept as one clip (plain -map 1:a is enough). */
+  function buildAudioConcatFilter(kept, srcDur) {
+    if (!kept || !kept.length) return '';
+    if (kept.length === 1 && kept[0].start <= 0.01 && kept[0].end >= srcDur - 0.05) return '';
+    var parts = [], labels = [];
+    for (var i = 0; i < kept.length; i++) {
+      parts.push('[1:a]atrim=start=' + kept[i].start.toFixed(3) + ':end=' + kept[i].end.toFixed(3) + ',asetpts=PTS-STARTPTS[a' + i + ']');
+      labels.push('[a' + i + ']');
+    }
+    if (kept.length === 1) return parts[0].replace('[a0]', '[aout]');
+    parts.push(labels.join('') + 'concat=n=' + kept.length + ':v=0:a=1[aout]');
+    return parts.join(';');
+  }
+  /* Mux the original audio (same cuts) onto the fast-rendered video-only MP4.
+     The video stream is copied, so this step is quick. Returns
+     { blob, withAudio } — withAudio is false when the source has no audio
+     (or the mux failed), in which case the video-only MP4 is returned. */
+  async function muxAudioToMp4(mp4buf, origFile, kept, srcDur, bStatus) {
+    var videoOnly = new Blob([mp4buf], { type: 'video/mp4' });
+    try {
+      var ff = await loadFFmpeg(bStatus);
+      var ext = (origFile.name.match(/\.([A-Za-z0-9]+)$/) || [])[1] || 'mp4';
+      var fetchFile = window.FFmpeg.fetchFile;
+      ff.FS('writeFile', 'v.mp4', await fetchFile(videoOnly));
+      ff.FS('writeFile', 'orig.' + ext, await fetchFile(origFile));
+      var filter = buildAudioConcatFilter(kept, srcDur);
+      var args;
+      if (!filter) {
+        args = ['-i', 'v.mp4', '-i', 'orig.' + ext, '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', '-shortest', 'out.mp4'];
+      } else {
+        args = ['-i', 'v.mp4', '-i', 'orig.' + ext, '-filter_complex', filter, '-map', '0:v', '-map', '[aout]', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', '-shortest', 'out.mp4'];
+      }
+      bStatus('အသံ ထည့်နေပါတယ်…');
+      await ff.run.apply(ff, args);
+      var data = ff.FS('readFile', 'out.mp4');
+      try { ff.FS('unlink', 'v.mp4'); } catch (e) {}
+      try { ff.FS('unlink', 'orig.' + ext); } catch (e) {}
+      try { ff.FS('unlink', 'out.mp4'); } catch (e) {}
+      return { blob: new Blob([data.buffer], { type: 'video/mp4' }), withAudio: true };
+    } catch (e) {
+      console.error(e);
+      return { blob: videoOnly, withAudio: false };
+    }
+  }
+  async function renderBurnedFast() {
+    if (burnRender) return;
+    var btn = $('burnBtn');
+    var progBox = $('burnProg'), barEl = $('burnBar'), statusEl = $('burnStatus'), cancelBtn = $('burnCancel');
+    function bStatus(t) { progBox.classList.remove('hidden'); statusEl.textContent = t; }
+    if (!guardSegments()) return;
+    if (!videoFile) { toast('ဗီဒီယိုဖိုင် မရှိသေးပါဘူး'); return; }
+    if (!window.VideoEncoder || typeof VideoFrame === 'undefined') {
+      toast('ဒီ browser မှာ MP4 မြန်မြန် မရပါဘူး — WebM နဲ့ ထုတ်ပေးမယ်');
+      renderBurned();
+      return;
+    }
+    var state = { cancelled: false, stop: null };
+    burnRender = state;
+    btn.disabled = true;
+    cancelBtn.classList.remove('hidden');
+    progBox.classList.remove('hidden');
+    barEl.style.width = '0%';
+    bStatus('ပြင်ဆင်နေပါတယ်…');
+    keepAwake(true);
+    var url = URL.createObjectURL(videoFile);
+    var vid = document.createElement('video');
+    vid.src = url;
+    vid.playsInline = true;
+    vid.preload = 'auto';
+    vid.muted = true;
+    var raf = 0, tick = null, encoder = null, muxer = null, fallbackToWebm = false;
+    try {
+      await new Promise(function (res, rej) {
+        vid.onloadedmetadata = res;
+        vid.onerror = function () { rej(new Error('LOAD')); };
+      });
+      var srcW = vid.videoWidth, srcH = vid.videoHeight;
+      if (!srcW || !srcH) throw new Error('LOAD');
+      var kept = clipsFor(vid.duration);
+      if (!kept.length) throw new Error('NO_CLIPS');
+      var totalKeptSec = kept.reduce(function (a, c) { return a + (c.end - c.start); }, 0);
+      var sz = burnOutputSize(srcW, srcH);
+      var W = sz.W, H = sz.H, framed = sz.framed;
+      var canvas = document.createElement('canvas');
+      canvas.width = W;
+      canvas.height = H;
+      var cx = canvas.getContext('2d');
+      try {
+        if (document.fonts && document.fonts.load) {
+          await document.fonts.load('700 40px "Noto Sans Myanmar"');
+          await document.fonts.load('400 40px "Noto Sans Myanmar"');
+          if (burn.fontName) {
+            await document.fonts.load('700 40px "' + burn.fontName + '"');
+            await document.fonts.load('400 40px "' + burn.fontName + '"');
+          }
+        }
+      } catch (e) { /* fall back to the default sans font on canvas */ }
+      var Muxer, ArrayBufferTarget;
+      try {
+        var mm = await import('https://cdn.jsdelivr.net/npm/mp4-muxer@3/+esm');
+        Muxer = mm.Muxer; ArrayBufferTarget = mm.ArrayBufferTarget;
+      } catch (e) { throw new Error('MUXER'); }
+      var codecs = ['avc1.640028', 'avc1.4d0028', 'avc1.420028'];
+      var codec = '';
+      for (var ci2 = 0; ci2 < codecs.length; ci2++) {
+        try {
+          var sup = await VideoEncoder.isConfigSupported({ codec: codecs[ci2], width: W, height: H, bitrate: 8000000, framerate: 30 });
+          if (sup.supported) { codec = codecs[ci2]; break; }
+        } catch (e) {}
+      }
+      if (!codec) throw new Error('NO_H264');
+      var vbps = burn.quality === '720p' ? 8000000 : burn.quality === '1080p' ? 16000000 : 24000000;
+      var target = new ArrayBufferTarget();
+      muxer = new Muxer({ target: target, video: { codec: 'avc', width: W, height: H }, fastStart: 'in-memory', firstTimestampBehavior: 'offset' });
+      var encErr = null;
+      encoder = new VideoEncoder({
+        output: function (chunk, meta) { try { muxer.addVideoChunk(chunk, meta); } catch (e) { encErr = e; } },
+        error: function (e) { encErr = e; }
+      });
+      encoder.configure({ codec: codec, width: W, height: H, bitrate: vbps, framerate: 30 });
+      function exportPct() {
+        if (!state.expTotal) return vid.duration ? Math.floor(vid.currentTime / vid.duration * 100) : 0;
+        var done = state.expDone + (state.curClip ? Math.max(0, Math.min(state.curClip.end, vid.currentTime) - state.curClip.start) : 0);
+        return Math.min(100, Math.floor(done / state.expTotal * 100));
+      }
+      var startT = Date.now();
+      tick = setInterval(function () {
+        bStatus('MP4 မြန်မြန် ထုတ်နေပါတယ်… ' + exportPct() + '% · ကြာချိန် ' + fmtElapsed(Date.now() - startT));
+      }, 500);
+      state.expTotal = totalKeptSec; state.expDone = 0; state.curClip = null;
+      state.stop = function () { try { vid.pause(); } catch (e) {} };
+      vid.playbackRate = 2;
+      var lastEncT = -1;
+      for (var ci = 0; ci < kept.length && !state.cancelled; ci++) {
+        var cc = kept[ci];
+        state.curClip = cc;
+        vid.currentTime = cc.start;
+        await new Promise(function (res) {
+          var done = false;
+          function f() { if (!done) { done = true; res(); } }
+          vid.addEventListener('seeked', f, { once: true });
+          setTimeout(f, 2000);
+        });
+        if (state.cancelled) break;
+        try { await vid.play(); } catch (e) {
+          await new Promise(function (r) { setTimeout(r, 300); });
+          try { await vid.play(); } catch (e2) {}
+        }
+        await new Promise(function (res) {
+          function loop() {
+            if (state.cancelled || encErr || vid.ended || vid.currentTime >= cc.end - 0.05) { res(); return; }
+            drawBurnFrame(cx, W, H, vid, vid.currentTime, framed, srcW, srcH);
+            var t = vid.currentTime;
+            if (t - lastEncT >= 0.008 && encoder.encodeQueueSize <= 10) {
+              var ts = Math.round((state.expDone + t - cc.start) * 1000000);
+              try {
+                var vf = new VideoFrame(canvas, { timestamp: ts });
+                encoder.encode(vf);
+                vf.close();
+              } catch (e) { encErr = e; }
+              lastEncT = t;
+            }
+            barEl.style.width = exportPct() + '%';
+            raf = requestAnimationFrame(loop);
+          }
+          loop();
+        });
+        cancelAnimationFrame(raf);
+        try { vid.pause(); } catch (e) {}
+        state.expDone += (cc.end - cc.start);
+        state.curClip = null;
+        if (encErr) throw encErr;
+      }
+      state.expDone = totalKeptSec;
+      clearInterval(tick); tick = null;
+      if (!state.cancelled) {
+        await encoder.flush();
+        if (encErr) throw encErr;
+        muxer.finalize();
+        var mp4buf = target.buffer;
+        if (!mp4buf || !mp4buf.byteLength) throw new Error('EMPTY');
+        barEl.style.width = '100%';
+        var finalBlob = await muxAudioToMp4(mp4buf, videoFile, kept, vid.duration, bStatus);
+        if (state.cancelled) {
+          bStatus('ရပ်လိုက်ပါပြီ — ဖိုင် မထုတ်လိုက်ပါဘူး။');
+          toast('ဗီဒီယို ထုတ်တာ ရပ်လိုက်ပါပြီ');
+        } else if (finalBlob) {
+          download(finalBlob.blob, baseName() + '.subbed.mp4');
+          bStatus('ပြီးပါပြီ — MP4 ဖိုင် (' + fmtSize(finalBlob.blob.size) + ') ဒေါင်းလုဒ် စတင်ပါပြီ' +
+            ' · အရွယ် ' + W + '×' + H + (framed ? ' (' + burn.ratio + ')' : '') +
+            (finalBlob.withAudio ? '။' : ' (အသံ ထည့်မရလို့ အသံမပါဘဲ ထုတ်လိုက်ပါတယ်)။'));
+          toast('MP4 ဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
+        }
+      } else {
+        bStatus('ရပ်လိုက်ပါပြီ — ဖိုင် မထုတ်လိုက်ပါဘူး။');
+        toast('ဗီဒီယို ထုတ်တာ ရပ်လိုက်ပါပြီ');
+      }
+    } catch (e) {
+      console.error(e);
+      if (tick) clearInterval(tick);
+      cancelAnimationFrame(raf);
+      if (state.cancelled) {
+        bStatus('ရပ်လိုက်ပါပြီ — ဖိုင် မထုတ်လိုက်ပါဘူး။');
+        toast('ဗီဒီယို ထုတ်တာ ရပ်လိုက်ပါပြီ');
+      } else if (e.message === 'LOAD') {
+        bStatus('ဗီဒီယိုဖိုင်ကို ဖတ်မရပါဘူး — mp4 ဖိုင် ဖြစ်ကြောင်း စစ်ပြီး ပြန်စမ်းကြည့်ပါ။');
+      } else if (e.message === 'NO_CLIPS') {
+        bStatus('ဗီဒီယိုအပိုင်းအားလုံး ဖြတ်ဖျက်ထားပါတယ် — Timeline မှာ အနည်းဆုံး အပိုင်းတစ်ခု ထားပေးပါ။');
+      } else {
+        fallbackToWebm = true;
+        bStatus(e.message === 'MUXER' || e.message === 'NO_H264'
+          ? 'ဒီ browser / ဖုန်းမှာ MP4 မြန်မြန် မရပါဘူး — WebM နဲ့ ပြန်ထုတ်ပေးမယ်။'
+          : 'MP4 မြန်မြန် ထုတ်တာ မအောင်မြင်ပါဘူး (' + e.message + ') — WebM နဲ့ ပြန်ထုတ်ပေးမယ်။');
+      }
+    } finally {
+      if (encoder) { try { encoder.close(); } catch (_) {} }
+      if (tick) clearInterval(tick);
+      cancelAnimationFrame(raf);
+      URL.revokeObjectURL(url);
+      burnRender = null;
+      btn.disabled = false;
+      cancelBtn.classList.add('hidden');
+      if (!processing) keepAwake(false);
+    }
+    if (fallbackToWebm) {
+      toast('MP4 မြန်မြန် မရလို့ WebM နဲ့ ထုတ်ပေးမယ်');
+      renderBurned();
+    }
+  }
+  $('burnBtn').addEventListener('click', function () {
+    if (burn.format === 'mp4') renderBurnedFast();
+    else renderBurned();
+  });
   $('burnCancel').addEventListener('click', function () {
     if (burnRender) {
       burnRender.cancelled = true;
@@ -5356,7 +5652,7 @@ $('addSeg').addEventListener('click', function () {
    Scope note (same as the file build): static UI text only — progress / toast
    messages stay Burmese. */
 (function () {
-  var D = {"3031081012":"Nothing to edit yet — translate something in the Translate tab first, or open a project from the Projects tab.","1601612132":"Translate","1985745151":"Edit","3957733144":"Video","1554379587":"Projects","2603559262":"No video yet — translate a video in the Translate tab first, or open a project from the Projects tab.","3685363732":"Save on this device","1267441934":"Save to cloud","2521813395":"Sign in with Google","2322610756":"Connecting to cloud…","1897864038":"Reconnect","3641170596":"Project name","3317049154":"Edit video","1132575235":"Projects on this device","524896190":"Firestore security rules (one-time setup)","334448353":"Save with a name and you can reopen the project anytime and keep editing. The video file itself cannot be saved — re-pick it when you reopen (all subtitles and video settings come back).","3526770480":"Paste these rules in Firebase Console → Firestore Database → Rules — so only you can open, save and delete your own projects.","4341720":"Edit text and times here before downloading. Times can be seconds (65.5) or 0:01:05.5.","17725353":"Top left","28241691":"Bottom left","114364707":"9:16 = TikTok/Reels · 16:9 = YouTube · 1:1 / 4:5 = posts.","115455921":"Working…","223360000":"Embeds the subtitles directly into the video as a new file. Changes show in the preview instantly.","290194470":"Add a video / audio file (or an SRT file) and get Burmese subtitles (.srt / .vtt). Choose from 4 engines.","330712616":"Translates existing subtitles into Burmese — timings stay the same","332362665":"Each file starts automatically after the previous one finishes","333014165":"Video quality","333842618":"Advanced settings (line length, glossary)","335412626":"Save glossary","370265990":"Source language","389339989":"Download SRT","402358684":"Gemini 3.5 Flash-Lite — fastest","428803271":"Note — the video is played back in real time to export, so it takes as long as the video. Don't close the tab while it runs.","461568808":"Gemini model","461847679":"Transcribe from video","463273049":"Replace with","494313585":"Match MaxFlix red theme","503776586":"Edit subtitles","523116060":"Logo position","547470333":"Tap to choose a file (or drag it here)","606170203":"Start over","681388196":"Add new line","716859726":"Burn subtitles into video","752977529":"Custom font (.ttf / .otf)","790240776":"Bold text — on","807419400":"Original size — sharpest","877084967":"Preparing…","906863735":"Any video / audio file works: mp4, webm, mov, mp3, wav…","1018187751":"These names are used exactly as written in every translation — keeps names consistent in long stories. \"Auto-extract\" needs Gemini + a key.","1046684286":"Plain text (.txt)","1066402253":"Fill empty space","1066736260":"Wait between requests — 7 seconds greatly reduces hitting 429 (rate limit). 0 = no wait.","1227587218":"Detailed log","1327961265":"Auto-detect","1382859702":"No key or account needed. The first time, a model (~1 GB) must be downloaded once. Pick the exact source language (\"Auto-detect\" assumes Chinese).","1419261016":"Subtitle position","1449089048":"Retry failed lines","1479343753":"Black bars","1485812119":"Top right","1486566932":"Choose a logo image","1493394021":"Bottom right","1526777835":"Delete","1572071805":"Logo opacity","1605134115":"Auto-fix timing","1624115005":"Choose a font from your device","1640445698":"Download VTT (for web players)","1651150440":"Show problem lines only","1698560044":"In Gemini mode, content is sent to Google's servers. If you hit 429, it waits and retries automatically.","1725804443":"NLLB — on-device (no key)","1788602044":"Text outline — off","1878838907":"Gemini 3.1 Pro — most accurate (can be slow)","1882376159":"English","1932084483":"Add many files at once","1933781368":"Middle","1934859853":"Logo / watermark image","1938454817":"3 lines","2014564135":"Find next","2057429891":"Small — most accurate, for computers","2070432994":"Subtitles appear over the video when you play it.","2110056767":"Text color","2124619084":"Blur = blurred background · Black = letterbox bars · Crop = fill the frame, no bars.","2146240607":"A saved project was found —","2160603241":"The settings above apply to every file. Don't close the tab while it runs, and keep the screen on.","2183021866":"Use + if subtitles are late, − if early (e.g. 1.5 = 1.5 s later).","2263692363":"1 — Choose a file","2298645617":"create a \"Translator\" resource (F0 — free) and copy the Key and Region from \"Keys and Endpoint\". The key is never stored — it disappears when you close the tab.","2299392371":"Fill (crop)","2312450572":"Text is sent to Microsoft's servers for translation (audio stays on your device). F0 gives 2M free characters per month.","2317242879":"Copy SRT","2393555403":"Auto-extract names with Gemini","2456849762":"Shift","2461323583":"Make Burmese subtitles (SRT) from a video","2466517141":"Shift all subtitle times (seconds)","2487191186":"Clear queue","2496334195":"Move up / down","2529416285":"No logo yet. A PNG with a transparent background looks best.","2557151992":"Background color","2750716940":"2 lines (recommended)","2800069030":"Done — your subtitles are ready","2815737957":"Blur","2841272867":"Delete saved project","2844312431":"Replace all","3026275844":"1080p — sharp","3047403090":"Use the default font again","3082888572":"Long subtitles are split into timed parts. On portrait video, lines use at most 24 characters.","3130503681":"Max characters per subtitle line","3156441521":"Tap to choose a .srt / .vtt file (or drag it here)","3173007496":"⏱️ Wait between requests — Pacing (seconds)","3176134745":"Whisper — on-device (free)","3177674021":"Tiny — fastest, good for phones","3180056074":". Continue from there?","3181309630":"Max lines per subtitle","3185226000":"Thai","3203877059":"Currently using — Noto Sans Myanmar (default). A custom font only lasts while this tab stays open.","3225041020":"Continue","3253251343":"Gemini 3.8 Flash — fast + accurate (recommended)","3294018664":"Stop","3304258546":"Background opacity","3315872697":"Logo size","3377435078":"No key yet? Get one at","3426268121":"Start all","3447233304":"Remove logo","3452261499":"Burmese","3466128689":"Original","3494138020":"Korean","3531658975":"Character names / glossary","3560139175":"The first time, a model must be downloaded (internet required). Transcription runs on your device — files never leave it.","3561429392":"Font size","3626807071":"720p — fast","3639605806":"Start","3684965809":"Top","3686350595":"Bottom","3686539937":"— free. The key is never stored; it disappears when you close the tab.","3694515661":"Download all finished SRTs","3713273659":"AI model (transcription accuracy)","3727934151":"Japanese","3733779531":"Chinese","3769088475":"Everything stays on your device — unlimited. May be slow on phones and not as accurate as Gemini.","3820379712":"Higher quality means bigger files and longer waits. If the original is smaller, it keeps the original size.","3934924915":"Whisper / NLLB — everything stays on your device. Gemini / Microsoft — text is sent to their servers. Review the text before downloading.","4019014899":"Find (in Burmese subtitles)","4081033141":"TikTok/Reels safe margins — off","4100364258":"Translate an SRT file","4107242087":"Batch queue (many files)","4118571927":"2 — Settings","4172952895":"1:1 · square","4178067535":"Base — balanced speed and accuracy","4229543843":"1 line","4259696205":"Transcription / translation engine","4278015529":"Video aspect ratio","269197605":"Add a video / audio file (or an SRT file) and it produces Burmese subtitles (.srt / .vtt), translated by Google Gemini AI.","2301626810":"Gemini 3.7 Flash (routed to 3.8)","2927934326":"Gemini 3.5 Flash (routed to 3.6)","1324506474":"Gemini 2.5 Pro (only keys that used it before)","1225493143":"Gemini 2.5 Flash (only keys that used it before)","3494143726":"Gemini 2.5 Flash-Lite (only keys that used it before)","848750724":"If filled in, this is used instead of the one picked above. Copy the exact model name from AI Studio's model list. If it doesn't exist, another model is used automatically.","3063871548":"Switch models automatically","2001238597":"— if the chosen model fails (404 / 429 / 503), move on to the next available Gemini model, one after another, and keep translating","2522476926":"🔊 Movie Recap Burmese voice-over (TTS)","2496292668":"Paste the recap script here and make a Burmese audio file (WAV). Long text is split into small parts automatically and joined back. Three engines to choose from.","1517671830":"Voice engine","2710459526":"Thiha / Nilar — free","2249187500":"The key isn't saved — it's gone when you close the tab. The wait between requests uses the same Gemini \"Pacing\" as the Translate tab (default 7 s). If a model fails (404 / 429 / 503), another TTS model is tried automatically (when \"Switch models automatically\" is on).","4044007524":"ElevenLabs model","3360397386":"Eleven v3 — reads Burmese (recommended)","729591895":"Eleven v4 — 90+ languages","85897336":"Multilingual v2 — no Burmese","3591159502":"Flash v2.5 — no Burmese","3412850203":"Voice","2523063214":"Rachel (female)","633818934":"Sarah (female)","3793806495":"Adam (male)","1348534571":"George (male)","1955721623":"Load the voices from my account","1745561477":"Or enter a Voice ID yourself","1037426640":"Create a key at","814489693":". The key isn't saved — it's gone when you close the tab. Burmese only works with Eleven v3 / v4. On the Free plan only voices already in your account work through the API (Library voices need a paid plan). A Voice ID typed here is used instead of the one picked above.","182331680":"Thiha — male (Burmese)","2314075149":"Nilar — female (Burmese)","4290380073":"Speaking speed","2126757839":"Slow (-30%)","277824555":"A bit slower (-15%)","102781792":"Normal","4056953605":"A bit faster (+15%)","3639621634":"Fast (+30%)","2512192000":"Microsoft Edge's Read Aloud Burmese voices (Thiha / Nilar) — no API key, free, no limit. The text is sent to Microsoft's servers. If it fails, check that your device clock is right and that you're online.","3513229481":"If it fails (429 etc.), press \"Generate\" again — parts already made aren't redone. If the text, voice, engine or tone changes, it is regenerated.","2913067793":"Gemini / ElevenLabs / Edge TTS — audio and text are sent to the respective servers. Re-check the text before downloading."}, A = {"4219366211":"e.g. Drama — Episode 1","162983743":"Key from Azure Portal","822106510":"One pair per line — original name = Burmese name\ne.g.\n林浩 = လင်းဟောက်\n沈清欢 = ရှန်ချင်းဟွမ်","4294427544":"e.g. southeastasia","3285654394":"e.g. 21m00Tcm4TlvDq8ikWAM"}, MYR = /[\u1000-\u109f]/;
+  var D = {"3031081012":"Nothing to edit yet — translate something in the Translate tab first, or open a project from the Projects tab.","1601612132":"Translate","1985745151":"Edit","3957733144":"Video","1554379587":"Projects","2603559262":"No video yet — translate a video in the Translate tab first, or open a project from the Projects tab.","3685363732":"Save on this device","1267441934":"Save to cloud","2521813395":"Sign in with Google","2322610756":"Connecting to cloud…","1897864038":"Reconnect","3641170596":"Project name","3317049154":"Edit video","1132575235":"Projects on this device","524896190":"Firestore security rules (one-time setup)","334448353":"Save with a name and you can reopen the project anytime and keep editing. The video file itself cannot be saved — re-pick it when you reopen (all subtitles and video settings come back).","3526770480":"Paste these rules in Firebase Console → Firestore Database → Rules — so only you can open, save and delete your own projects.","4341720":"Edit text and times here before downloading. Times can be seconds (65.5) or 0:01:05.5.","17725353":"Top left","28241691":"Bottom left","114364707":"9:16 = TikTok/Reels · 16:9 = YouTube · 1:1 / 4:5 = posts.","115455921":"Working…","223360000":"Embeds the subtitles directly into the video as a new file. Changes show in the preview instantly.","290194470":"Add a video / audio file (or an SRT file) and get Burmese subtitles (.srt / .vtt). Choose from 4 engines.","330712616":"Translates existing subtitles into Burmese — timings stay the same","332362665":"Each file starts automatically after the previous one finishes","333014165":"Video quality","333842618":"Advanced settings (line length, glossary)","335412626":"Save glossary","370265990":"Source language","389339989":"Download SRT","402358684":"Gemini 3.5 Flash-Lite — fastest","428803271":"Note — WebM exports play the video back in real time, so they take as long as the video. MP4 exports render about 2x faster. Don't close the tab while it runs.","461568808":"Gemini model","461847679":"Transcribe from video","463273049":"Replace with","494313585":"Match MaxFlix red theme","503776586":"Edit subtitles","523116060":"Logo position","547470333":"Tap to choose a file (or drag it here)","606170203":"Start over","681388196":"Add new line","716859726":"Burn subtitles into video","752977529":"Custom font (.ttf / .otf)","790240776":"Bold text — on","807419400":"Original size — sharpest","877084967":"Preparing…","906863735":"Any video / audio file works: mp4, webm, mov, mp3, wav…","1018187751":"These names are used exactly as written in every translation — keeps names consistent in long stories. \"Auto-extract\" needs Gemini + a key.","1046684286":"Plain text (.txt)","1066402253":"Fill empty space","1066736260":"Wait between requests — 7 seconds greatly reduces hitting 429 (rate limit). 0 = no wait.","1227587218":"Detailed log","1327961265":"Auto-detect","1382859702":"No key or account needed. The first time, a model (~1 GB) must be downloaded once. Pick the exact source language (\"Auto-detect\" assumes Chinese).","1419261016":"Subtitle position","1449089048":"Retry failed lines","1479343753":"Black bars","1485812119":"Top right","1486566932":"Choose a logo image","1493394021":"Bottom right","1526777835":"Delete","1572071805":"Logo opacity","1605134115":"Auto-fix timing","1624115005":"Choose a font from your device","1640445698":"Download VTT (for web players)","1651150440":"Show problem lines only","1698560044":"In Gemini mode, content is sent to Google's servers. If you hit 429, it waits and retries automatically.","1725804443":"NLLB — on-device (no key)","1788602044":"Text outline — off","1878838907":"Gemini 3.1 Pro — most accurate (can be slow)","1882376159":"English","1932084483":"Add many files at once","1933781368":"Middle","1934859853":"Logo / watermark image","1938454817":"3 lines","2014564135":"Find next","2057429891":"Small — most accurate, for computers","2070432994":"Subtitles appear over the video when you play it.","2110056767":"Text color","2124619084":"Blur = blurred background · Black = letterbox bars · Crop = fill the frame, no bars.","2146240607":"A saved project was found —","2160603241":"The settings above apply to every file. Don't close the tab while it runs, and keep the screen on.","2183021866":"Use + if subtitles are late, − if early (e.g. 1.5 = 1.5 s later).","2263692363":"1 — Choose a file","2298645617":"create a \"Translator\" resource (F0 — free) and copy the Key and Region from \"Keys and Endpoint\". The key is never stored — it disappears when you close the tab.","2299392371":"Fill (crop)","2312450572":"Text is sent to Microsoft's servers for translation (audio stays on your device). F0 gives 2M free characters per month.","2317242879":"Copy SRT","2393555403":"Auto-extract names with Gemini","2456849762":"Shift","2461323583":"Make Burmese subtitles (SRT) from a video","2466517141":"Shift all subtitle times (seconds)","2487191186":"Clear queue","2496334195":"Move up / down","2529416285":"No logo yet. A PNG with a transparent background looks best.","2557151992":"Background color","2750716940":"2 lines (recommended)","2800069030":"Done — your subtitles are ready","2815737957":"Blur","2841272867":"Delete saved project","2844312431":"Replace all","3026275844":"1080p — sharp","3047403090":"Use the default font again","3082888572":"Long subtitles are split into timed parts. On portrait video, lines use at most 24 characters.","3130503681":"Max characters per subtitle line","3156441521":"Tap to choose a .srt / .vtt file (or drag it here)","3173007496":"⏱️ Wait between requests — Pacing (seconds)","3176134745":"Whisper — on-device (free)","3177674021":"Tiny — fastest, good for phones","3180056074":". Continue from there?","3181309630":"Max lines per subtitle","3185226000":"Thai","3203877059":"Currently using — Noto Sans Myanmar (default). A custom font only lasts while this tab stays open.","3225041020":"Continue","3253251343":"Gemini 3.8 Flash — fast + accurate (recommended)","3294018664":"Stop","3304258546":"Background opacity","3315872697":"Logo size","3377435078":"No key yet? Get one at","3426268121":"Start all","3447233304":"Remove logo","3452261499":"Burmese","3466128689":"Original","3494138020":"Korean","3531658975":"Character names / glossary","3560139175":"The first time, a model must be downloaded (internet required). Transcription runs on your device — files never leave it.","3561429392":"Font size","3626807071":"720p — fast","3639605806":"Start","3684965809":"Top","3686350595":"Bottom","3686539937":"— free. The key is never stored; it disappears when you close the tab.","3694515661":"Download all finished SRTs","3713273659":"AI model (transcription accuracy)","3727934151":"Japanese","3733779531":"Chinese","3769088475":"Everything stays on your device — unlimited. May be slow on phones and not as accurate as Gemini.","3820379712":"Higher quality means bigger files and longer waits. If the original is smaller, it keeps the original size.","3934924915":"Whisper / NLLB — everything stays on your device. Gemini / Microsoft — text is sent to their servers. Review the text before downloading.","4019014899":"Find (in Burmese subtitles)","4081033141":"TikTok/Reels safe margins — off","4100364258":"Translate an SRT file","4107242087":"Batch queue (many files)","4118571927":"2 — Settings","4172952895":"1:1 · square","4178067535":"Base — balanced speed and accuracy","4229543843":"1 line","4259696205":"Transcription / translation engine","4278015529":"Video aspect ratio","269197605":"Add a video / audio file (or an SRT file) and it produces Burmese subtitles (.srt / .vtt), translated by Google Gemini AI.","2301626810":"Gemini 3.7 Flash (routed to 3.8)","2927934326":"Gemini 3.5 Flash (routed to 3.6)","1324506474":"Gemini 2.5 Pro (only keys that used it before)","1225493143":"Gemini 2.5 Flash (only keys that used it before)","3494143726":"Gemini 2.5 Flash-Lite (only keys that used it before)","848750724":"If filled in, this is used instead of the one picked above. Copy the exact model name from AI Studio's model list. If it doesn't exist, another model is used automatically.","3063871548":"Switch models automatically","2001238597":"— if the chosen model fails (404 / 429 / 503), move on to the next available Gemini model, one after another, and keep translating","2522476926":"🔊 Movie Recap Burmese voice-over (TTS)","2496292668":"Paste the recap script here and make a Burmese audio file (WAV). Long text is split into small parts automatically and joined back. Three engines to choose from.","1517671830":"Voice engine","2710459526":"Thiha / Nilar — free","2249187500":"The key isn't saved — it's gone when you close the tab. The wait between requests uses the same Gemini \"Pacing\" as the Translate tab (default 7 s). If a model fails (404 / 429 / 503), another TTS model is tried automatically (when \"Switch models automatically\" is on).","4044007524":"ElevenLabs model","3360397386":"Eleven v3 — reads Burmese (recommended)","729591895":"Eleven v4 — 90+ languages","85897336":"Multilingual v2 — no Burmese","3591159502":"Flash v2.5 — no Burmese","3412850203":"Voice","2523063214":"Rachel (female)","633818934":"Sarah (female)","3793806495":"Adam (male)","1348534571":"George (male)","1955721623":"Load the voices from my account","1745561477":"Or enter a Voice ID yourself","1037426640":"Create a key at","814489693":". The key isn't saved — it's gone when you close the tab. Burmese only works with Eleven v3 / v4. On the Free plan only voices already in your account work through the API (Library voices need a paid plan). A Voice ID typed here is used instead of the one picked above.","182331680":"Thiha — male (Burmese)","2314075149":"Nilar — female (Burmese)","4290380073":"Speaking speed","2126757839":"Slow (-30%)","277824555":"A bit slower (-15%)","102781792":"Normal","4056953605":"A bit faster (+15%)","3639621634":"Fast (+30%)","2512192000":"Microsoft Edge's Read Aloud Burmese voices (Thiha / Nilar) — no API key, free, no limit. The text is sent to Microsoft's servers. If it fails, check that your device clock is right and that you're online.","3513229481":"If it fails (429 etc.), press \"Generate\" again — parts already made aren't redone. If the text, voice, engine or tone changes, it is regenerated.","2913067793":"Gemini / ElevenLabs / Edge TTS — audio and text are sent to the respective servers. Re-check the text before downloading."}, A = {"4219366211":"e.g. Drama — Episode 1","162983743":"Key from Azure Portal","822106510":"One pair per line — original name = Burmese name\ne.g.\n林浩 = လင်းဟောက်\n沈清欢 = ရှန်ချင်းဟွမ်","4294427544":"e.g. southeastasia","3285654394":"e.g. 21m00Tcm4TlvDq8ikWAM"}, MYR = /[\u1000-\u109f]/;
   function H(s) { s = s.replace(/\s+/g, ' ').trim(); var v = 5381; for (var i = 0; i < s.length; i++) v = ((v * 33) ^ s.charCodeAt(i)) >>> 0; return v; }
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
