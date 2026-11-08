@@ -528,6 +528,10 @@ body{background-attachment:fixed}
 <button class="btn small" type="button" id="syncShift">စာတန်းအားလုံး ရွှေ့မယ်</button>
 </div>
 <div class="hint">စာတန်း စောနေရင် <b>+</b> ထည့်ပါ (ဥပမာ +0.5 — စာတန်း နောက်ကျသွားမယ်)၊ နောက်ကျနေရင် <b>−</b> ထည့်ပါ။ ပြန်ဆုတ်ချင်ရင် အောက်က ↩ ပြန်ဆုတ်မယ် ကို နှိပ်ပါ။</div>
+<div class="row" style="margin-top:8px">
+<button class="btn small" type="button" id="syncSnap">🎙️ အသံနဲ့ ပြန်ကပ်မယ်</button>
+</div>
+<div class="hint">Gemini က အချိန်ခန့်မှန်းတာ အပိုင်းလိုက် လွဲနေရင် — အသံထဲက စကားတကယ်ပြောတဲ့နေရာကို ရှာပြီး စာတန်းတစ်ကြောင်းချင်းစီရဲ့ အစ/အဆုံးကို ကပ်ပေးတယ်။ ဗီဒီယိုဖိုင် လိုပါတယ်။ မကြိုက်ရင် ↩ ပြန်ဆုတ်မယ် နဲ့ ပြန်ယူလို့ရတယ်။</div>
 <div class="hint">တိကျအောင် ညှိချင်ရင် — စာတန်းအစပိုင်းက တစ်ကြောင်း၊ အဆုံးပိုင်းက တစ်ကြောင်း ရွေးပါ။ စာတန်းအမှတ်ကို ထည့်ပြီး ဗီဒီယိုကို အဲဒီစကားပြောတဲ့နေရာကို ရွှေ့ကာ ⏱ ကိုနှိပ်ပါ။ ညှိမယ်ကို နှိပ်ရင် စာတန်းအားလုံးရဲ့ အချိန်ကို အချိုးကျ ပြန်တွက်ပေးမယ်။</div>
 <div class="grid2">
 <div><label class="f" for="syncN1">အချက် A — စာတန်းအမှတ် (အစပိုင်း)</label><input type="number" id="syncN1" min="1" inputmode="numeric" /><div class="hint" id="syncT1"></div>
@@ -639,7 +643,7 @@ body{background-attachment:fixed}
               <button id="fmtWebm" aria-pressed="true">WebM — ပုံမှန်</button>
               <button id="fmtMp4" aria-pressed="false">MP4 မြန်မြန် — TikTok / FB / CapCut</button>
             </div>
-            <div class="hint">WebM — Gallery မှာ ဖွင့်လို့ရ၊ ဒါပေမဲ့ TikTok / Facebook / CapCut မှာ တင်မရဘူး။ MP4 — ဆိုရှယ်မီဒီယာတိုင်းမှာ တင်လို့ရ၊ 2x မြန်မြန် ထုတ်ပေးတယ် (ပထမအကြိမ် converter ဒေါင်းလုဒ်လုပ်ရမယ်)။</div>
+            <div class="hint">WebM — Gallery မှာ ဖွင့်လို့ရ၊ ဒါပေမဲ့ TikTok / Facebook / CapCut မှာ တင်မရဘူး။ MP4 — ဆိုရှယ်မီဒီယာတိုင်းမှာ တင်လို့ရ၊ 2x မြန်မြန် ထုတ်ပေးတယ်၊ အသံကို ဖုန်းကနေ တိုက်ရိုက် ထည့်ပေးတယ် (converter ဒေါင်းစရာ မလိုတော့ဘူး)။</div>
           </div>
           <details class="full adv"><summary>ကိုယ်ပိုင်ဖောင့် / Logo ထည့်ရန်</summary><div class="burngrid">
           <div class="full">
@@ -1995,6 +1999,7 @@ var SrtTools = (function () {
       setStep('audio', 'active');
       setStatus('အသံထုတ်ယူနေပါတယ်…');
       var audio = await extractAudio(videoFile);
+      snapAudio = audio; snapAudioFile = videoFile;
       var totalSec = audio.length / 16000;
       log('အသံရပြီ — ကြာချိန် ' + (totalSec / 60).toFixed(1) + ' မိနစ်');
       setBar(12);
@@ -2505,6 +2510,128 @@ var SrtTools = (function () {
     splitRefresh('စာတန်းအားလုံး ' + (d > 0 ? '+' : '') + d + ' စက္ကန့် ရွှေ့ပြီးပါပြီ');
     syncInfo();
   }
+  /* ---------- snap subtitles to actual speech (VAD) ----------
+     Gemini estimates each line's start/end, and the estimate is off by a
+     different amount in every chunk — so some lines are right and others are
+     early. This finds where speech really starts/stops in the decoded audio
+     (energy-based voice activity detection) and moves each line's start/end
+     to the nearest detected speech boundary (within 1.5 s). Runs on-device,
+     no key. Lines with no speech boundary nearby are left untouched, and the
+     change can be undone with the ↩ button. */
+  var snapAudio = null, snapAudioFile = null;
+  function computeSpeechSegments(samples, sampleRate) {
+    var sr = sampleRate || 16000;
+    var frameLen = Math.max(1, Math.round(sr * 0.02)); /* 20 ms frames */
+    var nFrames = Math.floor(samples.length / frameLen);
+    if (nFrames < 5) return [];
+    var energy = new Float64Array(nFrames), peak = 0;
+    for (var i = 0; i < nFrames; i++) {
+      var sum = 0, off = i * frameLen;
+      for (var j = 0; j < frameLen; j++) { var v = samples[off + j]; sum += v * v; }
+      var rms = Math.sqrt(sum / frameLen);
+      energy[i] = rms;
+      if (rms > peak) peak = rms;
+    }
+    if (peak <= 0) return [];
+    var sorted = Array.prototype.slice.call(energy).sort(function (a, b) { return a - b; });
+    var noise = sorted[Math.floor(sorted.length * 0.10)] || 0;
+    var thr = Math.max(noise * 3, 0.0008);
+    var segs = [], cur = null;
+    for (var k = 0; k < nFrames; k++) {
+      var t = k * frameLen / sr;
+      if (energy[k] >= thr) {
+        if (!cur) cur = { start: t, end: t + frameLen / sr };
+        else cur.end = t + frameLen / sr;
+      } else if (cur) { segs.push(cur); cur = null; }
+    }
+    if (cur) segs.push(cur);
+    /* drop blips (< 0.12 s) and merge pauses < 0.35 s inside one line */
+    var out = [];
+    for (var m = 0; m < segs.length; m++) {
+      var s = segs[m];
+      if (s.end - s.start < 0.12) continue;
+      var last = out[out.length - 1];
+      if (last && s.start - last.end < 0.35) last.end = s.end;
+      else out.push({ start: s.start, end: s.end });
+    }
+    return out;
+  }
+  function snapCuesToSpeech(cues, speech, opts) {
+    var win = (opts && opts.window) || 1.5;
+    var res = { moved: 0, totalShift: 0, maxShift: 0 };
+    var sorted = cues.slice().sort(function (a, b) { return a.start - b.start; });
+    function nearestStart(t) {
+      var best = null, bd = Infinity;
+      for (var i = 0; i < speech.length; i++) { var d = Math.abs(speech[i].start - t); if (d < bd) { bd = d; best = speech[i].start; } }
+      return bd <= win ? best : null;
+    }
+    function nearestEnd(t) {
+      var best = null, bd = Infinity;
+      for (var i = 0; i < speech.length; i++) { var d = Math.abs(speech[i].end - t); if (d < bd) { bd = d; best = speech[i].end; } }
+      return bd <= win ? best : null;
+    }
+    for (var i = 0; i < sorted.length; i++) {
+      var c = sorted[i];
+      var prevEnd = i > 0 ? sorted[i - 1].end : 0;
+      var nextStart = i < sorted.length - 1 ? sorted[i + 1].start : Infinity;
+      var ns = c.start, ne = c.end;
+      var bs = nearestStart(c.start);
+      if (bs != null) ns = bs;
+      var be = nearestEnd(c.end);
+      if (be != null) ne = be;
+      if (Math.abs(ns - c.start) < 0.08) ns = c.start;
+      if (Math.abs(ne - c.end) < 0.08) ne = c.end;
+      if (ns !== c.start || ne !== c.end) {
+        if (ns > prevEnd + 0.05 && ne < nextStart - 0.05 && ne - ns >= 0.2) {
+          var sh = Math.abs(ns - c.start) + Math.abs(ne - c.end);
+          c.start = Math.max(0, ns);
+          c.end = ne;
+          res.moved++;
+          res.totalShift += sh;
+          if (sh > res.maxShift) res.maxShift = sh;
+        }
+      }
+    }
+    return res;
+  }
+  async function syncSnapToAudio() {
+    if (!segments.length) { toast('ပြင်စရာ စာတန်း မရှိသေးပါဘူး'); return; }
+    if (mode !== 'video' || !videoFile) { toast('ဗီဒီယိုဖိုင် လိုပါတယ် — Video tab မှာ ဗီဒီယို ရွေးပြီးမှ သုံးပါ'); return; }
+    var btn = $('syncSnap');
+    if (btn) btn.disabled = true;
+    var info = $('syncInfo');
+    try {
+      if (info) info.textContent = 'အသံကို ဖတ်နေပါတယ်…';
+      var samples;
+      if (snapAudio && snapAudioFile === videoFile) { samples = snapAudio; }
+      else {
+        samples = await extractAudio(videoFile);
+        snapAudio = samples; snapAudioFile = videoFile;
+      }
+      if (info) info.textContent = 'စကားပြောသံ ရှာနေပါတယ်…';
+      var speech = computeSpeechSegments(samples, 16000);
+      if (!speech.length) {
+        toast('အသံထဲမှာ စကားပြောသံ ရှာမတွေ့ပါဘူး — အသံတိုးနေလား စစ်ကြည့်ပါ');
+        syncInfo();
+        return;
+      }
+      syncSnapshot();
+      var res = snapCuesToSpeech(segments, speech, { window: 1.5 });
+      if (!res.moved) {
+        splitRefresh('အသံနဲ့ တိုက်ကြည့်ပြီးပါပြီ — ပြင်စရာ မတွေ့ပါဘူး (စာတန်းတွေ အသံနဲ့ ကိုက်နေပြီ)');
+      } else {
+        var avg = (res.totalShift / res.moved).toFixed(2);
+        splitRefresh('အသံနဲ့ ကပ်ပြီးပါပြီ — ' + res.moved + ' / ' + segments.length + ' လိုင်း ပြင်လိုက်တယ် (ပျမ်းမျှ ' + avg + ' စက္ကန့် ရွှေ့တယ်၊ အများဆုံး ' + res.maxShift.toFixed(2) + ' စက္ကန့်) — မကြိုက်ရင် ↩ ပြန်ဆုတ်လို့ရတယ်');
+      }
+      syncInfo();
+    } catch (e) {
+      console.error(e);
+      toast(e.message === 'AUDIO_DECODE' ? 'ဗီဒီယိုဖိုင်ရဲ့ အသံကို ဖတ်မရပါဘူး' : 'အသံနဲ့ ကပ်တာ မအောင်မြင်ပါဘူး: ' + e.message);
+      syncInfo();
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
   function renderEditor() {
     var list = $('segList');
     list.innerHTML = '';
@@ -2649,7 +2776,6 @@ var seekBtn = d.querySelector('.seek');
     cue.style.textShadow = burn.bgOp >= 0.35 ? 'none' : '0 2px 6px #000,0 0 2px #000';
     var sw = burn.stroke > 0 ? burn.stroke * (h || 360) / 1080 : 0;
     span.style.webkitTextStroke = sw > 0 ? sw.toFixed(1) + 'px ' + burn.strokeColor : '';
-    fitPreviewCue();
     applyTitleStyle();
   }
   /* custom title overlay in the preview — same burn style as the subtitles,
@@ -2673,19 +2799,10 @@ var seekBtn = d.querySelector('.seek');
     span.style.webkitTextStroke = sw > 0 ? sw.toFixed(1) + 'px ' + burn.strokeColor : '';
     el.style.visibility = (lastTitleText && fpx >= 0.3) ? 'visible' : 'hidden';
   }
-  /* keep the preview cue inside the frame: shrink the font if the current line is wider than the video */
-  function fitPreviewCue() {
-    var span = $('cueText'), cue = $('cue');
-    if (!span.textContent) return;
-    var wrapW = cue.clientWidth || 0;
-    var fs = parseFloat(cue.style.fontSize) || 0;
-    if (!wrapW || !fs) return;
-    var w = span.getBoundingClientRect().width;
-    var maxW = wrapW - 28;
-    if (w > maxW && w > 0) {
-      cue.style.fontSize = (fs * maxW / w) + 'px';
-    }
-  }
+  /* (removed: fitPreviewCue used to shrink the preview font when a line was
+     wider than the video, so long lines showed smaller than short ones. The
+     font is fixed now — #cueText already wraps long lines with
+     overflow-wrap:break-word, so no shrinking is needed.) */
   /* frame the preview exactly like the exported video when a ratio is picked:
      the wrap becomes the output frame, the video is contained (pad) or covered (crop),
      and a blurred copy of the same video fills the empty space in blur mode */
@@ -2998,13 +3115,29 @@ var seekBtn = d.querySelector('.seek');
   loadBurnStyle();
   syncBurnControls();
 
+  /* split a line that is still too wide for the frame into pieces that fit,
+     at grapheme boundaries — the font size never changes, the text just wraps
+     to another line instead of shrinking (Burmese has almost no spaces, so
+     wrapping must cut at grapheme clusters, not at spaces) */
+  function wrapToWidth(cx, line, availW) {
+    if (cx.measureText(line).width <= availW) return [line];
+    var gs = gchars(line), out = [], cur = '';
+    for (var i = 0; i < gs.length; i++) {
+      var t = cur + gs[i];
+      if (cx.measureText(t).width > availW && cur) { out.push(cur); cur = gs[i]; }
+      else cur = t;
+    }
+    if (cur) out.push(cur);
+    return out.length ? out : [line];
+  }
   function drawBurnSub(cx, W, H, t) {
     var act = [], lines = [];
     for (var i = 0; i < segments.length; i++) { if (t >= segments[i].start && t < segments[i].end) act.push(segments[i]); }
     act.slice(-2).forEach(function (s) { var tx = String(s.my || '').trim(); if (tx) lines = lines.concat(SrtTools.splitLines(tx, maxCharsVal)); });
     if (!lines.length) return;
-    /* safe area: the subtitle box must stay inside the frame — margins on every side,
-       and the font shrinks when the longest line would otherwise overflow */
+    /* safe area: the subtitle box must stay inside the frame — margins on every
+       side. The font size is FIXED (burn.fontFrac * H): a line that is still
+       too wide wraps to another line instead of shrinking the font. */
     var safeMx = Math.round(W * 0.04);
     var safeTop = Math.round(H * 0.02);
     var safeBot = Math.round(H * 0.98);
@@ -3015,14 +3148,11 @@ var seekBtn = d.querySelector('.seek');
     setFont();
     cx.textAlign = 'center';
     cx.textBaseline = 'middle';
+    var wrapped = [];
+    lines.forEach(function (l) { wrapped.push.apply(wrapped, wrapToWidth(cx, l, availW)); });
+    lines = wrapped;
     var maxW = 0;
     lines.forEach(function (l) { maxW = Math.max(maxW, cx.measureText(l).width); });
-    if (maxW > availW && maxW > 0) {
-      fs = fs * availW / maxW;
-      setFont();
-      maxW = 0;
-      lines.forEach(function (l) { maxW = Math.max(maxW, cx.measureText(l).width); });
-    }
     var lh = fs * 1.5, padX = fs * 0.55, padY = fs * 0.3;
     var boxW = Math.min(availW, maxW + padX * 2);
     var boxH = lines.length * lh + padY * 2;
@@ -3056,13 +3186,12 @@ var seekBtn = d.querySelector('.seek');
       cx.lineWidth = Math.max(1, burn.stroke * H / 1080);
       cx.lineJoin = 'round';
       lines.forEach(function (l, li) {
-        cx.strokeText(l, x0 + boxW / 2, y0 + padY + lh * (li + 0.5), availW);
+        cx.strokeText(l, x0 + boxW / 2, y0 + padY + lh * (li + 0.5));
       });
       cx.restore();
     }
     lines.forEach(function (l, li) {
-      /* maxWidth is the hard guarantee: even at the minimum font size a line can never spill past the safe width */
-      cx.fillText(l, x0 + boxW / 2, y0 + padY + lh * (li + 0.5), availW);
+      cx.fillText(l, x0 + boxW / 2, y0 + padY + lh * (li + 0.5));
     });
     cx.shadowColor = 'transparent';
     cx.shadowBlur = 0;
@@ -3086,14 +3215,11 @@ var seekBtn = d.querySelector('.seek');
     cx.textAlign = 'center';
     cx.textBaseline = 'middle';
     var lines = SrtTools.splitLines(act.text, maxCharsVal);
+    var wrappedT = [];
+    lines.forEach(function (l) { wrappedT.push.apply(wrappedT, wrapToWidth(cx, l, availW)); });
+    lines = wrappedT;
     var maxW = 0;
     lines.forEach(function (l) { maxW = Math.max(maxW, cx.measureText(l).width); });
-    if (maxW > availW && maxW > 0) {
-      fs = fs * availW / maxW;
-      setFont();
-      maxW = 0;
-      lines.forEach(function (l) { maxW = Math.max(maxW, cx.measureText(l).width); });
-    }
     var lh = fs * 1.5, padX = fs * 0.55, padY = fs * 0.3;
     var boxW = Math.min(availW, maxW + padX * 2);
     var boxH = lines.length * lh + padY * 2;
@@ -3123,12 +3249,12 @@ var seekBtn = d.querySelector('.seek');
       cx.lineWidth = Math.max(1, burn.stroke * H / 1080 * 1.5);
       cx.lineJoin = 'round';
       lines.forEach(function (l, li) {
-        cx.strokeText(l, x0 + boxW / 2, y0 + padY + lh * (li + 0.5), availW);
+        cx.strokeText(l, x0 + boxW / 2, y0 + padY + lh * (li + 0.5));
       });
       cx.restore();
     }
     lines.forEach(function (l, li) {
-      cx.fillText(l, x0 + boxW / 2, y0 + padY + lh * (li + 0.5), availW);
+      cx.fillText(l, x0 + boxW / 2, y0 + padY + lh * (li + 0.5));
     });
     cx.shadowColor = 'transparent';
     cx.shadowBlur = 0;
@@ -3378,10 +3504,76 @@ var seekBtn = d.querySelector('.seek');
      the file at all. MP4 mode fixes that, and it is also faster: the video is
      played at 2x while every presented frame is captured with an explicit
      timestamp and hardware-encoded to H.264 (WebCodecs VideoEncoder), then the
-     original audio (same timeline cuts) is muxed back with ffmpeg. First use
-     downloads two small tools from the internet (mp4-muxer, ffmpeg ~30 MB) —
-     after that they stay cached in the tab. If this device cannot do the fast
-     path, it falls back to the normal WebM export. */
+     original audio (same timeline cuts) is encoded to AAC on the device
+     itself (WebCodecs AudioEncoder) and written straight into the MP4 — no
+     download needed. ffmpeg (~30 MB) stays only as a fallback for devices
+     without an AAC encoder. First use downloads mp4-muxer only, and it stays
+     cached in the tab. If this device cannot do the fast path, it falls back
+     to the normal WebM export. */
+  /* ---------- MP4 audio without any download (primary path) ----------
+     The first version muxed the audio back with ffmpeg, which needs a ~30 MB
+     converter downloaded from the internet — when that download fails (slow /
+     blocked connection) the MP4 came out silent. This path needs no download:
+     the decoded PCM (already cached from generation, or extracted on demand)
+     is encoded to AAC with the device's own hardware encoder (WebCodecs
+     AudioEncoder) and written straight into the MP4 by mp4-muxer. */
+  function audioClipPieces(kept, totalSamples, sr, pieceFrames) {
+    /* Split the kept clips into <= pieceFrames pieces with output timestamps
+       (microseconds) on the edited timeline: [{start, end, ts}]. */
+    var out = [], clipOff = 0;
+    for (var i = 0; i < kept.length; i++) {
+      var s0 = Math.max(0, Math.floor(kept[i].start * sr));
+      var s1 = Math.min(totalSamples, Math.ceil(kept[i].end * sr));
+      for (var p = s0; p < s1; p += pieceFrames) {
+        var end = Math.min(s1, p + pieceFrames);
+        out.push({ start: p, end: end, ts: Math.round((clipOff + (p - s0) / sr) * 1000000) });
+      }
+      clipOff += (kept[i].end - kept[i].start);
+    }
+    return out;
+  }
+  async function encodeFastAudio(origFile, kept, bStatus) {
+    /* Encode the kept clips' audio to AAC chunks [{chunk, meta}] for the
+       muxer, or null when this device cannot do it (then the ffmpeg fallback
+       runs instead). No download needed. */
+    if (!window.AudioEncoder || typeof AudioData === 'undefined') return null;
+    var sup = null;
+    try { sup = await AudioEncoder.isConfigSupported({ codec: 'mp4a.40.2', sampleRate: 16000, numberOfChannels: 1 }); } catch (e) {}
+    if (!sup || !sup.supported) return null;
+    var samples;
+    if (snapAudio && snapAudioFile === origFile) { samples = snapAudio; }
+    else {
+      if (bStatus) bStatus('အသံကို ဖတ်နေပါတယ်…');
+      samples = await extractAudio(origFile);
+      snapAudio = samples; snapAudioFile = origFile;
+    }
+    var peak = 0;
+    for (var i = 0; i < samples.length; i += 97) { var a = Math.abs(samples[i]); if (a > peak) peak = a; }
+    if (peak < 0.001) return null; /* effectively no audio in the source */
+    var pieces = audioClipPieces(kept, samples.length, 16000, 16000);
+    if (!pieces.length) return null;
+    var chunks = [], encErr = null;
+    var enc = new AudioEncoder({
+      output: function (chunk, meta) { chunks.push({ chunk: chunk, meta: meta }); },
+      error: function (e) { encErr = e; }
+    });
+    enc.configure({ codec: 'mp4a.40.2', sampleRate: 16000, numberOfChannels: 1, bitrate: 128000 });
+    if (bStatus) bStatus('အသံကို ကုဒ်လုပ်နေပါတယ်…');
+    for (var i = 0; i < pieces.length; i++) {
+      var pc = pieces[i];
+      var data = new AudioData({
+        format: 'f32', sampleRate: 16000, numberOfFrames: pc.end - pc.start, numberOfChannels: 1,
+        timestamp: pc.ts, data: samples.subarray(pc.start, pc.end)
+      });
+      enc.encode(data);
+      data.close();
+    }
+    await enc.flush();
+    try { enc.close(); } catch (e) {}
+    if (encErr) throw encErr;
+    if (!chunks.length) return null;
+    return chunks;
+  }
   var ffmpegMod = null;
   function loadExtScript(src) {
     if (!loadExtScript.cache) loadExtScript.cache = {};
@@ -3390,21 +3582,31 @@ var seekBtn = d.querySelector('.seek');
       var s = document.createElement('script');
       s.src = src;
       s.onload = res;
-      s.onerror = function () { rej(new Error('SCRIPT')); };
+      s.onerror = function () { delete loadExtScript.cache[src]; rej(new Error('SCRIPT')); };
       document.head.appendChild(s);
     });
     loadExtScript.cache[src] = p;
     return p;
   }
+  var FF_CDNS = [
+    { js: 'https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js', core: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js' },
+    { js: 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js', core: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js' }
+  ];
   async function loadFFmpeg(bStatus) {
     if (ffmpegMod) return ffmpegMod;
-    bStatus('အသံ ထည့်ဖို့ converter ဒေါင်းလုဒ်လုပ်နေပါတယ်… (ပထမအကြိမ်သာ, ~30 MB)');
-    await loadExtScript('https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js');
-    if (!window.FFmpeg || !window.FFmpeg.createFFmpeg) throw new Error('FFMPEG');
-    var ff = window.FFmpeg.createFFmpeg({ log: false, corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js' });
-    await ff.load();
-    ffmpegMod = ff;
-    return ff;
+    var lastErr = null;
+    for (var i = 0; i < FF_CDNS.length; i++) {
+      try {
+        if (bStatus) bStatus('အသံ ထည့်ဖို့ converter ဒေါင်းလုဒ်လုပ်နေပါတယ်… (ပထမအကြိမ်သာ, ~30 MB)');
+        await loadExtScript(FF_CDNS[i].js);
+        if (!window.FFmpeg || !window.FFmpeg.createFFmpeg) throw new Error('FFMPEG');
+        var ff = window.FFmpeg.createFFmpeg({ log: false, corePath: FF_CDNS[i].core });
+        await ff.load();
+        ffmpegMod = ff;
+        return ff;
+      } catch (e) { lastErr = e; console.error('ffmpeg CDN failed:', FF_CDNS[i].js, e); }
+    }
+    throw lastErr || new Error('FFMPEG');
   }
   /* ffmpeg filter that trims the ORIGINAL audio to the kept clips and joins
      them in order, so the audio matches the edited video exactly.
@@ -3423,12 +3625,20 @@ var seekBtn = d.querySelector('.seek');
   }
   /* Mux the original audio (same cuts) onto the fast-rendered video-only MP4.
      The video stream is copied, so this step is quick. Returns
-     { blob, withAudio } — withAudio is false when the source has no audio
-     (or the mux failed), in which case the video-only MP4 is returned. */
+     { blob, withAudio, reason } — withAudio is false when the source has no
+     audio (or the mux failed), in which case the video-only MP4 is returned.
+     reason is 'converter' when the converter could not be downloaded and
+     'mux' when ffmpeg ran but could not add the audio. */
   async function muxAudioToMp4(mp4buf, origFile, kept, srcDur, bStatus) {
     var videoOnly = new Blob([mp4buf], { type: 'video/mp4' });
+    var ff;
     try {
-      var ff = await loadFFmpeg(bStatus);
+      ff = await loadFFmpeg(bStatus);
+    } catch (e) {
+      console.error(e);
+      return { blob: videoOnly, withAudio: false, reason: 'converter' };
+    }
+    try {
       var ext = (origFile.name.match(/\.([A-Za-z0-9]+)$/) || [])[1] || 'mp4';
       var fetchFile = window.FFmpeg.fetchFile;
       ff.FS('writeFile', 'v.mp4', await fetchFile(videoOnly));
@@ -3446,10 +3656,10 @@ var seekBtn = d.querySelector('.seek');
       try { ff.FS('unlink', 'v.mp4'); } catch (e) {}
       try { ff.FS('unlink', 'orig.' + ext); } catch (e) {}
       try { ff.FS('unlink', 'out.mp4'); } catch (e) {}
-      return { blob: new Blob([data.buffer], { type: 'video/mp4' }), withAudio: true };
+      return { blob: new Blob([data.buffer], { type: 'video/mp4' }), withAudio: true, reason: 'ok' };
     } catch (e) {
       console.error(e);
-      return { blob: videoOnly, withAudio: false };
+      return { blob: videoOnly, withAudio: false, reason: 'mux' };
     }
   }
   async function renderBurnedFast() {
@@ -3520,8 +3730,19 @@ var seekBtn = d.querySelector('.seek');
       }
       if (!codec) throw new Error('NO_H264');
       var vbps = burn.quality === '720p' ? 8000000 : burn.quality === '1080p' ? 16000000 : 24000000;
+      /* audio first (no download): encode the kept clips to AAC; when this
+         fails the ffmpeg fallback runs after the video is rendered instead. */
+      var audioChunks = null;
+      try { audioChunks = await encodeFastAudio(videoFile, kept, bStatus); } catch (e) { console.error(e); audioChunks = null; }
+      if (state.cancelled) {
+        bStatus('ရပ်လိုက်ပါပြီ — ဖိုင် မထုတ်လိုက်ပါဘူး။');
+        toast('ဗီဒီယို ထုတ်တာ ရပ်လိုက်ပါပြီ');
+        return;
+      }
       var target = new ArrayBufferTarget();
-      muxer = new Muxer({ target: target, video: { codec: 'avc', width: W, height: H }, fastStart: 'in-memory', firstTimestampBehavior: 'offset' });
+      var muxerOpts = { target: target, video: { codec: 'avc', width: W, height: H }, fastStart: 'in-memory', firstTimestampBehavior: 'offset' };
+      if (audioChunks) muxerOpts.audio = { codec: 'aac', numberOfChannels: 1, sampleRate: 16000 };
+      muxer = new Muxer(muxerOpts);
       var encErr = null;
       encoder = new VideoEncoder({
         output: function (chunk, meta) { try { muxer.addVideoChunk(chunk, meta); } catch (e) { encErr = e; } },
@@ -3586,19 +3807,34 @@ var seekBtn = d.querySelector('.seek');
       if (!state.cancelled) {
         await encoder.flush();
         if (encErr) throw encErr;
+        if (audioChunks) {
+          for (var ai = 0; ai < audioChunks.length; ai++) {
+            try { muxer.addAudioChunk(audioChunks[ai].chunk, audioChunks[ai].meta); } catch (e) { encErr = e; break; }
+          }
+          if (encErr) throw encErr;
+        }
         muxer.finalize();
         var mp4buf = target.buffer;
         if (!mp4buf || !mp4buf.byteLength) throw new Error('EMPTY');
         barEl.style.width = '100%';
-        var finalBlob = await muxAudioToMp4(mp4buf, videoFile, kept, vid.duration, bStatus);
+        var finalBlob, audioNote;
+        if (audioChunks) {
+          finalBlob = { blob: new Blob([mp4buf], { type: 'video/mp4' }), withAudio: true };
+          audioNote = '။';
+        } else {
+          finalBlob = await muxAudioToMp4(mp4buf, videoFile, kept, vid.duration, bStatus);
+          audioNote = finalBlob.withAudio ? '။'
+            : finalBlob.reason === 'converter'
+            ? ' (အသံ မပါဘူး — converter ဒေါင်းမရလို့၊ အင်တာနက် စစ်ပြီး ပြန်ထုတ်ကြည့်ပါ)။'
+            : ' (မူရင်းဖိုင်မှာ အသံ မရှိလို့ / အသံ ထည့်မရလို့ အသံမပါဘဲ ထုတ်လိုက်ပါတယ်)။';
+        }
         if (state.cancelled) {
           bStatus('ရပ်လိုက်ပါပြီ — ဖိုင် မထုတ်လိုက်ပါဘူး။');
           toast('ဗီဒီယို ထုတ်တာ ရပ်လိုက်ပါပြီ');
         } else if (finalBlob) {
           download(finalBlob.blob, baseName() + '.subbed.mp4');
           bStatus('ပြီးပါပြီ — MP4 ဖိုင် (' + fmtSize(finalBlob.blob.size) + ') ဒေါင်းလုဒ် စတင်ပါပြီ' +
-            ' · အရွယ် ' + W + '×' + H + (framed ? ' (' + burn.ratio + ')' : '') +
-            (finalBlob.withAudio ? '။' : ' (အသံ ထည့်မရလို့ အသံမပါဘဲ ထုတ်လိုက်ပါတယ်)။'));
+            ' · အရွယ် ' + W + '×' + H + (framed ? ' (' + burn.ratio + ')' : '') + audioNote);
           toast('MP4 ဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
         }
       } else {
@@ -5270,6 +5506,7 @@ var seekBtn = d.querySelector('.seek');
   $('splitAll').addEventListener('click', splitAllLong);
 $('syncFit').addEventListener('click', syncFit);
 $('syncShift').addEventListener('click', syncShift);
+$('syncSnap').addEventListener('click', syncSnapToAudio);
 $('syncGo').addEventListener('click', syncApply);
 $('syncCheck').addEventListener('click', syncInfo);
 $('syncUndo').addEventListener('click', function () { splitUndoNow(); syncInfo(); });
