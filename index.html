@@ -408,6 +408,60 @@ body{background-attachment:fixed}
 <div class="hint">ဒီကွက်မှာ ရိုက်ထားရင် အပေါ်က ရွေးထားတာထက် ဒါကို အရင်သုံးမယ်။ မော်ဒယ်အမည်ကို AI Studio ရဲ့ model စာရင်းက အတိအကျ ကူးထည့်ပါ။ မရှိတဲ့ မော်ဒယ်ဆိုရင် အလိုအလျောက် တခြားမော်ဒယ်ကို ပြောင်းသုံးမယ်။</div>
       </div>
     </div>
+    <div id="transcriberBox" style="margin-top:14px">
+      <div class="grid2">
+        <div>
+          <label class="f" for="transcriber">🎙️ အသံနားထောင်မယ့် Engine</label>
+          <select id="transcriber">
+            <option value="gemini" selected>Gemini — နားထောင် + ပြန် (မူလ)</option>
+            <option value="groq">Groq Whisper — နားထောင်မြန်၊ အခမဲ့</option>
+            <option value="scribe">ElevenLabs Scribe — အတိကျဆုံး</option>
+            <option value="deepgram">Deepgram Nova-3 — $200 credit အခမဲ့</option>
+            <option value="assemblyai">AssemblyAI — $50 credit အခမဲ့</option>
+            <option value="gladia">Gladia Solaria — €50 credit အခမဲ့</option>
+            <option value="hf">HF Whisper — အခမဲ့ (large-v3)</option>
+          </select>
+        </div>
+        <div id="groqKeyWrap" class="hidden">
+          <label class="f" for="groqKey">Groq API Key</label>
+          <input type="password" id="groqKey" placeholder="gsk_…" autocomplete="off" spellcheck="false" />
+        </div>
+        <div id="deepgramKeyWrap" class="hidden">
+          <label class="f" for="deepgramKey">Deepgram API Key</label>
+          <input type="password" id="deepgramKey" placeholder="Deepgram API Key" autocomplete="off" spellcheck="false" />
+        </div>
+        <div id="assemblyKeyWrap" class="hidden">
+          <label class="f" for="assemblyKey">AssemblyAI API Key</label>
+          <input type="password" id="assemblyKey" placeholder="AssemblyAI API Key" autocomplete="off" spellcheck="false" />
+        </div>
+        <div id="gladiaKeyWrap" class="hidden">
+          <label class="f" for="gladiaKey">Gladia API Key</label>
+          <input type="password" id="gladiaKey" placeholder="Gladia API Key" autocomplete="off" spellcheck="false" />
+        </div>
+        <div id="hfKeyWrap" class="hidden">
+          <label class="f" for="hfKey">Hugging Face Token</label>
+          <input type="password" id="hfKey" placeholder="hf_…" autocomplete="off" spellcheck="false" />
+        </div>
+      </div>
+      <div class="hint" id="transcriberHint">Gemini က အသံနားထောင်ပြီး ဘာသာပြန်တယ် — quota အများဆုံး သုံးတယ်။ Groq Whisper / Scribe က အသံပဲ နားထောင်ပြီး၊ Gemini က စာသားပဲ ပြန်တယ် — Gemini quota သက်သာတယ်။</div>
+      <div class="hint hidden" id="groqKeyHint">Key မရှိရင် <a href="https://console.groq.com/keys" target="_blank" rel="noopener">Groq Console</a> မှာ အခမဲ့ ထုတ်ပါ (ကတ်မလို)။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။ Whisper large-v3 သုံးတယ် — တစ်နေ့ကို အသံ ၈ နာရီစာ အခမဲ့။</div>
+      <div class="hint hidden" id="scribeHint">Scribe က TTS tab ထဲက ElevenLabs API Key ကို သုံးမယ် — key အသစ် မလိုဘူး။ တစ်လ ၂၇၀ မိနစ်စာ အခမဲ့၊ ပြီးရင် တစ်နာရီ $0.22။</div>
+      <div class="hint hidden" id="deepgramKeyHint">Key မရှိရင် <a href="https://console.deepgram.com/" target="_blank" rel="noopener">Deepgram Console</a> မှာ အကောင့်ဖွင့်ပြီး API Key ထုတ်ပါ — $200 credit အခမဲ့ (ကတ်မလို)၊ ကုန်သွားရင် တစ်မိနစ် $0.0043။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။</div>
+      <div class="hint hidden" id="assemblyKeyHint">Key မရှိရင် <a href="https://www.assemblyai.com/dashboard/signup" target="_blank" rel="noopener">AssemblyAI</a> မှာ အကောင့်ဖွင့်ပြီး API Key ထုတ်ပါ — $50 credit အခမဲ့ (ကတ်မလို)၊ ကုန်သွားရင် တစ်နာရီ $0.15။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။</div>
+      <div class="hint hidden" id="gladiaKeyHint">Key မရှိရင် <a href="https://app.gladia.io/signup" target="_blank" rel="noopener">Gladia</a> မှာ အကောင့်ဖွင့်ပြီး API Key ထုတ်ပါ — €50 credit အခမဲ့ (ကတ်မလို၊ အသံ နာရီ ၃၀၀ လောက်)၊ ကုန်သွားရင် တစ်နာရီ 0.16€။ ၁၀၀+ ဘာသာစကား၊ စာလုံးအချိန်မှတ် ပါတယ်။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။</div>
+      <div class="hint hidden" id="hfKeyHint">Token မရှိရင် <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener">Hugging Face</a> မှာ အကောင့်ဖွင့်ပြီး token အခမဲ့ ဖန်တီးပါ (Inference Providers permission ပါအောင်) — တစ်နေ့ request ~၁,၀၀၀ အခမဲ့၊ ကတ်မလို။ Groq နဲ့ မော်ဒယ်အတူတူ (Whisper large-v3)။ လူများရင် နှေးတတ်တယ် / model loading စောင့်ရတတ်တယ်။</div>
+      <details class="adv" id="extToolsBox" style="margin-top:10px">
+        <summary>🌐 အပြင်က transcript tool တွေနဲ့ နားထောင်မယ်</summary>
+        <div class="hint" style="margin-top:8px">အပေါ်က Engine တွေနဲ့ အဆင်မပြေရင် အပြင်မှာ transcribe လုပ်ပြီး SRT ဖိုင် ထုတ်ပါ — ပြီးရင် ဒီ tool မှာ SRT ဖိုင်ကို ပြန်ဆိုလို့ရတယ်။</div>
+        <ul style="margin:8px 0 0 18px; line-height:1.9">
+          <li><b>CapCut</b> — Text → Auto captions (တရုတ်) → SRT ထုတ်။ SRT ထုတ်တာက Pro လိုတယ်; အခမဲ့နည်းက <a href="https://exportsrt.com/en/" target="_blank" rel="noopener">exportsrt.com</a> မှာ CapCut draft ဖိုင်ကနေ ထုတ်ပါ။ <a href="https://www.capcut.com/tools/ai-caption-generator" target="_blank" rel="noopener">CapCut ဖွင့်မယ်</a></li>
+          <li><b>TurboScribe</b> — ဖိုင်တင် → SRT ဒေါင်း။ အခမဲ့ တစ်နေ့ ၃ ဖိုင်၊ တစ်ဖိုင် မိနစ် ၃၀ ထိ။ <a href="https://turboscribe.ai/" target="_blank" rel="noopener">TurboScribe ဖွင့်မယ်</a></li>
+          <li><b>YouTube Studio</b> — ဗီဒီယို unlisted တင် → auto captions ရပြီး Subtitles → ⋮ → Download → .srt (ကိုယ့်ဗီဒီယိုပဲ ရတယ်)။ <a href="https://studio.youtube.com" target="_blank" rel="noopener">YouTube Studio ဖွင့်မယ်</a></li>
+          <li><b>Whisper Web</b> — browser ထဲမှာ Whisper run တယ်၊ key မလို၊ အသံ တင်စရာမလို (PC Chrome အကောင်းဆုံး၊ ဖုန်းမှာ နှေးတယ်)။ <a href="https://whisperweb.dev" target="_blank" rel="noopener">Whisper Web ဖွင့်မယ်</a></li>
+        </ul>
+        <div class="hint" style="margin-top:8px">SRT ဖိုင် ရရင်: အပေါ်က <b>“SRT ဖိုင်ကို ပြန်ဆိုမယ်”</b> ခလုတ် နှိပ် → SRT ဖိုင် ရွေး → စတင်မယ် → ပြီးရင် ဗီဒီယို ရွေးပြီး burn လုပ်လို့ရတယ်။</div>
+      </details>
+    </div>
     <details class="adv"><summary>အဆင့်မြင့် ဆက်တင်များ (Pacing၊ batch၊ fallback)</summary>
     <div style="margin-top:12px;max-width:300px">
       <label class="f" for="paceSec">⏱️ Request ကြား စောင့်ချိန် — Pacing (စက္ကန့်)</label>
@@ -643,7 +697,7 @@ body{background-attachment:fixed}
               <button id="fmtWebm" aria-pressed="true">WebM — ပုံမှန်</button>
               <button id="fmtMp4" aria-pressed="false">MP4 မြန်မြန် — TikTok / FB / CapCut</button>
             </div>
-            <div class="hint">WebM — Gallery မှာ ဖွင့်လို့ရ၊ ဒါပေမဲ့ TikTok / Facebook / CapCut မှာ တင်မရဘူး။ MP4 — ဆိုရှယ်မီဒီယာတိုင်းမှာ တင်လို့ရ၊ 2x မြန်မြန် ထုတ်ပေးတယ်၊ အသံကို ဖုန်းကနေ တိုက်ရိုက် ထည့်ပေးတယ် (converter ဒေါင်းစရာ မလိုတော့ဘူး)။</div>
+            <div class="hint">WebM — Gallery မှာ ဖွင့်လို့ရ၊ ဒါပေမဲ့ TikTok / Facebook / CapCut မှာ တင်မရဘူး။ MP4 — ဆိုရှယ်မီဒီယာတိုင်းမှာ တင်လို့ရ၊ 2x မြန်မြန် ထုတ်ပေးတယ်၊ အသံကို ဖုန်းကနေ တိုက်ရိုက် ထည့်ပေးတယ် (converter ဒေါင်းစရာ မလိုတော့ဘူး)။ <span id="mp4AudioCap"></span></div>
           </div>
           <details class="full adv"><summary>ကိုယ်ပိုင်ဖောင့် / Logo ထည့်ရန်</summary><div class="burngrid">
           <div class="full">
@@ -756,7 +810,7 @@ body{background-attachment:fixed}
 <div id="panelVideo" class="hidden">
 <section class="card" id="cardVideo">
   <h2>ဗီဒီယို ပြင်ဆင်ရန်</h2>
-  <div class="empty" id="videoEmpty">ဗီဒီယို မရှိသေးပါဘူး — ဘာသာပြန် tab မှာ ဗီဒီယို အရင် ဘာသာပြန်ပါ၊ ဒါမှမဟုတ် Projects tab က ပရောဂျက် ဖွင့်ပါ။</div>
+  <div class="empty" id="videoEmpty">ဗီဒီယို မရှိသေးပါဘူး — ဘာသာပြန် tab မှာ ဗီဒီယိုဖိုင် အရင် ရွေးပါ၊ ဒါမှမဟုတ် Projects tab က ပရောဂျက် ဖွင့်ပါ။</div>
   <div id="videoSlot"></div>
 </section>
 <section class="card hidden" id="cardTimeline">
@@ -1242,6 +1296,7 @@ var SrtTools = (function () {
     $('modeSrt').setAttribute('aria-pressed', m === 'srt' ? 'true' : 'false');
     $('dropVideo').classList.toggle('hidden', m !== 'video');
     $('dropSrt').classList.toggle('hidden', m !== 'srt');
+    $('transcriberBox').classList.toggle('hidden', m !== 'video');
     $('startBtnText').textContent = m === 'video' ? 'စတင်လုပ်ဆောင်မယ်' : 'SRT ကို မြန်မာပြန်ဆိုမယ်';
     $('cardBatch').classList.toggle('hidden', m !== 'video');
     refreshSettings();
@@ -1287,8 +1342,8 @@ var SrtTools = (function () {
   bindDrop('dropVideo', 'fileInputVideo', function (f) {
     videoFile = f;
     showFileMeta();
-    /* a restored project has cues but no file — re-picking the video brings the preview back */
-    if (segments.length && mode === 'video') {
+    /* a restored project has cues but no file — re-picking the video brings the preview back (any mode: SRT-translated cues burn the same way) */
+    if (segments.length) {
       $('previewCol').classList.remove('hidden');
       $('restoreNote').classList.add('hidden');
       if (objUrl) URL.revokeObjectURL(objUrl);
@@ -1828,36 +1883,68 @@ var SrtTools = (function () {
     var BATCH = batchSizeVal(30), failed = 0, done = 0, reused = 0, sig = trSig('gemini');
     var lang = LANG_NAME[$('srcLang').value];
     var langPhrase = lang ? ('in ' + lang) : 'in the source language (detect it from the text itself)';
+    function buildTrPrompt(items, prevCtx, nextCtx) {
+      var payload = items.map(function (s) { return { text: s.text }; });
+      var p = 'You are a professional subtitle translator for short drama videos. Below is a JSON array of subtitle lines ' +
+        langPhrase + '. Translate each line into natural, conversational Burmese (Myanmar) — meaning-first, the way native speakers actually talk in dramas, keeping names, tone and emotion; do NOT translate word-for-word. ' +
+        'Use correct standard Burmese spelling (Myanmar Unicode). Never repeat the same word or syllable over and over inside a line — a repetition loop is a failure; every line must read as one natural sentence. If a word is uncertain, use a simpler common word instead of repeating. ' +
+        (glossaryPromptText() ? 'Use these exact Burmese forms for these names/terms wherever they appear: ' + glossaryPromptText() + '. ' : '') +
+        'Reply with ONLY a JSON array of exactly the same length and order, each item {"my": "<Burmese translation>"}. Lines:\n' +
+        JSON.stringify(payload);
+      if (prevCtx.length || nextCtx.length) p += '\n\nCONTEXT ONLY — do NOT translate or include these in the output. Previous lines already translated (stay consistent with names, pronouns and politeness level): ' + JSON.stringify(prevCtx) + '. Lines right after this batch: ' + JSON.stringify(nextCtx) + '.';
+      return p;
+    }
+    /* One translate attempt for a set of items. Returns true only if every
+       item got a non-empty translation. Accepts both {"my": "..."} objects
+       and plain string items in the model's JSON array. Throws BAD_BATCH on
+       a malformed/wrong-length answer (callers retry); Gemini API errors
+       (isGemini) propagate untouched. */
+    async function geminiBatchOnce(items, prompt) {
+      var gres = await geminiGenerate([{ text: prompt }]);
+      if (gres.finishReason === 'MAX_TOKENS') throw new Error('BAD_BATCH');
+      var arr = parseJsonArray(gres.text);
+      if (!arr || arr.length !== items.length) throw new Error('BAD_BATCH');
+      var got = 0;
+      items.forEach(function (s, k) {
+        var raw = arr[k];
+        var my = (typeof raw === 'string' ? raw : (raw && (raw.my || raw.translation || '')) || '');
+        my = String(my).trim();
+        if (my) { s.my = my; s.failed = false; s._trOk = true; memSet(sig, s.text, s.my); got++; }
+      });
+      return got === items.length;
+    }
     for (var i = 0; i < list.length; i += BATCH) {
       var batch = list.slice(i, i + BATCH);
       var todo = batch.filter(function (s) { return !!s.text; });
     var mp = memPrep(todo, sig); todo = mp.uniq; reused += mp.reused;
       batch.forEach(function (s) { if (!s.text) { s.my = ''; s.failed = false; } });
       if (todo.length) {
-        var payload = todo.map(function (s) { return { text: s.text }; });
-        var prompt = 'You are a professional subtitle translator for short drama videos. Below is a JSON array of subtitle lines ' +
-          langPhrase + '. Translate each line into natural, conversational Burmese (Myanmar) — meaning-first, the way native speakers actually talk in dramas, keeping names, tone and emotion; do NOT translate word-for-word. ' +
-          'Use correct standard Burmese spelling (Myanmar Unicode). Never repeat the same word or syllable over and over inside a line — a repetition loop is a failure; every line must read as one natural sentence. If a word is uncertain, use a simpler common word instead of repeating. ' +
-          (glossaryPromptText() ? 'Use these exact Burmese forms for these names/terms wherever they appear: ' + glossaryPromptText() + '. ' : '') +
-          'Reply with ONLY a JSON array of exactly the same length and order, each item {"my": "<Burmese translation>"}. Lines:\n' +
-          JSON.stringify(payload);
-        try {
-          var prevCtx = list.slice(Math.max(0, i - 4), i).filter(function (s) { return s.text && s.my && !s.failed; }).map(function (s) { return { text: s.text, my: s.my }; });
+        var prevCtx = list.slice(Math.max(0, i - 4), i).filter(function (s) { return s.text && s.my && !s.failed; }).map(function (s) { return { text: s.text, my: s.my }; });
         var nextCtx = list.slice(i + BATCH, i + BATCH + 2).filter(function (s) { return s.text; }).map(function (s) { return s.text; });
-        if (prevCtx.length || nextCtx.length) prompt += '\n\nCONTEXT ONLY — do NOT translate or include these in the output. Previous lines already translated (stay consistent with names, pronouns and politeness level): ' + JSON.stringify(prevCtx) + '. Lines right after this batch: ' + JSON.stringify(nextCtx) + '.';
-        var gres = await geminiGenerate([{ text: prompt }]);
-          if (gres.finishReason === 'MAX_TOKENS') throw new Error('BAD_BATCH');
-          var arr = parseJsonArray(gres.text);
-          if (!arr || arr.length !== todo.length) throw new Error('BAD_BATCH');
-          todo.forEach(function (s, k) {
-            var my = arr[k] && (arr[k].my || arr[k].translation || '');
-            if (my) { s.my = String(my); s.failed = false; memSet(sig, s.text, s.my); }
-            else { if (!s.my) s.my = s.text; s.failed = true; failed++; }
-          });
-        } catch (e) {
-          if (e.isGemini) throw e;
-          todo.forEach(function (s) { if (!s.my) s.my = s.text; s.failed = true; failed++; });
+        todo.forEach(function (s) { s._trOk = false; });
+        var ok = false;
+        try { ok = await geminiBatchOnce(todo, buildTrPrompt(todo, prevCtx, nextCtx)); }
+        catch (e) { if (e.isGemini) throw e; }
+        if (!ok) {
+          log('ဘာသာပြန် အဖြေ မကိုက်လို့ ဒီအပိုင်း (' + todo.length + ' ကြောင်း) ကို ထပ်စမ်းပါမယ်');
+          try { await aiSleep(2000); ok = await geminiBatchOnce(todo, buildTrPrompt(todo, prevCtx, nextCtx)); }
+          catch (e) { if (e.isGemini) throw e; }
         }
+        if (!ok && todo.length > 1) {
+          log('အပိုင်းကြီး တစ်ခုလုံး မရလို့ နှစ်ခြမ်း ခွဲပြီး ပြန်ဆိုပါမယ်');
+          var mid = Math.ceil(todo.length / 2);
+          var halves = [todo.slice(0, mid), todo.slice(mid)];
+          for (var h = 0; h < halves.length; h++) {
+            var part = halves[h].filter(function (s) { return !s._trOk; });
+            if (!part.length) continue;
+            try { await geminiBatchOnce(part, buildTrPrompt(part, prevCtx, nextCtx)); }
+            catch (e) { if (e.isGemini) throw e; }
+          }
+        }
+        todo.forEach(function (s) {
+          var done1 = s._trOk; delete s._trOk;
+          if (!done1) { if (!s.my) s.my = s.text; s.failed = true; failed++; }
+        });
       }
       memFinish(mp);
     done += batch.length;
@@ -2161,6 +2248,501 @@ var SrtTools = (function () {
     }
   }
 
+  /* ---------- external transcription: Groq Whisper + ElevenLabs Scribe ----------
+     Gemini listens to the audio AND translates it, so every chunk costs ~1,500
+     audio tokens per minute. These two transcribers only listen — Gemini then
+     translates the TEXT (the existing translateSegmentsAuto path), which costs
+     ~5x fewer Gemini input tokens. Groq Whisper large-v3 is free (8h/day, no
+     card); Scribe v2 is the most accurate and reuses the saved ElevenLabs key.
+     Both return real audio-aligned timestamps, which also helps the timing
+     problem (Gemini's per-chunk time estimates drift). */
+  var WHISPER_SL = { chinese: 'zh', english: 'en', korean: 'ko', japanese: 'ja', thai: 'th', burmese: 'my' };
+  var SCRIBE_SL = { chinese: 'zho', english: 'eng', korean: 'kor', japanese: 'jpn', thai: 'tha', burmese: 'mya' };
+  function transcriberVal() { var el = $('transcriber'); return el ? el.value : 'gemini'; }
+  function groqKeyVal() { return ($('groqKey').value || '').trim(); }
+  function transcriberRefresh() {
+    var tr = transcriberVal();
+    var gk = $('groqKeyWrap'); if (gk) gk.classList.toggle('hidden', tr !== 'groq');
+    var gh = $('groqKeyHint'); if (gh) gh.classList.toggle('hidden', tr !== 'groq');
+    var sh = $('scribeHint'); if (sh) sh.classList.toggle('hidden', tr !== 'scribe');
+    var dk = $('deepgramKeyWrap'); if (dk) dk.classList.toggle('hidden', tr !== 'deepgram');
+    var dh = $('deepgramKeyHint'); if (dh) dh.classList.toggle('hidden', tr !== 'deepgram');
+    var ak = $('assemblyKeyWrap'); if (ak) ak.classList.toggle('hidden', tr !== 'assemblyai');
+    var ah = $('assemblyKeyHint'); if (ah) ah.classList.toggle('hidden', tr !== 'assemblyai');
+    var gk2 = $('gladiaKeyWrap'); if (gk2) gk2.classList.toggle('hidden', tr !== 'gladia');
+    var gh2 = $('gladiaKeyHint'); if (gh2) gh2.classList.toggle('hidden', tr !== 'gladia');
+    var hk = $('hfKeyWrap'); if (hk) hk.classList.toggle('hidden', tr !== 'hf');
+    var hh = $('hfKeyHint'); if (hh) hh.classList.toggle('hidden', tr !== 'hf');
+    var th = $('transcriberHint'); if (th) th.classList.toggle('hidden', tr !== 'gemini');
+  }
+  /* POST audio with 429 retry: Groq's free tier allows 20 requests/min, so a
+     long video's chunk loop can trip it; wait out Retry-After (else 30s) and
+     try again, up to 3 attempts. Throws TAG_status errors. */
+  async function postAudioWithRetry(url, headers, fd, tag) {
+    var lastErr = null;
+    for (var attempt = 0; attempt < 3; attempt++) {
+      var res = await fetch(url, { method: 'POST', headers: headers, body: fd });
+      if (res.ok) return await res.json();
+      var msg = '';
+      try {
+        var ej = await res.json();
+        msg = (ej && ej.error && ej.error.message) || (ej && ej.detail && (ej.detail.message || ej.detail)) || '';
+      } catch (e) {}
+      lastErr = new Error(tag + '_' + res.status + (msg ? ': ' + String(msg).slice(0, 120) : ''));
+      if (res.status !== 429 || attempt === 2) throw lastErr;
+      var waitMs = 30000;
+      try {
+        var ra = res.headers && res.headers.get('Retry-After');
+        if (ra) waitMs = Math.max(1000, parseFloat(ra) * 1000);
+      } catch (e) {}
+      await aiSleep(waitMs);
+    }
+    throw lastErr;
+  }
+  async function groqTranscribeChunk(wavBlob, lang, key) {
+    var fd = new FormData();
+    fd.append('file', wavBlob, 'chunk.wav');
+    fd.append('model', 'whisper-large-v3'); /* most accurate Whisper; still ~189x realtime */
+    fd.append('response_format', 'verbose_json');
+    fd.append('timestamp_granularities[]', 'segment');
+    if (lang) fd.append('language', lang);
+    var j = await postAudioWithRetry('https://api.groq.com/openai/v1/audio/transcriptions',
+      { 'Authorization': 'Bearer ' + key }, fd, 'GROQ');
+    return (j.segments || []).map(function (s) {
+      return { start: +s.start || 0, end: +s.end || 0, text: String(s.text || '').trim() };
+    }).filter(function (s) { return s.text && s.end > s.start; });
+  }
+  /* Word-level results (Scribe, Deepgram, AssemblyAI) group into subtitle cues:
+     break on a pause over 0.6s, or when a cue would pass 10s / 120 chars. */
+  function groupWordList(items) {
+    var segs = [], cur = null;
+    function flush() { if (cur && cur.text.trim()) segs.push({ start: cur.start, end: cur.end, text: cur.text.trim() }); cur = null; }
+    (items || []).forEach(function (w) {
+      var txt = String(w.text || '').trim();
+      if (!txt) return;
+      var st = +w.start || 0, en = +w.end || st;
+      if (!cur) { cur = { start: st, end: en, text: txt }; return; }
+      var gap = st - cur.end, dur = en - cur.start;
+      if (gap > 0.6 || dur > 10 || cur.text.length + txt.length + 1 > 120) { flush(); cur = { start: st, end: en, text: txt }; }
+      else { cur.end = en; cur.text += ' ' + txt; }
+    });
+    flush();
+    return segs;
+  }
+  function scribeWordsToSegments(words) {
+    return groupWordList((words || []).filter(function (w) {
+      return w && (!w.type || w.type === 'word'); /* skip 'spacing' and 'audio_event' */
+    }).map(function (w) { return { text: w.text, start: w.start, end: w.end }; }));
+  }
+  async function scribeTranscribeChunk(wavBlob, lang3, key) {
+    var fd = new FormData();
+    fd.append('file', wavBlob, 'chunk.wav');
+    fd.append('model_id', 'scribe_v2');
+    fd.append('timestamps_granularity', 'word');
+    if (lang3) fd.append('language_code', lang3);
+    var j = await postAudioWithRetry('https://api.elevenlabs.io/v1/speech-to-text',
+      { 'xi-api-key': key }, fd, 'SCRIBE');
+    return scribeWordsToSegments(j.words || []);
+  }
+  /* Generic JSON API call with 429 retry (Deepgram + AssemblyAI): wait out
+     Retry-After (else 30s), up to 3 attempts. Throws TAG_status errors. */
+  async function apiJson(url, opts, tag) {
+    var lastErr = null;
+    for (var attempt = 0; attempt < 3; attempt++) {
+      var res = await fetch(url, opts);
+      if (res.ok) return await res.json();
+      var msg = '';
+      try {
+        var ej = await res.json();
+        msg = (ej && ej.err_msg) || (ej && ej.error && (ej.error.message || ej.error)) || (ej && ej.detail && (ej.detail.message || ej.detail)) || '';
+      } catch (e) {}
+      lastErr = new Error(tag + '_' + res.status + (msg ? ': ' + String(msg).slice(0, 120) : ''));
+      if (res.status !== 429 || attempt === 2) throw lastErr;
+      var waitMs = 30000;
+      try {
+        var ra = res.headers && res.headers.get('Retry-After');
+        if (ra) waitMs = Math.max(1000, parseFloat(ra) * 1000);
+      } catch (e) {}
+      await aiSleep(waitMs);
+    }
+    throw lastErr;
+  }
+  /* Peak level of a PCM slice — below 0.001 the chunk is effectively silent
+     (a video with no audio track decodes to silence), so there is nothing to
+     transcribe and no reason to spend API quota on it. */
+  function audioPeak(samples) {
+    var peak = 0;
+    for (var i = 0; i < samples.length; i += 32) { var a = Math.abs(samples[i]); if (a > peak) peak = a; }
+    return peak;
+  }
+  var DG_SL = { chinese: 'zh', english: 'en', korean: 'ko', japanese: 'ja', thai: 'th', burmese: 'my' };
+  function deepgramKeyVal() { return ($('deepgramKey').value || '').trim(); }
+  async function deepgramTranscribeChunk(wavBlob, lang, key, chunkSec) {
+    var q = '?model=nova-3&smart_format=true' + (lang ? '&language=' + encodeURIComponent(lang) : '&detect_language=true');
+    var j = await apiJson('https://api.deepgram.com/v1/listen' + q, {
+      method: 'POST',
+      headers: { 'Authorization': 'Token ' + key, 'Content-Type': 'audio/wav' },
+      body: wavBlob
+    }, 'DG');
+    var ch0 = j && j.results && j.results.channels && j.results.channels[0];
+    var alt = ch0 && ch0.alternatives && ch0.alternatives[0];
+    var words = (alt && alt.words) || [];
+    var tr0 = alt && alt.transcript ? String(alt.transcript) : '';
+    if (typeof log === 'function') {
+      log('Deepgram: စာလုံး ' + words.length + ' လုံး' +
+        (ch0 && ch0.detected_language ? ' · တွေ့တဲ့ ဘာသာစကား ' + ch0.detected_language : '') +
+        (tr0 ? ' · "' + tr0.slice(0, 100) + '"' : ' · စာသား မရဘူး'));
+    }
+    if (!words.length && tr0) {
+      /* transcript came back but no word timings — keep it as one cue for the
+         whole chunk instead of failing the whole run */
+      return [{ start: 0, end: chunkSec || 0, text: tr0.trim() }].filter(function (s) { return s.text && s.end > s.start; });
+    }
+    return groupWordList(words.map(function (w) {
+      return { text: w.punctuated_word || w.word, start: w.start, end: w.end };
+    }));
+  }
+  var AS_SL = { chinese: 'zh', english: 'en', korean: 'ko', japanese: 'ja', thai: 'th', burmese: 'my' };
+  function assemblyKeyVal() { return ($('assemblyKey').value || '').trim(); }
+  function assemblyWordsToSegments(words) {
+    return groupWordList((words || []).map(function (w) {
+      return { text: w.text, start: (+w.start || 0) / 1000, end: (+w.end || 0) / 1000 }; /* AssemblyAI times are ms */
+    }));
+  }
+  async function assemblyTranscribeChunk(wavBlob, lang, key) {
+    var up = await apiJson('https://api.assemblyai.com/v2/upload', {
+      method: 'POST',
+      headers: { 'authorization': key, 'Content-Type': 'application/octet-stream' },
+      body: wavBlob
+    }, 'AS');
+    var uploadUrl = up && up.upload_url;
+    if (!uploadUrl) throw new Error('AS_UPLOAD');
+    var body = { audio_url: uploadUrl };
+    if (lang) body.language_code = lang; else body.language_detection = true;
+    var sub = await apiJson('https://api.assemblyai.com/v2/transcript', {
+      method: 'POST',
+      headers: { 'authorization': key, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }, 'AS');
+    var id = sub && sub.id;
+    if (!id) throw new Error('AS_SUBMIT');
+    var waited = 0;
+    for (;;) {
+      if (cancelRun) throw geminiError('ရပ်လိုက်ပါပြီ — ပြန်စရင် အစက ပြန်လုပ်ရပါမယ်။', 'CANCELLED');
+      await aiSleep(3000); /* poll every 3s, the documented convention */
+      waited += 3;
+      if (waited > 600) throw new Error('AS_TIMEOUT'); /* 10 min per chunk */
+      var tr = await apiJson('https://api.assemblyai.com/v2/transcript/' + encodeURIComponent(id), {
+        headers: { 'authorization': key }
+      }, 'AS');
+      if (tr.status === 'completed') return assemblyWordsToSegments(tr.words || []);
+      if (tr.status === 'error') throw new Error('AS_ERROR: ' + String(tr.error || '').slice(0, 120));
+    }
+  }
+  /* Merge the per-chunk transcripts: sort by time, drop a chunk-boundary
+     duplicate (same words transcribed again at the start of the next chunk),
+     and clamp overlaps so cues never cross. */
+  function mergeTranscribedSegments(segs) {
+    var sorted = segs.slice().sort(function (a, b) { return a.start - b.start; });
+    var out = [];
+    sorted.forEach(function (s) {
+      var txt = String(s.text || '').trim();
+      if (!txt || !(s.end > s.start)) return;
+      var last = out[out.length - 1];
+      if (last) {
+        if (s.start < last.end + 0.05 && (last.text.indexOf(txt) >= 0 || txt.indexOf(last.text) >= 0)) return;
+        if (s.start < last.end) last.end = Math.min(last.end, s.start);
+        if (last.end <= last.start) out.pop();
+      }
+      out.push({ start: s.start, end: s.end, text: txt });
+    });
+    return out;
+  }
+  var GL_SL = { chinese: 'zh', english: 'en', korean: 'ko', japanese: 'ja', thai: 'th', burmese: 'my' };
+  function gladiaKeyVal() { return ($('gladiaKey').value || '').trim(); }
+  /* Gladia is async in three steps: upload the WAV (multipart audio) to get a
+     hosted audio_url, submit it to /v2/pre-recorded (solaria-1 = the 100+
+     language model; solaria-3 covers EN/FR/DE/ES/IT only, so not for CJK),
+     then poll the job by id. Language: language_config.languages is an ISO
+     639-1 array; auto = empty array + code_switching true (Gladia's
+     documented detection mode). Utterance/word fields are read defensively
+     (start/end vs start_time/end_time, transcript vs text) since the shape
+     has varied across doc versions. */
+  async function gladiaTranscribeChunk(wavBlob, lang, key) {
+    var fd = new FormData();
+    fd.append('audio', wavBlob, 'chunk.wav');
+    var up = await apiJson('https://api.gladia.io/v2/upload', {
+      method: 'POST',
+      headers: { 'x-gladia-key': key },
+      body: fd
+    }, 'GL');
+    var audioUrl = up && (up.audio_url || up.url);
+    if (!audioUrl) throw new Error('GL_UPLOAD');
+    var lc = lang ? { languages: [lang], code_switching: false } : { languages: [], code_switching: true };
+    var sub = await apiJson('https://api.gladia.io/v2/pre-recorded', {
+      method: 'POST',
+      headers: { 'x-gladia-key': key, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ audio_url: audioUrl, model: 'solaria-1', language_config: lc })
+    }, 'GL');
+    var id = sub && sub.id;
+    if (!id) throw new Error('GL_SUBMIT');
+    var waited = 0;
+    while (true) {
+      if (cancelRun) throw geminiError('ရပ်လိုက်ပါတယ်', 'CANCELLED');
+      var r = await apiJson('https://api.gladia.io/v2/pre-recorded/' + id, {
+        headers: { 'x-gladia-key': key }
+      }, 'GL');
+      var st = r && r.status;
+      if (st === 'done') {
+        var utt = (r.result && r.result.transcription && r.result.transcription.utterances) || [];
+        var words = [];
+        utt.forEach(function (u) {
+          var ws = u.words || [];
+          if (ws.length) {
+            ws.forEach(function (w) {
+              var s = (w.start != null ? w.start : w.start_time), e = (w.end != null ? w.end : w.end_time);
+              if (w.word || w.text) words.push({ text: w.word || w.text, start: s, end: e });
+            });
+          } else if (u.transcript || u.text) {
+            words.push({ text: u.transcript || u.text, start: (u.start != null ? u.start : u.start_time), end: (u.end != null ? u.end : u.end_time) });
+          }
+        });
+        return groupWordList(words.filter(function (w) { return w.text && w.start != null && w.end != null && w.end > w.start; }));
+      }
+      if (st === 'error') throw new Error('GL_ERROR: ' + ((r && (r.error || r.message)) || ''));
+      if (waited > 600) throw new Error('GL_TIMEOUT');
+      await aiSleep(3000);
+      waited += 3;
+    }
+  }
+  function hfKeyVal() { return ($('hfKey').value || '').trim(); }
+  function blobToBase64(blob) {
+    return new Promise(function (res, rej) {
+      var r = new FileReader();
+      r.onload = function () { res(String(r.result).split(',')[1] || ''); };
+      r.onerror = function () { rej(new Error('HF_B64')); };
+      r.readAsDataURL(blob);
+    });
+  }
+  /* Split plain text into subtitle-sized pieces (like splitLines but without
+     its 2-line rebalance — a whole chunk of speech is many lines). Breaks at
+     punctuation/space, grapheme-safe so Chinese/Burmese clusters never split. */
+  function splitChunkText(text, maxChars) {
+    text = String(text || '').trim().replace(/\s+/g, ' ');
+    if (!text) return [];
+    var chars = _chars(text);
+    var lines = [], start = 0;
+    while (start < chars.length) {
+      var end = Math.min(start + maxChars, chars.length);
+      if (end < chars.length) {
+        var breakAt = -1;
+        for (var i = end; i > Math.max(start, end - 18); i--) {
+          if (/[\s၊။!?,.;:：，。！？]/.test(chars[i])) { breakAt = i + 1; break; }
+        }
+        if (breakAt > start + 1) end = breakAt;
+      }
+      lines.push(chars.slice(start, end).join('').trim());
+      start = end;
+    }
+    return lines.filter(function (l) { return l; });
+  }
+  /* Fallback when HF returns plain text without chunks: spread the lines
+     evenly over the chunk. Timing is approximate — the voice-snap button
+     (အသံနဲ့ ပြန်ကပ်မယ်) can tighten it to the real speech afterwards. */
+  function hfTextToSegments(text, chunkSec) {
+    var mc = (typeof maxCharsVal === 'number' && maxCharsVal) ? maxCharsVal : 42;
+    var lines = splitChunkText(text, mc);
+    if (!lines.length || !(chunkSec > 0)) return [];
+    var n = lines.length;
+    return lines.map(function (line, i) {
+      return { text: line, start: i * chunkSec / n, end: (i + 1) * chunkSec / n };
+    });
+  }
+  /* Hugging Face Inference Providers — openai/whisper-large-v3 (same model as
+     Groq). JSON body with base64 audio + return_timestamps gives chunk-level
+     segments with model timestamps; a 503 means the model is still loading —
+     wait the server's estimated_time and retry. Free tier ~1,000 req/day; the
+     token needs the "Inference Providers" permission. */
+  async function hfTranscribeChunk(wavBlob, key, chunkSec) {
+    var b64 = await blobToBase64(wavBlob);
+    var tries = 0;
+    while (true) {
+      tries++;
+      var res = await fetch('https://router.huggingface.co/hf-inference/models/openai/whisper-large-v3', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ inputs: b64, parameters: { return_timestamps: true } })
+      });
+      var j = null;
+      try { j = await res.json(); } catch (e) {}
+      if (res.status === 503 && tries <= 3) {
+        var wait = (j && j.estimated_time) ? Math.min(60, Math.ceil(j.estimated_time)) : 20;
+        await aiSleep(wait * 1000);
+        continue;
+      }
+      if (res.status === 429 && tries <= 3) { await aiSleep(30000); continue; }
+      if (!res.ok) throw new Error('HF_' + res.status + (j && j.error ? ': ' + String(j.error).slice(0, 120) : ''));
+      if (cancelRun) throw geminiError('ရပ်လိုက်ပါတယ်', 'CANCELLED');
+      var chunks = j && j.chunks;
+      if (chunks && chunks.length) {
+        return chunks.map(function (c) {
+          return { text: String(c.text || '').trim(), start: c.timestamp ? c.timestamp[0] : 0, end: c.timestamp ? c.timestamp[1] : 0 };
+        }).filter(function (s) { return s.text && s.end > s.start; });
+      }
+      var txt = j && j.text ? String(j.text).trim() : '';
+      if (!txt) return [];
+      return hfTextToSegments(txt, chunkSec || 0);
+    }
+  }
+  async function runExternalTranscribe() {
+    var srcLang = $('srcLang').value;
+    var tr = transcriberVal();
+    coverageGapSec = 0;
+    titleTexts = []; tlSel = null;   /* titles belong to the previous video */
+    beginProgress([
+      { id: 'audio', label: 'အသံထုတ်ယူ' },
+      { id: 'tr', label: tr === 'groq' ? 'Groq Whisper နားထောင်' : tr === 'scribe' ? 'Scribe နားထောင်' : tr === 'deepgram' ? 'Deepgram နားထောင်' : tr === 'gladia' ? 'Gladia နားထောင်' : tr === 'hf' ? 'HF Whisper နားထောင်' : 'AssemblyAI နားထောင်' },
+      { id: 'tl', label: 'Gemini မြန်မာပြန်ဆို' }
+    ]);
+    var curStep = 'audio';
+    try {
+      setStep('audio', 'active');
+      setStatus('အသံထုတ်ယူနေပါတယ်…');
+      var audio = await extractAudio(videoFile);
+      snapAudio = audio; snapAudioFile = videoFile;
+      var totalSec = audio.length / 16000;
+      log('အသံရပြီ — ကြာချိန် ' + (totalSec / 60).toFixed(1) + ' မိနစ်');
+      setBar(10);
+      setStep('audio', 'done');
+
+      curStep = 'tr';
+      setStep('tr', 'active');
+      /* same chunk length as the Gemini path — a 120s WAV chunk is ~3.8 MB,
+         well under Groq's 25 MB free-tier file limit */
+      var CHUNK = Math.max(30, parseInt(($('geminiChunk') && $('geminiChunk').value) || '120', 10) || 120);
+      var chunks = Math.max(1, Math.ceil(totalSec / CHUNK));
+      var key = tr === 'groq' ? groqKeyVal() : tr === 'scribe' ? elKeyVal() : tr === 'deepgram' ? deepgramKeyVal() : tr === 'gladia' ? gladiaKeyVal() : tr === 'hf' ? hfKeyVal() : assemblyKeyVal();
+      var lang1 = WHISPER_SL[srcLang], lang3 = SCRIBE_SL[srcLang], langDg = DG_SL[srcLang], langAs = AS_SL[srcLang], langGl = GL_SL[srcLang];
+      var all = [];
+      for (var ci = 0; ci < chunks; ci++) {
+        if (cancelRun) throw geminiError('ရပ်လိုက်ပါပြီ — ပြန်စရင် အစက ပြန်လုပ်ရပါမယ်။', 'CANCELLED');
+        var off = ci * CHUNK;
+        var chunkEnd = Math.min(totalSec, off + CHUNK);
+        setStatus((tr === 'groq' ? 'Groq Whisper နဲ့ နားထောင်နေပါတယ်… ' : tr === 'scribe' ? 'Scribe နဲ့ နားထောင်နေပါတယ်… ' : tr === 'deepgram' ? 'Deepgram နဲ့ နားထောင်နေပါတယ်… ' : tr === 'gladia' ? 'Gladia နဲ့ နားထောင်နေပါတယ်… ' : tr === 'hf' ? 'HF Whisper နဲ့ နားထောင်နေပါတယ်… ' : 'AssemblyAI နဲ့ နားထောင်နေပါတယ်… ') + 'အပိုင်း ' + (ci + 1) + '/' + chunks);
+        var slice = audio.subarray(Math.floor(off * 16000), Math.min(audio.length, Math.ceil(chunkEnd * 16000)));
+        var segs = [];
+        if (audioPeak(slice) < 0.001) {
+          /* a silent chunk (music-only intro, or a video with no audio track)
+             — nothing to transcribe, and no quota spent on it */
+          log('အပိုင်း ' + (ci + 1) + ' — အသံတိတ် ဖြစ်နေလို့ API ကို မပို့ဘူး');
+        } else {
+          var wav = new Blob([encodeWav(slice, 16000)], { type: 'audio/wav' });
+          if (tr === 'groq') segs = await groqTranscribeChunk(wav, lang1, key);
+          else if (tr === 'scribe') segs = await scribeTranscribeChunk(wav, lang3, key);
+          else if (tr === 'deepgram') segs = await deepgramTranscribeChunk(wav, langDg, key, chunkEnd - off);
+          else if (tr === 'gladia') segs = await gladiaTranscribeChunk(wav, langGl, key);
+          else if (tr === 'hf') segs = await hfTranscribeChunk(wav, key, chunkEnd - off);
+          else segs = await assemblyTranscribeChunk(wav, langAs, key);
+        }
+        segs.forEach(function (s) { all.push({ start: s.start + off, end: s.end + off, text: s.text }); });
+        log('အပိုင်း ' + (ci + 1) + ' — စာကြောင်း ' + segs.length + ' ကြောင်း ရပါတယ်');
+        setBar(10 + (ci + 1) / chunks * 55);
+        if (ci < chunks - 1) await aiSleep(3000); /* stay under Groq's 20 req/min; harmless for Scribe */
+      }
+      all = mergeTranscribedSegments(all);
+      if (!all.length) throw new Error('NO_SPEECH_' + tr);
+      setStep('tr', 'done');
+
+      curStep = 'tl';
+      setStep('tl', 'active');
+      segments = all.map(function (s) { return { start: s.start, end: s.end, text: s.text, my: '', failed: false }; });
+      var failed = await translateSegmentsAuto(segments, GT_SL[srcLang] || 'auto', function (done, total) {
+        setBar(65 + done / total * 33);
+        setStatus('မြန်မာလို ပြန်ဆိုနေပါတယ်… ' + done + '/' + total);
+      });
+      if (failed) log('စာကြောင်း ' + failed + ' ကြောင်း ဘာသာပြန် မအောင်မြင်လို့ မူရင်းအတိုင်း ထားခဲ့ပါတယ် — အောက်မှာ ပြန်စမ်းလို့ ရပါတယ်');
+      segments = segments.filter(function (s) { return !!s.my; });
+      var degN = cleanDegenerateSegments(segments);
+      if (degN) log('သတိ — စာကြောင်း ' + degN + ' ကြောင်းမှာ မော်ဒယ်က စာလုံးထပ်နေတဲ့ အမှား တွေ့လို့ ချုံ့ပြီး ပြန်ဆိုရန် အမှတ်အသားလုပ်ထားပါတယ် — "မအောင်မြင်တဲ့ စာကြောင်းတွေ ပြန်ဆိုမယ်" ခလုတ်နဲ့ ပြန်ဆိုလို့ ရပါတယ်');
+      if (!segments.length) throw new Error('NO_SPEECH');
+      var finalEnd = 0;
+      segments.forEach(function (s) { if (s.end > finalEnd) finalEnd = s.end; });
+      coverageGapSec = Math.max(0, totalSec - finalEnd);
+      if (coverageGapSec > 10) {
+        log('သတိ — နောက်ဆုံး စာကြောင်းက ဗီဒီယို မဆုံးခင် ' + Math.round(coverageGapSec) + ' စက္ကန့်ခန့် စောပြီး ရပ်သွားပါတယ်။ ရလဒ်အပေါ်မှာ သတိပေးချက် ပြထားပါမယ်။');
+      }
+      setStep('tl', 'done');
+      setBar(100);
+      setStatus('ပြီးပါပြီ!');
+      log('အားလုံး ပြီးပါပြီ');
+      endProgress();
+      showResult();
+    } catch (e) {
+      console.error(e);
+      var msg = (e.isGemini || e.isTts) ? e.message
+        : e.message === 'AUDIO_DECODE'
+        ? 'ဒီဖိုင်ရဲ့ အသံကို ဖတ်မရပါဘူး။ mp4 / mp3 အဖြစ် ပြောင်းပြီးမှ ပြန်စမ်းကြည့်ပါ။'
+        : e.message === 'NO_SPEECH'
+        ? 'အသံထဲမှာ စကားပြောသံ မတွေ့မိပါဘူး။ အသံပါတဲ့ ဖိုင် ဖြစ်ကြောင်း စစ်ကြည့်ပါ။'
+        : e.message.indexOf('NO_SPEECH_') === 0
+        ? (tr === 'groq' ? 'Groq Whisper' : tr === 'scribe' ? 'Scribe' : tr === 'deepgram' ? 'Deepgram' : tr === 'gladia' ? 'Gladia' : tr === 'hf' ? 'HF Whisper' : 'AssemblyAI') +
+          ' က ဒီအသံထဲမှာ စကားပြောသံ မတွေ့မိပါဘူး — အောက်က log ထဲမှာ ဘာပြန်လဲ ကြည့်ပါ။ "မူရင်းဘာသာစကား" ရွေးတာ မှန်လား စစ်ပါ (အလိုအလျောက်ဆိုရင် တရုတ်လို့ တိုက်ရိုက် ရွေးကြည့်ပါ)၊ ဗီဒီယိုမှာ စကားပြောသံ တကယ်ပါလား စစ်ပါ၊ ဒါမှမဟုတ် တခြား Engine နဲ့ စမ်းကြည့်ပါ။'
+        : e.message.indexOf('GROQ_429') === 0
+        ? 'Groq limit ပြည့်နေပါတယ် (တစ်မိနစ် request ၂၀) — ခဏစောင့်ပြီး ပြန်စမ်းကြည့်ပါ။'
+        : e.message.indexOf('GROQ_401') === 0
+        ? 'Groq API Key မမှန်ပါဘူး — console.groq.com မှာ Key စစ်ကြည့်ပါ။'
+        : e.message.indexOf('GROQ_400') === 0
+        ? 'Groq က အသံကို လက်မခံပါဘူး (' + e.message + ') — ဖိုင် ပြောင်းပြီး ပြန်စမ်းကြည့်ပါ။'
+        : e.message.indexOf('SCRIBE_401') === 0
+        ? 'ElevenLabs API Key မမှန်ပါဘူး — TTS tab ထဲက Key စစ်ကြည့်ပါ။'
+        : e.message.indexOf('SCRIBE_429') === 0
+        ? 'ElevenLabs limit ပြည့်နေပါတယ် — ခဏစောင့်ပြီး ပြန်စမ်းကြည့်ပါ။'
+        : e.message.indexOf('DG_401') === 0
+        ? 'Deepgram API Key မမှန်ပါဘူး — console.deepgram.com မှာ Key စစ်ကြည့်ပါ။'
+        : e.message.indexOf('DG_429') === 0
+        ? 'Deepgram limit ပြည့်နေပါတယ် — ခဏစောင့်ပြီး ပြန်စမ်းကြည့်ပါ။'
+        : e.message.indexOf('GL_401') === 0
+        ? 'Gladia API Key မမှန်ပါဘူး — app.gladia.io မှာ Key စစ်ကြည့်ပါ။'
+        : e.message.indexOf('GL_429') === 0
+        ? 'Gladia limit ပြည့်နေပါတယ် — ခဏစောင့်ပြီး ပြန်စမ်းကြည့်ပါ။'
+        : e.message === 'GL_UPLOAD' || e.message === 'GL_SUBMIT'
+        ? 'Gladia ကို အသံပို့လို့ မရပါဘူး — အင်တာနက် ချိတ်ဆက်မှု စစ်ပြီး ပြန်စမ်းကြည့်ပါ။'
+        : e.message === 'GL_TIMEOUT'
+        ? 'Gladia က အပိုင်းတစ်ခု ၁၀ မိနစ်အတွင်း ပြီးမသွားလို့ ရပ်လိုက်ပါတယ် — အပိုင်းတိုတို ခွဲပြီး ပြန်စမ်းကြည့်ပါ။'
+        : e.message.indexOf('GL_ERROR') === 0
+        ? 'Gladia က အမှားပြန်လာပါတယ် (' + e.message + ') — ပြန်စမ်းကြည့်ပါ။'
+        : e.message.indexOf('HF_401') === 0
+        ? 'Hugging Face token မမှန်ပါဘူး — huggingface.co/settings/tokens မှာ token စစ်ကြည့်ပါ (Inference Providers permission ပါရမယ်)။'
+        : e.message.indexOf('HF_429') === 0
+        ? 'Hugging Face limit ပြည့်နေပါတယ် — ခဏစောင့်ပြီး ပြန်စမ်းကြည့်ပါ။'
+        : e.message.indexOf('HF_503') === 0
+        ? 'Hugging Face model က loading လုပ်နေလို့ သုံးမရသေးပါဘူး — ခဏစောင့်ပြီး ပြန်စမ်းကြည့်ပါ။'
+        : e.message.indexOf('HF_') === 0
+        ? 'HF Whisper က အမှားပြန်လာပါတယ် (' + e.message + ') — ပြန်စမ်းကြည့်ပါ။'
+        : e.message.indexOf('AS_401') === 0
+        ? 'AssemblyAI API Key မမှန်ပါဘူး — AssemblyAI dashboard မှာ Key စစ်ကြည့်ပါ။'
+        : e.message.indexOf('AS_403') === 0
+        ? 'AssemblyAI က လက်မခံပါဘူး (403) — Key ဒါမှမဟုတ် credit စစ်ကြည့်ပါ။'
+        : e.message === 'AS_TIMEOUT'
+        ? 'AssemblyAI က အပိုင်းတစ်ခု ၁၀ မိနစ်အတွင်း ပြီးမသွားလို့ ရပ်လိုက်ပါတယ် — အပိုင်းတိုတို ခွဲပြီး ပြန်စမ်းကြည့်ပါ။'
+        : e.message === 'AS_UPLOAD' || e.message === 'AS_SUBMIT'
+        ? 'AssemblyAI ကို အသံပို့လို့ မရပါဘူး — အင်တာနက် ချိတ်ဆက်မှု စစ်ပြီး ပြန်စမ်းကြည့်ပါ။'
+        : 'အမှားတစ်ခု ဖြစ်သွားပါတယ်: ' + e.message + ' — အင်တာနက် ချိတ်ဆက်မှု စစ်ပြီး ပြန်စမ်းကြည့်ပါ။';
+      failProgress(curStep, msg);
+    }
+  }
+  /* transcriber choice remembered (localStorage) + key-field visibility */
+  try { var trSaved = localStorage.getItem('mt_transcriber'); if (trSaved && $('transcriber')) $('transcriber').value = trSaved; } catch (e) {}
+  if ($('transcriber')) $('transcriber').addEventListener('change', function () { try { localStorage.setItem('mt_transcriber', this.value); } catch (e) {} transcriberRefresh(); });
+  if ($('groqKey')) $('groqKey').addEventListener('input', saveKeys);
+  if ($('deepgramKey')) $('deepgramKey').addEventListener('input', saveKeys);
+  if ($('assemblyKey')) $('assemblyKey').addEventListener('input', saveKeys);
+  if ($('gladiaKey')) $('gladiaKey').addEventListener('input', saveKeys);
+  if ($('hfKey')) $('hfKey').addEventListener('input', saveKeys);
+  if ($('transcriberBox')) $('transcriberBox').classList.toggle('hidden', mode !== 'video');
+  transcriberRefresh();
+  try { checkMp4AudioCap(); } catch (e) {}
+
   /* ---------- start: SRT mode ---------- */
   async function readFileText(f) {
     if (f.text) return await f.text();
@@ -2237,7 +2819,27 @@ var SrtTools = (function () {
     if (mode === 'video') {
       if (!videoFile) { toast('အရင်ဆုံး ဗီဒီယို / အသံဖိုင် ရွေးပေးပါ'); return; }
       autoFinishPending = !!($('autoFinish') && $('autoFinish').checked);
-      runVideoGemini();
+      if (transcriberVal() === 'groq') {
+        if (!groqKeyVal()) { toast('အရင်ဆုံး Groq API Key ထည့်ပေးပါ'); $('groqKey').focus(); return; }
+        runExternalTranscribe();
+      } else if (transcriberVal() === 'scribe') {
+        if (!elKeyVal()) { toast('အရင်ဆုံး ElevenLabs API Key ထည့်ပေးပါ — TTS tab ထဲမှာ Key ကွက်ရှိပါတယ်'); return; }
+        runExternalTranscribe();
+      } else if (transcriberVal() === 'deepgram') {
+        if (!deepgramKeyVal()) { toast('အရင်ဆုံး Deepgram API Key ထည့်ပေးပါ'); $('deepgramKey').focus(); return; }
+        runExternalTranscribe();
+      } else if (transcriberVal() === 'assemblyai') {
+        if (!assemblyKeyVal()) { toast('အရင်ဆုံး AssemblyAI API Key ထည့်ပေးပါ'); $('assemblyKey').focus(); return; }
+        runExternalTranscribe();
+      } else if (transcriberVal() === 'gladia') {
+        if (!gladiaKeyVal()) { toast('အရင်ဆုံး Gladia API Key ထည့်ပေးပါ'); $('gladiaKey').focus(); return; }
+        runExternalTranscribe();
+      } else if (transcriberVal() === 'hf') {
+        if (!hfKeyVal()) { toast('အရင်ဆုံး Hugging Face token ထည့်ပေးပါ'); $('hfKey').focus(); return; }
+        runExternalTranscribe();
+      } else {
+        runVideoGemini();
+      }
     } else {
       if (!srtFile) { toast('အရင်ဆုံး .srt / .vtt ဖိုင် ရွေးပေးပါ'); return; }
       autoFinishPending = !!($('autoFinish') && $('autoFinish').checked);
@@ -2596,7 +3198,7 @@ var SrtTools = (function () {
   }
   async function syncSnapToAudio() {
     if (!segments.length) { toast('ပြင်စရာ စာတန်း မရှိသေးပါဘူး'); return; }
-    if (mode !== 'video' || !videoFile) { toast('ဗီဒီယိုဖိုင် လိုပါတယ် — Video tab မှာ ဗီဒီယို ရွေးပြီးမှ သုံးပါ'); return; }
+    if (!videoFile) { toast('ဗီဒီယိုဖိုင် လိုပါတယ် — Video tab မှာ ဗီဒီယို ရွေးပြီးမှ သုံးပါ'); return; }
     var btn = $('syncSnap');
     if (btn) btn.disabled = true;
     var info = $('syncInfo');
@@ -2646,7 +3248,7 @@ var SrtTools = (function () {
       var d = document.createElement('div');
       d.className = 'seg';
       var head = '<div class="seg-head"><span class="seg-num">#' + (i + 1) + '</span>' + cpsBadgeHtml(s) + '<span class="sp"></span>';
-      if (mode === 'video') head += '<button class="iconbtn seek" title="ဒီနေရာကနေ ဖွင့်ကြည့်မယ်" aria-label="ဒီနေရာကနေ ဖွင့်ကြည့်မယ်">' + ICON_PLAY + '</button>';
+      if (videoFile) head += '<button class="iconbtn seek" title="ဒီနေရာကနေ ဖွင့်ကြည့်မယ်" aria-label="ဒီနေရာကနေ ဖွင့်ကြည့်မယ်">' + ICON_PLAY + '</button>';
       if (s.failed) head += '<button class="iconbtn retry" title="ဒီစာကြောင်း ပြန်ဆိုမယ်" aria-label="ဒီစာကြောင်း ပြန်ဆိုမယ်">' + ICON_RETRY + '</button>';
       head += '<button class="iconbtn split" title="cursor ရှိတဲ့နေရာမှာ ခွဲမယ်" aria-label="စာတန်း ခွဲမယ်">&#9986;</button>';
 head += '<button class="iconbtn red del" title="ဖျက်မယ်" aria-label="စာကြောင်း ဖျက်မယ်">' + ICON_DEL + '</button></div>';
@@ -3532,26 +4134,59 @@ var seekBtn = d.querySelector('.seek');
     }
     return out;
   }
+  /* Why the on-device audio path failed ('', 'no-encoder', 'no-aac',
+     'decode', 'silent', 'no-chunks', 'encode-error') — set by
+     encodeFastAudio so the final message can name the real reason instead
+     of only saying the converter download failed. */
+  var fastAudioWhy = '';
+  async function checkMp4AudioCap() {
+    /* Show once, under the format selector, whether this browser can do
+       on-device AAC audio for MP4 (no converter needed) or will need the
+       ~30 MB converter download as a fallback. */
+    var el = $('mp4AudioCap'); if (!el) return;
+    if (!window.AudioEncoder || typeof AudioData === 'undefined') {
+      el.textContent = '⚠ ဒီ browser မှာ အသံ တိုက်ရိုက်ထည့်လို့မရဘူး (AudioEncoder မရှိ) — MP4 အသံအတွက် converter ဒေါင်းရမယ်။ Chrome အသစ်နဲ့ ဖွင့်ကြည့်ပါ။';
+      return;
+    }
+    try {
+      var sup = await AudioEncoder.isConfigSupported({ codec: 'mp4a.40.2', sampleRate: 16000, numberOfChannels: 1 });
+      el.textContent = (sup && sup.supported)
+        ? '✓ ဒီ browser မှာ အသံ တိုက်ရိုက်ထည့်လို့ရတယ် (converter မလို)။'
+        : '⚠ ဒီ စက်မှာ AAC အသံကုဒ်လုပ်တာ မရဘူး — MP4 အသံအတွက် converter ဒေါင်းရမယ်။ Chrome အသစ်နဲ့ ဖွင့်ကြည့်ပါ။';
+    } catch (e) {
+      el.textContent = '⚠ အသံ တိုက်ရိုက်ထည့်လို့ရမရ စစ်မရဘူး — MP4 ထုတ်ရင် အသံမပါရင် Chrome နဲ့ ပြန်စမ်းပါ။';
+    }
+  }
+  function mp4SilentNote() {
+    /* Final MP4 status note when the converter fallback also failed: name
+       the real reason the on-device audio path failed first. */
+    if (fastAudioWhy === 'no-encoder') return ' (အသံ မပါဘူး — ဒီ browser မှာ အသံ တိုက်ရိုက်ကုဒ်လုပ်တဲ့ AudioEncoder မရှိလို့ converter နဲ့ လုပ်ရတယ်၊ ဒါပေမဲ့ converter ဒေါင်းမရလို့။ Chrome အသစ်နဲ့ ဖွင့်ပြီး ပြန်ထုတ်ကြည့်ပါ)။';
+    if (fastAudioWhy === 'no-aac') return ' (အသံ မပါဘူး — ဒီ စက်မှာ AAC အသံကုဒ်လုပ်တာ မရလို့ converter နဲ့ လုပ်ရတယ်၊ ဒါပေမဲ့ converter ဒေါင်းမရလို့။ Chrome အသစ်နဲ့ ဖွင့်ပြီး ပြန်ထုတ်ကြည့်ပါ)။';
+    if (fastAudioWhy === 'decode') return ' (အသံ မပါဘူး — ဗီဒီယိုရဲ့ အသံကို ဖတ်မရလို့ converter နဲ့ လုပ်ရတယ်၊ ဒါပေမဲ့ converter ဒေါင်းမရလို့။ ဗီဒီယိုဖိုင် ပြန်ရွေးကြည့်ပါ)။';
+    if (fastAudioWhy === 'silent') return ' (မူရင်းဖိုင်မှာ အသံ မရှိလို့ အသံမပါဘဲ ထုတ်လိုက်ပါတယ်)။';
+    return ' (အသံ မပါဘူး — converter ဒေါင်းမရလို့၊ အင်တာနက် စစ်ပြီး ပြန်ထုတ်ကြည့်ပါ)။';
+  }
   async function encodeFastAudio(origFile, kept, bStatus) {
     /* Encode the kept clips' audio to AAC chunks [{chunk, meta}] for the
        muxer, or null when this device cannot do it (then the ffmpeg fallback
        runs instead). No download needed. */
-    if (!window.AudioEncoder || typeof AudioData === 'undefined') return null;
+    if (!window.AudioEncoder || typeof AudioData === 'undefined') { fastAudioWhy = 'no-encoder'; return null; }
     var sup = null;
     try { sup = await AudioEncoder.isConfigSupported({ codec: 'mp4a.40.2', sampleRate: 16000, numberOfChannels: 1 }); } catch (e) {}
-    if (!sup || !sup.supported) return null;
+    if (!sup || !sup.supported) { fastAudioWhy = 'no-aac'; return null; }
     var samples;
     if (snapAudio && snapAudioFile === origFile) { samples = snapAudio; }
     else {
       if (bStatus) bStatus('အသံကို ဖတ်နေပါတယ်…');
-      samples = await extractAudio(origFile);
+      try { samples = await extractAudio(origFile); }
+      catch (e) { fastAudioWhy = 'decode'; return null; }
       snapAudio = samples; snapAudioFile = origFile;
     }
     var peak = 0;
     for (var i = 0; i < samples.length; i += 97) { var a = Math.abs(samples[i]); if (a > peak) peak = a; }
-    if (peak < 0.001) return null; /* effectively no audio in the source */
+    if (peak < 0.001) { fastAudioWhy = 'silent'; return null; } /* effectively no audio in the source */
     var pieces = audioClipPieces(kept, samples.length, 16000, 16000);
-    if (!pieces.length) return null;
+    if (!pieces.length) { fastAudioWhy = 'no-chunks'; return null; }
     var chunks = [], encErr = null;
     var enc = new AudioEncoder({
       output: function (chunk, meta) { chunks.push({ chunk: chunk, meta: meta }); },
@@ -3570,8 +4205,9 @@ var seekBtn = d.querySelector('.seek');
     }
     await enc.flush();
     try { enc.close(); } catch (e) {}
-    if (encErr) throw encErr;
-    if (!chunks.length) return null;
+    if (encErr) { fastAudioWhy = 'encode-error'; throw encErr; }
+    if (!chunks.length) { fastAudioWhy = 'no-chunks'; return null; }
+    fastAudioWhy = '';
     return chunks;
   }
   var ffmpegMod = null;
@@ -3824,8 +4460,7 @@ var seekBtn = d.querySelector('.seek');
         } else {
           finalBlob = await muxAudioToMp4(mp4buf, videoFile, kept, vid.duration, bStatus);
           audioNote = finalBlob.withAudio ? '။'
-            : finalBlob.reason === 'converter'
-            ? ' (အသံ မပါဘူး — converter ဒေါင်းမရလို့၊ အင်တာနက် စစ်ပြီး ပြန်ထုတ်ကြည့်ပါ)။'
+            : finalBlob.reason === 'converter' ? mp4SilentNote()
             : ' (မူရင်းဖိုင်မှာ အသံ မရှိလို့ / အသံ ထည့်မရလို့ အသံမပါဘဲ ထုတ်လိုက်ပါတယ်)။';
         }
         if (state.cancelled) {
@@ -4269,7 +4904,7 @@ var seekBtn = d.querySelector('.seek');
     }
     if (p.burn || p.logoCfg || p.clips || p.titles) { syncBurnControls(); renderTimeline(); }
     showResult();
-    if (mode === 'video' && !videoFile) {
+    if (!videoFile) {
       /* the file itself can't be stored — edit/download works now, and the
          preview comes back as soon as the same video is picked again */
       $('previewCol').classList.add('hidden');
@@ -5141,13 +5776,23 @@ var seekBtn = d.querySelector('.seek');
   /* API keys remembered across sessions (localStorage) — enter once and the
      key stays even after the browser is closed and reopened. Stored only in
      this browser on this device; clearing a key field also clears the saved key. */
-  var GEMINI_KEY_LS = 'mt_gemini_key', EL_KEY_LS = 'mt_el_key';
+  var GEMINI_KEY_LS = 'mt_gemini_key', EL_KEY_LS = 'mt_el_key', GROQ_KEY_LS = 'mt_groq_key', DG_KEY_LS = 'mt_deepgram_key', AS_KEY_LS = 'mt_assembly_key', GL_KEY_LS = 'mt_gladia_key', HF_KEY_LS = 'mt_hf_key';
   function saveKeys() {
     try {
       var gk = ($('geminiKey').value || '').trim();
       if (gk) localStorage.setItem(GEMINI_KEY_LS, gk); else localStorage.removeItem(GEMINI_KEY_LS);
       var ek = ($('elKey').value || '').trim();
       if (ek) localStorage.setItem(EL_KEY_LS, ek); else localStorage.removeItem(EL_KEY_LS);
+      var qk = ($('groqKey').value || '').trim();
+      if (qk) localStorage.setItem(GROQ_KEY_LS, qk); else localStorage.removeItem(GROQ_KEY_LS);
+      var dk = ($('deepgramKey').value || '').trim();
+      if (dk) localStorage.setItem(DG_KEY_LS, dk); else localStorage.removeItem(DG_KEY_LS);
+      var ak = ($('assemblyKey').value || '').trim();
+      if (ak) localStorage.setItem(AS_KEY_LS, ak); else localStorage.removeItem(AS_KEY_LS);
+      var gk2 = ($('gladiaKey').value || '').trim();
+      if (gk2) localStorage.setItem(GL_KEY_LS, gk2); else localStorage.removeItem(GL_KEY_LS);
+      var hk = ($('hfKey').value || '').trim();
+      if (hk) localStorage.setItem(HF_KEY_LS, hk); else localStorage.removeItem(HF_KEY_LS);
     } catch (e) {}
   }
   function loadKeys() {
@@ -5156,6 +5801,16 @@ var seekBtn = d.querySelector('.seek');
       if (gk) { $('geminiKey').value = gk; $('ttsKey').value = gk; }
       var ek = localStorage.getItem(EL_KEY_LS);
       if (ek) $('elKey').value = ek;
+      var qk = localStorage.getItem(GROQ_KEY_LS);
+      if (qk) $('groqKey').value = qk;
+      var dk = localStorage.getItem(DG_KEY_LS);
+      if (dk) $('deepgramKey').value = dk;
+      var ak = localStorage.getItem(AS_KEY_LS);
+      if (ak) $('assemblyKey').value = ak;
+      var gk2 = localStorage.getItem(GL_KEY_LS);
+      if (gk2) $('gladiaKey').value = gk2;
+      var hk = localStorage.getItem(HF_KEY_LS);
+      if (hk) $('hfKey').value = hk;
     } catch (e) {}
   }
   $('ttsKey').addEventListener('input', function () { $('geminiKey').value = this.value; saveKeys(); });
