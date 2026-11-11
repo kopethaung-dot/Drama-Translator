@@ -411,7 +411,7 @@ body{background-attachment:fixed}
     </div>
     <div style="max-width:230px">
       <label class="f" for="maxChars">စာတန်းတစ်ကြောင်းလျှင် စာလုံးအများဆုံး</label>
-      <input type="number" id="maxChars" value="42" min="20" max="80" inputmode="numeric" />
+      <input type="number" id="maxChars" value="40" min="20" max="80" inputmode="numeric" />
     </div>
   </div>
 
@@ -433,7 +433,7 @@ body{background-attachment:fixed}
 </select>
 <label class="f" for="geminiModelCustom" style="margin-top:8px">ဒါမှမဟုတ် မော်ဒယ်အမည် ကိုယ်တိုင်ရိုက်ပါ</label>
 <input type="text" id="geminiModelCustom" placeholder="ဥပမာ gemini-3.6-flash" autocomplete="off" spellcheck="false" />
-<div class="hint">ဒီကွက်မှာ ရိုက်ထားရင် အပေါ်က ရွေးထားတာထက် ဒါကို အရင်သုံးမယ်။ မော်ဒယ်အမည်ကို AI Studio ရဲ့ model စာရင်းက အတိအကျ ကူးထည့်ပါ။ မရှိတဲ့ မော်ဒယ်ဆိုရင် အလိုအလျောက် တခြားမော်ဒယ်ကို ပြောင်းသုံးမယ်။</div>
+<div class="hint">ဒီကွက်မှာ ရိုက်ထားရင် အပေါ်က ရွေးထားတာထက် ဒါကို အရင်သုံးမယ်။</div>
       </div>
     </div>
     <div id="transcriberBox" style="margin-top:14px">
@@ -568,6 +568,7 @@ body{background-attachment:fixed}
   <div class="prog"><div id="bar"></div></div>
   <div id="status">ပြင်ဆင်နေပါတယ်…</div>
   <button class="btn small danger-ghost hidden" id="runCancel" style="margin-top:10px">ရပ်မယ်</button>
+  <button class="btn small hidden" id="runPause" style="margin-top:10px">⏸ ခေတ္တရပ်မယ်</button>
   <details id="logBox" class="hidden">
     <summary>အသေးစိတ် မှတ်တမ်း (log)</summary>
     <div id="log"></div>
@@ -753,9 +754,9 @@ body{background-attachment:fixed}
             <label class="f">ထုတ်မယ့် ဖိုင် ပုံစံ</label>
             <div class="enginebar" role="group" aria-label="ထုတ်မယ့် ဖိုင် ပုံစံ ရွေးရန်">
               <button id="fmtWebm" aria-pressed="true">WebM — ပုံမှန်</button>
-              <button id="fmtMp4" aria-pressed="false">MP4 မြန်မြန် — TikTok / FB / CapCut</button>
+              <button id="fmtMp4" aria-pressed="false">MP4 — TikTok / FB / CapCut</button>
             </div>
-            <div class="hint">WebM — Gallery မှာ ဖွင့်လို့ရ၊ ဒါပေမဲ့ TikTok / Facebook / CapCut မှာ တင်မရဘူး။ MP4 — ဆိုရှယ်မီဒီယာတိုင်းမှာ တင်လို့ရ၊ 2x မြန်မြန် ထုတ်ပေးတယ်၊ အသံကို ဖုန်းကနေ တိုက်ရိုက် ထည့်ပေးတယ် (converter ဒေါင်းစရာ မလိုတော့ဘူး)။ <span id="mp4AudioCap"></span></div>
+            <div class="hint">WebM — Gallery မှာ ဖွင့်လို့ရ၊ ဒါပေမဲ့ TikTok / Facebook / CapCut မှာ တင်မရဘူး။ MP4 — ဆိုရှယ်မီဒီယာတိုင်းမှာ တင်လို့ရ၊ ဗီဒီယို အရှည်အတိုင်း 1x နဲ့ ချောချောထုတ်ပေးတယ်၊ အသံကို ဖုန်းကနေ တိုက်ရိုက် ထည့်ပေးတယ် (converter ဒေါင်းစရာ မလိုတော့ဘူး)။ <span id="mp4AudioCap"></span></div>
           </div>
           <details class="full adv"><summary>ကိုယ်ပိုင်ဖောင့် / Logo ထည့်ရန်</summary><div class="burngrid">
           <div class="full">
@@ -805,7 +806,7 @@ body{background-attachment:fixed}
           <div id="burnStatus" style="font-size:13.5px;margin-top:8px;line-height:1.7"></div>
           <button class="btn small danger-ghost hidden" id="burnCancel" style="margin-top:8px">ရပ်မယ်</button>
         </div>
-        <div class="note">သတိ — WebM က အချိန်မှန်အတိုင်း ပြန်ဖွင့်ပြီး ထုတ်တာမို့ ဗီဒီယိုရှည်သလောက် ကြာမယ်။ MP4 က 2x မြန်မြန် ထုတ်ပေးတယ်။ ထုတ်နေတုန်း tab မပိတ်ပါနဲ့။</div>
+        <div class="note">သတိ — WebM ရော MP4 ရော အချိန်မှန်အတိုင်း (1x) ပြန်ဖွင့်ပြီး ထုတ်တာမို့ ဗီဒီယိုရှည်သလောက် ကြာမယ်။ ထုတ်နေတုန်း tab မပိတ်ပါနဲ့။</div>
       </div>
     </div>
     <div>
@@ -1706,7 +1707,10 @@ var SrtTools = (function () {
   function beginProgress(stepDefs) {
     processing = true;
     cancelRun = false;
+    runPaused = false;
     $('runCancel').classList.remove('hidden');
+    $('runPause').classList.remove('hidden');
+    $('runPause').textContent = '⏸ ခေတ္တရပ်မယ်';
     $('startBtn').disabled = true;
     $('cardProg').classList.remove('hidden');
     $('cardResult').classList.add('hidden');
@@ -1727,8 +1731,10 @@ var SrtTools = (function () {
   }
   function endProgress() {
     processing = false;
+    runPaused = false;
     $('startBtn').disabled = false;
     $('runCancel').classList.add('hidden');
+    $('runPause').classList.add('hidden');
     clearInterval(procTimer);
     if (procStart) $('elapsed').textContent = '— စုစုပေါင်း ကြာချိန် ' + fmtElapsed(Date.now() - procStart);
     keepAwake(false);
@@ -1816,6 +1822,19 @@ var SrtTools = (function () {
   var GEMINI_TIMEOUT_SEC = 120;
   var runAbort = null;      /* AbortController for the in-flight Gemini request */
   var cancelRun = false;    /* user pressed "ရပ်မယ်" */
+  var runPaused = false;    /* user pressed "ခေတ္တရပ်မယ်" — the run waits at the next checkpoint, nothing is lost */
+  async function waitIfPaused() {
+    /* Block at a checkpoint while the run is paused. The 429 retry countdown,
+       the pacing wait and the chunk/batch loops all call this, so a pause
+       freezes the run wherever it is — completed chunks and batches stay
+       done, and Continue resumes from the same spot. Cancel still works
+       while paused, so a paused run can be stopped without resuming. */
+    while (runPaused) {
+      if (cancelRun) throw geminiError('ရပ်လိုက်ပါပြီ — ပြန်စရင် အစက ပြန်လုပ်ရပါမယ်။', 'CANCELLED');
+      if (processing) setStatus('⏸ ခေတ္တရပ်ထားပါတယ် — "ဆက်လုပ်မယ်" နှိပ်ရင် ဆက်လုပ်ပါမယ်');
+      await sleepSec(1);
+    }
+  }
   async function geminiRequest(parts, model, key) {
     var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent';
     var ctrl = null, timer = null, timedOut = false;
@@ -1932,6 +1951,7 @@ var SrtTools = (function () {
         var what = isOver ? 'Gemini server အလုပ်များနေလို့' : isTimeout ? 'Gemini က အဖြေ ပြန်မပေးလို့ (timeout)' : 'Gemini ကန့်သတ်ချက် (429) ထိသွားလို့';
         log(what + ' ' + wait + ' စက္ကန့် စောင့်ပြီး အလိုအလျောက် ပြန်ကြိုးစားပါမယ် (' + tries + '/' + max + ')');
         for (var left = wait; left > 0; left--) {
+          await waitIfPaused(); /* pausing freezes the 429 wait — the countdown resumes where it left off */
           if (cancelRun) throw geminiError('ရပ်လိုက်ပါပြီ — ပြန်စရင် အစက ပြန်လုပ်ရပါမယ်။', 'CANCELLED');
           setStatus((isOver ? 'Gemini server အလုပ်များနေတယ်' : isTimeout ? 'Gemini အဖြေ မပေးလို့ (timeout)' : '429 (limit) ထိသွားတယ်') + ' — ' + left + ' စက္ကန့်အကြာ ပြန်ကြိုးစားမယ် (' + tries + '/' + max + ')');
           await sleepSec(1);
@@ -1971,6 +1991,7 @@ var SrtTools = (function () {
         var left = Math.ceil(remainMs / 1000);
         log('Pacing — တစ်မိနစ် ကန့်သတ်ချက် (~၁၀ ကြိမ်) မထိအောင် နောက် request မပို့မီ ' + left + ' စက္ကန့် စောင့်နေပါတယ်…');
         while (left > 0) {
+          await waitIfPaused();
           if (cancelRun) throw geminiError('ရပ်လိုက်ပါပြီ — ပြန်စရင် အစက ပြန်လုပ်ရပါမယ်။', 'CANCELLED');
           if (processing) setStatus('⏱️ Pacing — ' + left + ' စက္ကန့် စောင့်နေတယ်');
           await sleepSec(1);
@@ -2296,6 +2317,7 @@ var SrtTools = (function () {
           var lines = todo.map(function (s) { return String(s.text); });
           var gt = [];
           for (var g = 0; g < lines.length; g += 10) {
+            await waitIfPaused();
             if (cancelRun) throw geminiError('ရပ်လိုက်ပါပြီ — ပြန်စရင် အစက ပြန်လုပ်ရပါမယ်။', 'CANCELLED');
             var part = await googleTranslateLines(lines.slice(g, g + 10), sl);
             if (!part) throw new Error('GT_FAIL');
@@ -2456,6 +2478,7 @@ var SrtTools = (function () {
       var all = [];
       var gapWarned = false;
       for (var ci = 0; ci < chunks; ci++) {
+        await waitIfPaused();
         if (cancelRun) throw geminiError('ရပ်လိုက်ပါပြီ — ပြန်စရင် အစက ပြန်လုပ်ရပါမယ်။', 'CANCELLED');
         var off = ci * CHUNK;
         var chunkEnd = Math.min(totalSec, off + CHUNK);
@@ -2721,6 +2744,7 @@ var SrtTools = (function () {
     if (!id) throw new Error('AS_SUBMIT');
     var waited = 0;
     for (;;) {
+      await waitIfPaused();
       if (cancelRun) throw geminiError('ရပ်လိုက်ပါပြီ — ပြန်စရင် အစက ပြန်လုပ်ရပါမယ်။', 'CANCELLED');
       await aiSleep(3000); /* poll every 3s, the documented convention */
       waited += 3;
@@ -2781,6 +2805,7 @@ var SrtTools = (function () {
     if (!id) throw new Error('GL_SUBMIT');
     var waited = 0;
     while (true) {
+      await waitIfPaused();
       if (cancelRun) throw geminiError('ရပ်လိုက်ပါတယ်', 'CANCELLED');
       var r = await apiJson('https://api.gladia.io/v2/pre-recorded/' + id, {
         headers: { 'x-gladia-key': key }
@@ -2875,6 +2900,7 @@ var SrtTools = (function () {
       }
       if (res.status === 429 && tries <= 3) { await aiSleep(30000); continue; }
       if (!res.ok) throw new Error('HF_' + res.status + (j && j.error ? ': ' + String(j.error).slice(0, 120) : ''));
+      await waitIfPaused();
       if (cancelRun) throw geminiError('ရပ်လိုက်ပါတယ်', 'CANCELLED');
       var chunks = j && j.chunks;
       if (chunks && chunks.length) {
@@ -2918,6 +2944,7 @@ var SrtTools = (function () {
       var lang1 = WHISPER_SL[srcLang], lang3 = SCRIBE_SL[srcLang], langDg = DG_SL[srcLang], langAs = AS_SL[srcLang], langGl = GL_SL[srcLang];
       var all = [];
       for (var ci = 0; ci < chunks; ci++) {
+        await waitIfPaused();
         if (cancelRun) throw geminiError('ရပ်လိုက်ပါပြီ — ပြန်စရင် အစက ပြန်လုပ်ရပါမယ်။', 'CANCELLED');
         var off = ci * CHUNK;
         var chunkEnd = Math.min(totalSec, off + CHUNK);
@@ -3100,6 +3127,13 @@ var SrtTools = (function () {
     setStatus('ရပ်နေပါတယ်…');
     if (runAbort) { try { runAbort.abort(); } catch (e) {} }
     toast('ရပ်ခိုင်းလိုက်ပါပြီ — လက်ရှိ request ရပ်တာနဲ့ ရပ်ပါမယ်');
+  });
+  $('runPause').addEventListener('click', function () {
+    if (!processing) return;
+    runPaused = !runPaused;
+    $('runPause').textContent = runPaused ? '▶ ဆက်လုပ်မယ်' : '⏸ ခေတ္တရပ်မယ်';
+    if (runPaused) setStatus('⏸ ခေတ္တရပ်ထားပါတယ် — "ဆက်လုပ်မယ်" နှိပ်ရင် ဆက်လုပ်ပါမယ်');
+    else setStatus('ဆက်လုပ်နေပါတယ်…');
   });
   $('startBtn').addEventListener('click', function () {
     if (processing || batchRunning) return;
@@ -4546,9 +4580,9 @@ var seekBtn = d.querySelector('.seek');
      record WebM (VP9/VP8). The Gallery app plays WebM, but TikTok / Facebook /
      Instagram / CapCut only accept MP4 (H.264 + AAC) — they show just the first
      frame (with the logo) and the video never plays, and CapCut cannot import
-     the file at all. MP4 mode fixes that, and it is also faster: the video is
-     played at 2x while every presented frame is captured with an explicit
-     timestamp and hardware-encoded to H.264 (WebCodecs VideoEncoder), then the
+     the file at all. MP4 mode fixes that. It renders at 1x (realtime) so the
+     frame timing stays smooth: every presented frame is captured with an explicit
+     timestamp and duration and hardware-encoded to H.264 (WebCodecs VideoEncoder), then the
      original audio (same timeline cuts) is encoded to AAC on the device
      itself (WebCodecs AudioEncoder) and written straight into the MP4 — no
      download needed. ffmpeg (~30 MB) stays only as a fallback for devices
@@ -4834,7 +4868,7 @@ var seekBtn = d.querySelector('.seek');
     if (!guardSegments()) return;
     if (!videoFile) { toast('ဗီဒီယိုဖိုင် မရှိသေးပါဘူး'); return; }
     if (!window.VideoEncoder || typeof VideoFrame === 'undefined') {
-      toast('ဒီ browser မှာ MP4 မြန်မြန် မရပါဘူး — WebM နဲ့ ထုတ်ပေးမယ်');
+      toast('ဒီ browser မှာ MP4 မရပါဘူး — WebM နဲ့ ထုတ်ပေးမယ်');
       renderBurned();
       return;
     }
@@ -4920,11 +4954,15 @@ var seekBtn = d.querySelector('.seek');
       }
       var startT = Date.now();
       tick = setInterval(function () {
-        bStatus('MP4 မြန်မြန် ထုတ်နေပါတယ်… ' + exportPct() + '% · ကြာချိန် ' + fmtElapsed(Date.now() - startT));
+        bStatus('MP4 ထုတ်နေပါတယ်… ' + exportPct() + '% · ကြာချိန် ' + fmtElapsed(Date.now() - startT));
       }, 500);
       state.expTotal = totalKeptSec; state.expDone = 0; state.curClip = null;
       state.stop = function () { try { vid.pause(); } catch (e) {} };
-      vid.playbackRate = 2;
+      /* Smooth export: render at 1x, not 2x. At 2x the loop had to draw +
+         encode 60 frames per real second — exactly the display refresh cap —
+         so any slow frame was skipped and the output juddered. At 1x the
+         loop only needs 30 frames/sec and every frame lands on time. */
+      vid.playbackRate = 1;
       var lastEncT = -1;
       for (var ci = 0; ci < kept.length && !state.cancelled; ci++) {
         var cc = kept[ci];
@@ -4946,10 +4984,15 @@ var seekBtn = d.querySelector('.seek');
             if (state.cancelled || encErr || vid.ended || vid.currentTime >= cc.end - 0.05) { res(); return; }
             drawBurnFrame(cx, W, H, vid, vid.currentTime, framed, srcW, srcH);
             var t = vid.currentTime;
-            if (t - lastEncT >= 0.008 && encoder.encodeQueueSize <= 10) {
+            /* Cap capture at 30fps (one frame per ~33ms of video time) so the
+               same source frame is never encoded twice, and give each frame
+               an explicit duration so the player shows it for the right
+               length instead of guessing from uneven timestamps. */
+            if (t - lastEncT >= 0.033 && encoder.encodeQueueSize <= 10) {
               var ts = Math.round((state.expDone + t - cc.start) * 1000000);
+              var durUs = lastEncT < 0 ? 33333 : Math.max(8000, Math.round((t - lastEncT) * 1000000));
               try {
-                var vf = new VideoFrame(canvas, { timestamp: ts });
+                var vf = new VideoFrame(canvas, { timestamp: ts, duration: durUs });
                 encoder.encode(vf);
                 vf.close();
               } catch (e) { encErr = e; }
@@ -5018,8 +5061,8 @@ var seekBtn = d.querySelector('.seek');
       } else {
         fallbackToWebm = true;
         bStatus(e.message === 'MUXER' || e.message === 'NO_H264'
-          ? 'ဒီ browser / ဖုန်းမှာ MP4 မြန်မြန် မရပါဘူး — WebM နဲ့ ပြန်ထုတ်ပေးမယ်။'
-          : 'MP4 မြန်မြန် ထုတ်တာ မအောင်မြင်ပါဘူး (' + e.message + ') — WebM နဲ့ ပြန်ထုတ်ပေးမယ်။');
+          ? 'ဒီ browser / ဖုန်းမှာ MP4 မရပါဘူး — WebM နဲ့ ပြန်ထုတ်ပေးမယ်။'
+          : 'MP4 ထုတ်တာ မအောင်မြင်ပါဘူး (' + e.message + ') — WebM နဲ့ ပြန်ထုတ်ပေးမယ်။');
       }
     } finally {
       if (encoder) { try { encoder.close(); } catch (_) {} }
@@ -5032,7 +5075,7 @@ var seekBtn = d.querySelector('.seek');
       if (!processing) keepAwake(false);
     }
     if (fallbackToWebm) {
-      toast('MP4 မြန်မြန် မရလို့ WebM နဲ့ ထုတ်ပေးမယ်');
+      toast('MP4 မရလို့ WebM နဲ့ ထုတ်ပေးမယ်');
       renderBurned();
     }
   }
@@ -5049,7 +5092,7 @@ var seekBtn = d.querySelector('.seek');
     if (!guardSegments()) return;
     if (!videoFile) { toast('ဗီဒီယိုဖိုင် မရှိသေးပါဘူး'); return; }
     if (!window.VideoEncoder || typeof VideoFrame === 'undefined') {
-      toast('ဒီ browser မှာ MP4 မြန်မြန် မရပါဘူး — WebM နဲ့ ထုတ်ပေးမယ်');
+      toast('ဒီ browser မှာ MP4 မရပါဘူး — WebM နဲ့ ထုတ်ပေးမယ်');
       renderBurned();
       return;
     }
@@ -5143,11 +5186,12 @@ var seekBtn = d.querySelector('.seek');
       }
       var startT = Date.now();
       tick = setInterval(function () {
-        bStatus('MP4 မြန်မြန် ထုတ်နေပါတယ်… (WASM အသံ) ' + exportPct() + '% · ကြာချိန် ' + fmtElapsed(Date.now() - startT));
+        bStatus('MP4 ထုတ်နေပါတယ်… (WASM အသံ) ' + exportPct() + '% · ကြာချိန် ' + fmtElapsed(Date.now() - startT));
       }, 500);
       state.expTotal = totalKeptSec; state.expDone = 0; state.curClip = null;
       state.stop = function () { try { vid.pause(); } catch (e) {} };
-      vid.playbackRate = 2;
+      /* 1x like the fast path — smooth frames over speed (see renderBurnedFast). */
+      vid.playbackRate = 1;
       var lastEncT = -1, encErr = null;
       for (var ci = 0; ci < kept.length && !state.cancelled; ci++) {
         var cc = kept[ci];
@@ -5169,9 +5213,10 @@ var seekBtn = d.querySelector('.seek');
             if (state.cancelled || encErr || vid.ended || vid.currentTime >= cc.end - 0.05) { res(); return; }
             drawBurnFrame(cx, W, H, vid, vid.currentTime, framed, srcW, srcH);
             var t = vid.currentTime;
-            if (t - lastEncT >= 0.008) {
+            /* 30fps cap, like the fast path — one frame per ~33ms of video time. */
+            if (t - lastEncT >= 0.033) {
               var tsSec = state.expDone + t - cc.start;
-              var durSec = lastEncT < 0 ? 0.033 : Math.max(0.008, t - lastEncT);
+              var durSec = lastEncT < 0 ? 0.033 : Math.max(0.02, t - lastEncT);
               try { await videoSource.add(tsSec, durSec); }
               catch (e) { encErr = e; }
               lastEncT = t;
