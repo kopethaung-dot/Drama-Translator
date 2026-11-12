@@ -850,6 +850,7 @@ body{background-attachment:fixed}
           <div class="prog"><div id="burnBar"></div></div>
           <div id="burnStatus" style="font-size:13.5px;margin-top:8px;line-height:1.7"></div>
           <button class="btn small danger-ghost hidden" id="burnCancel" style="margin-top:8px">ရပ်မယ်</button>
+          <button class="btn small hidden" id="burnShareBtn" style="margin-top:8px">📤 Share နဲ့ သိမ်းမယ်</button>
         </div>
         <div class="note">သတိ — WebM ရော MP4 ရော အချိန်မှန်အတိုင်း (1x) ပြန်ဖွင့်ပြီး ထုတ်တာမို့ ဗီဒီယိုရှည်သလောက် ကြာမယ်။ ထုတ်နေတုန်း tab မပိတ်ပါနဲ့။</div>
       </div>
@@ -1498,6 +1499,7 @@ body{background-attachment:fixed}
       <div class="prog"><div id="recapBar"></div></div>
       <div id="recapStatus" style="font-size:13.5px;margin-top:8px;line-height:1.7"></div>
       <button class="btn small danger-ghost" id="recapCancel" style="margin-top:8px">ရပ်မယ်</button>
+      <button class="btn small hidden" id="recapShareBtn" style="margin-top:8px">📤 Share နဲ့ သိမ်းမယ်</button>
     </div>
     <div id="recapResult" class="hidden" style="margin-top:14px">
       <audio id="recapAudio" controls style="width:100%"></audio>
@@ -5126,7 +5128,7 @@ var seekBtn = d.querySelector('.seek');
   async function renderBurned(ui) {
     if (burnRender) return;
     var btn = ui && ui.btn ? ui.btn : $('burnBtn');
-    var progBox = ui && ui.prog ? ui.prog : $('burnProg'), barEl = ui && ui.bar ? ui.bar : $('burnBar'), statusEl = ui && ui.status ? ui.status : $('burnStatus'), cancelBtn = ui && ui.cancel ? ui.cancel : $('burnCancel');
+    var progBox = ui && ui.prog ? ui.prog : $('burnProg'), barEl = ui && ui.bar ? ui.bar : $('burnBar'), statusEl = ui && ui.status ? ui.status : $('burnStatus'), cancelBtn = ui && ui.cancel ? ui.cancel : $('burnCancel'), shareBtn = ui && ui.share ? ui.share : $('burnShareBtn');
     function bStatus(t) { progBox.classList.remove('hidden'); statusEl.textContent = t; }
     if (!guardSegments()) return;
     if (!videoFile) { toast('ဗီဒီယိုဖိုင် မရှိသေးပါဘူး'); return; }
@@ -5138,6 +5140,7 @@ var seekBtn = d.querySelector('.seek');
     burnRender = state;
     btn.disabled = true;
     cancelBtn.classList.remove('hidden');
+    if (shareBtn) shareBtn.classList.add('hidden');
     progBox.classList.remove('hidden');
     barEl.style.width = '0%';
     bStatus('ပြင်ဆင်နေပါတယ်…');
@@ -5281,10 +5284,12 @@ var seekBtn = d.querySelector('.seek');
         var ext = mime.indexOf('mp4') >= 0 ? 'mp4' : 'webm';
         var blob = new Blob(chunks, { type: mime.split(';')[0] });
         download(blob, baseName() + '.subbed.' + ext);
+        lastExport = { blob: blob, name: baseName() + '.subbed.' + ext };
+        if (shareBtn) shareBtn.classList.remove('hidden');
         barEl.style.width = '100%';
         bStatus('ပြီးပါပြီ — စာတန်းထိုးပြီး ဗီဒီယိုဖိုင် (' + fmtSize(blob.size) + ') ဒေါင်းလုဒ် စတင်ပါပြီ' +
           ' · အရွယ် ' + W + '×' + H + (framed ? ' (' + burn.ratio + ')' : '') +
-          (audioOk ? '။' : ' (ဒီတစ်ခါ အသံမပါဘဲ ထုတ်လိုက်ပါတယ်)။'));
+          (audioOk ? '။' : ' (ဒီတစ်ခါ အသံမပါဘဲ ထုတ်လိုက်ပါတယ်)။') + ' · app ထဲမှာ ဖိုင်မရောက်ရင် အောက်က 📤 Share ခလုတ်နဲ့ သိမ်းပါ။');
         toast('စာတန်းထိုးပြီး ဗီဒီယိုဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
       }
     } catch (e) {
@@ -5595,7 +5600,7 @@ var seekBtn = d.querySelector('.seek');
       if (mbDone) return;
     }
     var btn = ui && ui.btn ? ui.btn : $('burnBtn');
-    var progBox = ui && ui.prog ? ui.prog : $('burnProg'), barEl = ui && ui.bar ? ui.bar : $('burnBar'), statusEl = ui && ui.status ? ui.status : $('burnStatus'), cancelBtn = ui && ui.cancel ? ui.cancel : $('burnCancel');
+    var progBox = ui && ui.prog ? ui.prog : $('burnProg'), barEl = ui && ui.bar ? ui.bar : $('burnBar'), statusEl = ui && ui.status ? ui.status : $('burnStatus'), cancelBtn = ui && ui.cancel ? ui.cancel : $('burnCancel'), shareBtn = ui && ui.share ? ui.share : $('burnShareBtn');
     function bStatus(t) { progBox.classList.remove('hidden'); statusEl.textContent = t; }
     if (!guardSegments()) return;
     if (!videoFile) { toast('ဗီဒီယိုဖိုင် မရှိသေးပါဘူး'); return; }
@@ -5608,6 +5613,7 @@ var seekBtn = d.querySelector('.seek');
     burnRender = state;
     btn.disabled = true;
     cancelBtn.classList.remove('hidden');
+    if (shareBtn) shareBtn.classList.add('hidden');
     progBox.classList.remove('hidden');
     barEl.style.width = '0%';
     bStatus('ပြင်ဆင်နေပါတယ်…');
@@ -5805,8 +5811,10 @@ var seekBtn = d.querySelector('.seek');
           toast('ဗီဒီယို ထုတ်တာ ရပ်လိုက်ပါပြီ');
         } else if (finalBlob) {
           download(finalBlob.blob, baseName() + '.subbed.mp4');
+          lastExport = { blob: finalBlob.blob, name: baseName() + '.subbed.mp4' };
+          if (shareBtn) shareBtn.classList.remove('hidden');
           bStatus('ပြီးပါပြီ — MP4 ဖိုင် (' + fmtSize(finalBlob.blob.size) + ') ဒေါင်းလုဒ် စတင်ပါပြီ' +
-            ' · အရွယ် ' + W + '×' + H + (framed ? ' (' + burn.ratio + ')' : '') + audioNote + dubFreezeNote(totalKeptSec, freezeSec));
+            ' · အရွယ် ' + W + '×' + H + (framed ? ' (' + burn.ratio + ')' : '') + audioNote + dubFreezeNote(totalKeptSec, freezeSec) + ' · app ထဲမှာ ဖိုင်မရောက်ရင် အောက်က 📤 Share ခလုတ်နဲ့ သိမ်းပါ။');
           toast('MP4 ဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
         }
       } else {
@@ -5863,10 +5871,11 @@ var seekBtn = d.querySelector('.seek');
       return;
     }
     var btn = ui && ui.btn ? ui.btn : $('burnBtn');
-    var progBox = ui && ui.prog ? ui.prog : $('burnProg'), barEl = ui && ui.bar ? ui.bar : $('burnBar'), statusEl = ui && ui.status ? ui.status : $('burnStatus'), cancelBtn = ui && ui.cancel ? ui.cancel : $('burnCancel');
+    var progBox = ui && ui.prog ? ui.prog : $('burnProg'), barEl = ui && ui.bar ? ui.bar : $('burnBar'), statusEl = ui && ui.status ? ui.status : $('burnStatus'), cancelBtn = ui && ui.cancel ? ui.cancel : $('burnCancel'), shareBtn = ui && ui.share ? ui.share : $('burnShareBtn');
     function bStatus(t) { progBox.classList.remove('hidden'); statusEl.textContent = t; }
     btn.disabled = true;
     cancelBtn.classList.remove('hidden');
+    if (shareBtn) shareBtn.classList.add('hidden');
     progBox.classList.remove('hidden');
     barEl.style.width = '0%';
     /* Load the WASM encoder BEFORE setting up render state, so a download
@@ -6061,8 +6070,10 @@ var seekBtn = d.querySelector('.seek');
             toast('ဗီဒီယို ထုတ်တာ ရပ်လိုက်ပါပြီ');
           } else if (finalBlob) {
             download(finalBlob.blob, baseName() + '.subbed.mp4');
+          lastExport = { blob: finalBlob.blob, name: baseName() + '.subbed.mp4' };
+          if (shareBtn) shareBtn.classList.remove('hidden');
             bStatus('ပြီးပါပြီ — MP4 ဖိုင် (' + fmtSize(finalBlob.blob.size) + ') ဒေါင်းလုဒ် စတင်ပါပြီ' +
-              ' · အရွယ် ' + W + '×' + H + (framed ? ' (' + burn.ratio + ')' : '') + audioNote + dubFreezeNote(totalKeptSec, freezeSec));
+              ' · အရွယ် ' + W + '×' + H + (framed ? ' (' + burn.ratio + ')' : '') + audioNote + dubFreezeNote(totalKeptSec, freezeSec) + ' · app ထဲမှာ ဖိုင်မရောက်ရင် အောက်က 📤 Share ခလုတ်နဲ့ သိမ်းပါ။');
             toast('MP4 ဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
           }
         }
@@ -7402,6 +7413,24 @@ var seekBtn = d.querySelector('.seek');
     a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
   }
+  /* App (median.co WebView) ထဲမှာ blob download မရလို့ — ဖိုင်ကို share sheet နဲ့ သိမ်းတဲ့ လမ်း။
+     navigator.share က user gesture (ခလုတ်နှိပ်တာ) ထဲမှာပဲ ခေါ်ရလို့၊ export ပြီးမှ ခလုတ် ပေါ်ပေးပြီး
+     အဲဒီ ခလုတ်ကို နှိပ်မှ share လုပ်တယ်။ Chrome မှာလည်း အလုပ်ဖြစ်တယ်။ */
+  var lastExport = null; /* {blob, name} — နောက်ဆုံး ထုတ်ထားတဲ့ ဗီဒီယိုဖိုင် */
+  function canShareFile(f) {
+    try { return !!(navigator.share && navigator.canShare && navigator.canShare({ files: [f] })); } catch (e) { return false; }
+  }
+  async function shareExport() {
+    if (!lastExport) { toast('ထုတ်ထားတဲ့ ဖိုင် မရှိသေးပါဘူး'); return; }
+    var f = new File([lastExport.blob], lastExport.name, { type: lastExport.blob.type || 'video/mp4' });
+    if (canShareFile(f)) {
+      try { await navigator.share({ files: [f] }); return; }
+      catch (e) { if (e && e.name === 'AbortError') return; /* share sheet ပိတ်သွားတာ */ }
+    }
+    download(lastExport.blob, lastExport.name); /* share မရတဲ့ browser — ပုံမှန် download */
+  }
+  $('burnShareBtn').addEventListener('click', shareExport);
+  $('recapShareBtn').addEventListener('click', shareExport);
   function guardSegments() {
     if (!segments.length) { toast('စာကြောင်း မရှိသေးပါဘူး'); return false; }
     return true;
@@ -8793,7 +8822,7 @@ var seekBtn = d.querySelector('.seek');
      Recap tab ထဲမှာပဲ လုပ်မယ်၊ Video tab ကို မကူးတော့ဘူး။ keepCancel: recapCancel
      က TTS ရပ်တဲ့ ခလုတ်လည်း ဖြစ်လို့ export ပြီးရင် ဖျောက်မထားဘူး။ */
   function recapExportUI() {
-    return { btn: $('recapExportBtn'), prog: $('recapProg'), bar: $('recapBar'), status: $('recapStatus'), cancel: $('recapCancel'), keepCancel: true };
+    return { btn: $('recapExportBtn'), prog: $('recapProg'), bar: $('recapBar'), status: $('recapStatus'), cancel: $('recapCancel'), share: $('recapShareBtn'), keepCancel: true };
   }
   $('recapExportBtn').addEventListener('click', async function () {
     if ((!dubMixed || !dubAudio || dubAudio.file !== videoFile) && !(await recapBuildMix())) return;
