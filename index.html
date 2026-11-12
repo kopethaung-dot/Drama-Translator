@@ -201,8 +201,13 @@ select:focus,input:focus,textarea:focus{border-color:var(--blue);outline:none;bo
 .tlClip.sel,.tlSub.sel,.tlTitle.sel{outline:2px solid #fff;outline-offset:1px}
 .tlSub.dead{opacity:.35}
 .tlClipTxt,.tlSubTxt,.tlTitleTxt{display:block;padding:9px 12px;font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
-#titleCue{position:absolute;left:0;right:0;top:6%;text-align:center;padding:0 14px;font-size:19px;font-weight:700;color:#fff;
-  text-shadow:0 2px 6px #000,0 0 2px #000;pointer-events:none;line-height:1.55;z-index:2;visibility:hidden}
+#titleCue{position:absolute;left:50%;top:8%;transform:translate(-50%,-50%);text-align:center;padding:0 14px;font-size:19px;font-weight:700;color:#fff;
+  text-shadow:0 2px 6px #000,0 0 2px #000;pointer-events:none;line-height:1.55;z-index:4;visibility:hidden;max-width:94%;touch-action:none}
+#titleCue.draggable{pointer-events:auto;cursor:grab;touch-action:none}
+#titleCue.draggable.sel{outline:2px dashed rgba(255,255,255,.85);outline-offset:4px;border-radius:8px}
+#titleCue.dragging{cursor:grabbing}
+#titleResize{position:absolute;right:-10px;bottom:-10px;width:26px;height:26px;border-radius:50%;background:#a855f7;color:#fff;font-size:13px;line-height:26px;text-align:center;cursor:nwse-resize;display:none;touch-action:none;pointer-events:auto;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+#titleCue.sel #titleResize{display:block}
 #titleText{display:inline-block;padding:.16em .55em;border-radius:.3em;white-space:pre-line;max-width:100%;overflow-wrap:break-word}
 .tlHandle{position:absolute;top:0;bottom:0;width:12px;cursor:ew-resize;z-index:2}
 .tlHandle.l{left:0}.tlHandle.r{right:0}
@@ -615,7 +620,7 @@ body{background-attachment:fixed}
         <div class="blurBar" id="blurBarB"></div>
         <div id="blurRect"></div>
         <div id="cue"><span id="cueText"></span></div>
-        <div id="titleCue"><span id="titleText"></span></div>
+        <div id="titleCue"><span id="titleText"></span><span id="titleResize" title="ဆွဲပြီး စာလုံးအရွယ် ပြောင်းမယ်">⤡</span></div>
         <img id="logoImg" class="hidden" alt="" />
       </div>
       <div class="hint">ဗီဒီယို ဖွင့်ရင် စာတန်းတွေ အပေါ်မှာ တက်ပြမယ်။</div>
@@ -922,9 +927,21 @@ body{background-attachment:fixed}
         <option value="top">အပေါ်</option>
         <option value="middle">အလယ်</option>
         <option value="bottom">အောက်</option>
+        <option value="custom">စိတ်ကြိုက်</option>
       </select>
       <button class="btn small ghost danger-ghost" id="tlTitleDel" type="button">ဖျက်မယ်</button>
     </div>
+    <div class="row" style="margin-top:8px">
+      <select id="tlTitleFont" style="flex:1">
+        <option value="default">ဖောင့် — မူလ (စာတန်းဖောင့်)</option>
+        <option value="atest">A Test</option>
+        <option value="pyidaungsu">Pyidaungsu</option>
+        <option value="notosans">Noto Sans Myanmar</option>
+      </select>
+      <button class="btn small ghost" id="tlTitleSmaller" type="button">A− သေး</button>
+      <button class="btn small ghost" id="tlTitleBigger" type="button">A+ ကြီး</button>
+    </div>
+    <div class="hint" style="margin-top:6px">ဗီဒီယိုပေါ်က စာသားကို လက်နဲ့ / mouse နဲ့ တိုက်ရိုက်ဆွဲပြီး နေရာရွှေ့လို့ရတယ်။ ထောင့်က ခရမ်းရောင် ⤡ ကို ဆွဲရင် (ဒါမှမဟုတ် စာသားပေါ် mouse wheel လှည့်ရင်) စာလုံးအရွယ် ပြောင်းမယ် — slider မလိုဘူး။</div>
     <div class="hint" id="tlTitleMeta"></div>
   </div>
   <div class="hint" id="tlInfo"></div>
@@ -3945,25 +3962,61 @@ var seekBtn = d.querySelector('.seek');
     }
     applyTitleStyle();
   }
+  /* title helpers: free position (x/y = centre fractions of the frame),
+     free size (multiplier of the default title size) and free font.
+     Old saved titles only have pos — normalise them in place. */
+  function titlePresetXY(pos) {
+    if (pos === 'middle') return { x: 0.5, y: 0.5 };
+    if (pos === 'bottom') return { x: 0.5, y: 0.88 };
+    return { x: 0.5, y: 0.1 };
+  }
+  function normalizeTitle(tt) {
+    if (!tt) return tt;
+    var p = titlePresetXY(tt.pos);
+    if (typeof tt.x !== 'number' || !isFinite(tt.x)) tt.x = p.x;
+    if (typeof tt.y !== 'number' || !isFinite(tt.y)) tt.y = p.y;
+    tt.x = Math.max(0.04, Math.min(0.96, tt.x));
+    tt.y = Math.max(0.04, Math.min(0.96, tt.y));
+    if (typeof tt.size !== 'number' || !isFinite(tt.size) || tt.size <= 0) tt.size = 1;
+    tt.size = Math.max(0.4, Math.min(4, tt.size));
+    if (!tt.font) tt.font = 'default';
+    return tt;
+  }
+  function titleFontFamily(key) {
+    if (key === 'atest') return '"A Test","Pyidaungsu","Noto Sans Myanmar",sans-serif';
+    if (key === 'pyidaungsu') return '"Pyidaungsu","Noto Sans Myanmar",sans-serif';
+    if (key === 'notosans') return '"Noto Sans Myanmar","Pyidaungsu",sans-serif';
+    return burn.fontFamily;
+  }
   /* custom title overlay in the preview — same burn style as the subtitles,
      but 1.5x bigger, at the position picked for that title */
   function applyTitleStyle() {
     var el = $('titleCue'), span = $('titleText'), v = $('preview');
     if (!el || !span || !v) return;
     var h = v.clientHeight || 0;
-    var fpx = Math.round((h ? burn.fontFrac * h : burn.fontFrac * 360) * 1.5 * 10) / 10;
+    var t = curTitleObj;
+    if (t) normalizeTitle(t);
+    var size = t ? t.size : 1;
+    var fpx = Math.round((h ? burn.fontFrac * h : burn.fontFrac * 360) * 1.5 * size * 10) / 10;
     el.style.fontSize = fpx + 'px';
-    el.style.fontFamily = burn.fontFamily;
+    el.style.fontFamily = titleFontFamily(t && t.font);
     el.style.fontWeight = burn.bold ? '700' : '400';
     el.style.color = burn.color;
-    el.style.top = 'auto'; el.style.bottom = 'auto'; el.style.transform = 'none';
-    var pos = (curTitleObj && curTitleObj.pos) || 'top';
-    if (pos === 'middle') { el.style.top = '50%'; el.style.transform = 'translateY(-50%)'; }
-    else if (pos === 'bottom') el.style.bottom = '16%';
-    else el.style.top = '6%';
+    el.style.left = Math.round((t ? t.x : 0.5) * 1000) / 10 + '%';
+    el.style.top = Math.round((t ? t.y : 0.1) * 1000) / 10 + '%';
+    el.style.transform = 'translate(-50%,-50%)';
+    /* စာသားအကျယ် အတိုင်း ညှပ်ထားတယ် (ထုတ်တဲ့ ဗီဒီယိုလို 92% မှာ ဖြတ်တယ်) —
+       အရင်က အကွက်က ဘောင်အပြည့် ဖြစ်နေလို့ ရှည်တဲ့ ခေါင်းစဉ် preview မှာ
+       ကျဉ်းကျဉ်းလေး ဖြစ်နေတာ */
+    el.style.right = 'auto';
+    el.style.width = 'max-content';
+    el.style.maxWidth = '92%';
     span.style.background = burn.bgOp > 0 ? hexToRgba(burn.bg, burn.bgOp) : 'transparent';
-    var sw = burn.stroke > 0 ? burn.stroke * (h || 360) / 1080 * 1.5 : 0;
+    var sw = burn.stroke > 0 ? burn.stroke * (h || 360) / 1080 * 1.5 * size : 0;
     span.style.webkitTextStroke = sw > 0 ? sw.toFixed(1) + 'px ' + burn.strokeColor : '';
+    var sel = !!(t && tlSel && tlSel.kind === 'title' && titleTexts[tlSel.idx] === t);
+    el.classList.toggle('sel', sel);
+    el.classList.toggle('draggable', !!t);
     el.style.visibility = (lastTitleText && fpx >= 0.3) ? 'visible' : 'hidden';
   }
   /* (removed: fitPreviewCue used to shrink the preview font when a line was
@@ -4608,11 +4661,12 @@ var seekBtn = d.querySelector('.seek');
       if (t >= titleTexts[i].start && t < titleTexts[i].end) { act = titleTexts[i]; break; }
     }
     if (!act || !act.text) return;
+    normalizeTitle(act);
     var safeMx = Math.round(W * 0.04);
     var availW = Math.max(40, W - safeMx * 2);
-    var fs = burn.fontFrac * H * 1.5;
+    var fs = burn.fontFrac * H * 1.5 * act.size;
     if (fs < 0.4) return;
-    function setFont() { cx.font = (burn.bold ? '700 ' : '400 ') + fs + 'px ' + burn.fontFamily; }
+    function setFont() { cx.font = (burn.bold ? '700 ' : '400 ') + fs + 'px ' + titleFontFamily(act.font); }
     setFont();
     cx.textAlign = 'center';
     cx.textBaseline = 'middle';
@@ -4625,11 +4679,8 @@ var seekBtn = d.querySelector('.seek');
     var lh = fs * 1.5, padX = fs * 0.55, padY = fs * 0.3;
     var boxW = Math.min(availW, maxW + padX * 2);
     var boxH = lines.length * lh + padY * 2;
-    var x0 = Math.max(safeMx, Math.min(W - safeMx - boxW, (W - boxW) / 2));
-    var y0;
-    if (act.pos === 'middle') y0 = Math.round((H - boxH) / 2);
-    else if (act.pos === 'bottom') y0 = Math.round(H * 0.98) - Math.round(H * 0.16) - Math.round(boxH);
-    else y0 = Math.round(H * 0.06);
+    var x0 = Math.max(safeMx, Math.min(Math.max(safeMx, W - safeMx - boxW), Math.round(act.x * W - boxW / 2)));
+    var y0 = Math.max(0, Math.min(Math.max(0, H - boxH), Math.round(act.y * H - boxH / 2)));
     if (burn.bgOp > 0) {
       cx.fillStyle = hexToRgba(burn.bg, burn.bgOp);
       if (typeof cx.roundRect === 'function') {
@@ -4648,7 +4699,7 @@ var seekBtn = d.querySelector('.seek');
       cx.save();
       cx.shadowColor = 'transparent'; cx.shadowBlur = 0; cx.shadowOffsetY = 0;
       cx.strokeStyle = burn.strokeColor;
-      cx.lineWidth = Math.max(1, burn.stroke * H / 1080 * 1.5);
+      cx.lineWidth = Math.max(1, burn.stroke * H / 1080 * 1.5 * act.size);
       cx.lineJoin = 'round';
       lines.forEach(function (l, li) {
         cx.strokeText(l, x0 + boxW / 2, y0 + padY + lh * (li + 0.5));
@@ -6082,7 +6133,7 @@ var seekBtn = d.querySelector('.seek');
         blurBar: burn.blurBar, blurBarPos: burn.blurBarPos,
         blurRect: { x: burn.blurRect.x, y: burn.blurRect.y, w: burn.blurRect.w, h: burn.blurRect.h } },
       clips: vclips ? vclips.map(function (c) { return { start: c.start, end: c.end }; }) : null,
-      titles: titleTexts.map(function (tt) { return { start: tt.start, end: tt.end, text: tt.text || '', pos: tt.pos || 'top' }; }),
+      titles: titleTexts.map(function (tt) { normalizeTitle(tt); return { start: tt.start, end: tt.end, text: tt.text || '', pos: tt.pos || 'top', x: tt.x, y: tt.y, size: tt.size, font: tt.font || 'default' }; }),
       logoCfg: { corner: logo.corner, sizeFrac: logo.sizeFrac, op: logo.op }
     };
   }
@@ -6222,7 +6273,7 @@ var seekBtn = d.querySelector('.seek');
     /* custom title texts saved with the project */
     if (p.titles && Array.isArray(p.titles)) {
       titleTexts = p.titles.filter(function (tt) { return tt && typeof tt.start === 'number' && typeof tt.end === 'number' && tt.end > tt.start; })
-        .map(function (tt) { return { start: tt.start, end: tt.end, text: tt.text || '', pos: tt.pos || 'top' }; });
+        .map(function (tt) { return normalizeTitle({ start: tt.start, end: tt.end, text: tt.text || '', pos: tt.pos || 'top', x: tt.x, y: tt.y, size: tt.size, font: tt.font || 'default' }); });
     }
     if (p.burn || p.logoCfg || p.clips || p.titles) { syncBurnControls(); renderTimeline(); }
     showResult();
@@ -6418,9 +6469,11 @@ var seekBtn = d.querySelector('.seek');
     if (tlSel.idx !== tlEditTitleIdx) {
       tlEditTitleIdx = tlSel.idx;
       $('tlTitleText').value = sel.text || '';
+      normalizeTitle(sel);
       $('tlTitlePos').value = sel.pos || 'top';
+      var tf = $('tlTitleFont'); if (tf) tf.value = sel.font || 'default';
     }
-    $('tlTitleMeta').textContent = 'အချိန် ' + fmtTl(sel.start) + ' – ' + fmtTl(sel.end) + ' · အကွက်ကို ဆွဲရွှေ့လို့ရတယ်၊ အစွန်းကို ဆွဲရင် အစ/အဆုံး ဖြတ်လို့ရတယ်';
+    $('tlTitleMeta').textContent = 'အချိန် ' + fmtTl(sel.start) + ' – ' + fmtTl(sel.end) + ' · စာလုံးအရွယ် ' + Math.round((sel.size || 1) * 100) + '% · ဗီဒီယိုပေါ်မှာ တိုက်ရိုက်ဆွဲပြီး နေရာရွှေ့လို့ရတယ်၊ ⤡ ကို ဆွဲရင် အရွယ် ပြောင်းမယ်';
   }
   function movePlayhead() {
     var v = $('preview'); if (!v || !vidDur()) return;
@@ -6601,11 +6654,12 @@ var seekBtn = d.querySelector('.seek');
     var d = vidDur(); if (!d) return;
     var t = $('preview').currentTime;
     var start = Math.max(0, Math.min(d - 0.5, t));
-    var nt = { start: start, end: Math.min(d, start + 3), text: 'ခေါင်းစဉ်', pos: 'top' };
+    var nt = { start: start, end: Math.min(d, start + 3), text: 'ခေါင်းစဉ်', pos: 'top', x: 0.5, y: 0.1, size: 1, font: 'default' };
     titleTexts.push(nt);
     titleTexts.sort(function (a, b) { return a.start - b.start; });
     tlSel = { kind: 'title', idx: titleTexts.indexOf(nt) };
     scheduleSave(); renderTimeline();
+    updateCue(); /* ထည့်ပြီးချင်း ဗီဒီယိုပေါ်မှာ ပေါ်လာအောင် (paused ဖြစ်နေလည်း ဆွဲလို့ရတယ်) */
     toast('စာသား ထည့်ပြီးပါပြီ — အောက်က အကွက်မှာ စာရိုက်ပြီး ပြင်လို့ရတယ်');
   });
   $('tlTitleText').addEventListener('input', function (e) {
@@ -6620,9 +6674,80 @@ var seekBtn = d.querySelector('.seek');
   $('tlTitlePos').addEventListener('change', function (e) {
     var sel = tlSel && tlSel.kind === 'title' ? titleTexts[tlSel.idx] : null;
     if (!sel) return;
+    if (e.target.value === 'custom') return;
     sel.pos = e.target.value;
+    var p = titlePresetXY(sel.pos);
+    sel.x = p.x; sel.y = p.y;
     updateCue(); scheduleSave();
   });
+  $('tlTitleFont').addEventListener('change', function (e) {
+    var sel = tlSel && tlSel.kind === 'title' ? titleTexts[tlSel.idx] : null;
+    if (!sel) return;
+    sel.font = e.target.value;
+    updateCue(); scheduleSave();
+  });
+  function titleBumpSize(f) {
+    var sel = tlSel && tlSel.kind === 'title' ? titleTexts[tlSel.idx] : null;
+    if (!sel) return;
+    normalizeTitle(sel);
+    sel.size = Math.max(0.4, Math.min(4, sel.size * f));
+    updateCue(); scheduleSave(); syncTitleEditor();
+  }
+  $('tlTitleBigger').addEventListener('click', function () { titleBumpSize(1.15); });
+  $('tlTitleSmaller').addEventListener('click', function () { titleBumpSize(1 / 1.15); });
+  /* drag the title around on the video itself; drag the ⤡ handle (or wheel
+     over the title) to change its font size — no slider needed */
+  var titleDrag = null;
+  (function () {
+    var el = $('titleCue'); if (!el) return;
+    el.addEventListener('pointerdown', function (e) {
+      if (!curTitleObj) return;
+      normalizeTitle(curTitleObj);
+      var idx = titleTexts.indexOf(curTitleObj);
+      if (idx >= 0 && !(tlSel && tlSel.kind === 'title' && tlSel.idx === idx)) {
+        tlSel = { kind: 'title', idx: idx }; tlEditTitleIdx = -1; syncTitleEditor();
+      }
+      var pv = $('preview'); if (pv && !pv.paused) { try { pv.pause(); } catch (e) {} }
+      applyTitleStyle();
+      var wrap = $('vwrap'), r = wrap.getBoundingClientRect();
+      titleDrag = { mode: e.target.id === 'titleResize' ? 'resize' : 'move',
+        sx: e.clientX, sy: e.clientY, ox: curTitleObj.x, oy: curTitleObj.y, os: curTitleObj.size,
+        w: r.width, h: r.height };
+      el.classList.add('dragging');
+      try { el.setPointerCapture(e.pointerId); } catch (err) {}
+      e.preventDefault(); e.stopPropagation();
+    });
+    el.addEventListener('pointermove', function (e) {
+      if (!titleDrag || !curTitleObj) return;
+      var dx = e.clientX - titleDrag.sx, dy = e.clientY - titleDrag.sy;
+      if (titleDrag.mode === 'resize') {
+        curTitleObj.size = Math.max(0.4, Math.min(4, titleDrag.os * (1 + (dx + dy) / 260)));
+      } else {
+        /* စာသား အပြည့်အဝ ဘောင်ထဲမှာ ရှိနေအောင် — အလယ်ကို စာသားရဲ့ အကျယ်/အမြင့်
+           တဝက်နဲ့ ကန့်သတ်တယ် (ထုတ်တဲ့ ဗီဒီယိုမှာ ညှပ်ထားသလို preview မှာလည်း အတူတူပဲ) */
+        var hw = (el.offsetWidth / 2) / titleDrag.w, hh = (el.offsetHeight / 2) / titleDrag.h;
+        curTitleObj.x = Math.max(hw + 0.01, Math.min(0.99 - hw, titleDrag.ox + dx / titleDrag.w));
+        curTitleObj.y = Math.max(hh + 0.01, Math.min(0.99 - hh, titleDrag.oy + dy / titleDrag.h));
+        curTitleObj.pos = 'custom';
+      }
+      applyTitleStyle();
+    });
+    function titleDragEnd() {
+      if (!titleDrag) return;
+      titleDrag = null;
+      el.classList.remove('dragging');
+      scheduleSave(); syncTitleEditor();
+    }
+    el.addEventListener('pointerup', titleDragEnd);
+    el.addEventListener('pointercancel', titleDragEnd);
+    el.addEventListener('wheel', function (e) {
+      if (!curTitleObj) return;
+      normalizeTitle(curTitleObj);
+      e.preventDefault();
+      curTitleObj.size = Math.max(0.4, Math.min(4, curTitleObj.size * (e.deltaY < 0 ? 1.12 : 0.89)));
+      applyTitleStyle(); scheduleSave(); syncTitleEditor();
+    }, { passive: false });
+  })();
   $('tlTitleDel').addEventListener('click', function () {
     if (!tlSel || tlSel.kind !== 'title') return;
     titleTexts.splice(tlSel.idx, 1);
