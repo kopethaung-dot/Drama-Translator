@@ -419,6 +419,27 @@ body{background-attachment:fixed}
 
   <div class="filemeta" id="fileMeta"></div>
 
+  <div id="linkRow" style="margin-top:14px">
+    <label class="f" for="linkUrl">ဒါမှမဟုတ် link ကနေ ယူမယ်</label>
+    <div class="row" style="gap:8px;margin-top:6px">
+      <input type="text" id="linkUrl" placeholder="https://www.youtube.com/watch?v=… / https://www.tiktok.com/…" autocomplete="off" spellcheck="false" inputmode="url" style="flex:1" />
+      <button class="btn small" id="linkBtn" type="button">🔗 ဆွဲယူမယ်</button>
+    </div>
+    <div style="color:var(--mut);font-size:13px;margin-top:6px;line-height:1.6">YouTube / TikTok link တွေ ရပါတယ် — TikTok က watermark မပါဘူး။ Red Note (小红书) က Cobalt မထောက်ပံ့သေးလို့ မရသေးဘူး။</div>
+    <div id="linkStatus" style="font-size:13px;margin-top:6px;line-height:1.6"></div>
+    <details style="margin-top:6px">
+      <summary style="font-size:13px;color:var(--mut);cursor:pointer">Cobalt instance / PC bridge ကိုယ်တိုင် သတ်မှတ်မယ် (မရရင်)</summary>
+      <div class="row" style="gap:8px;margin-top:6px">
+        <input type="text" id="cobaltInstance" placeholder="Cobalt instance — https://… (ဥပမာ https://rue-cobalt.xenon.zone)" autocomplete="off" spellcheck="false" inputmode="url" style="flex:1" />
+      </div>
+      <div class="row" style="gap:8px;margin-top:6px">
+        <input type="text" id="bridgeUrl" placeholder="PC bridge URL — http://… (ဥပမာ http://192.168.1.5:8000)" autocomplete="off" spellcheck="false" inputmode="url" style="flex:1" />
+        <button class="btn small ghost" id="cobaltSave" type="button">သိမ်းမယ်</button>
+      </div>
+      <div style="color:var(--mut);font-size:13px;margin-top:4px;line-height:1.6">အလုပ်ဖြစ်တဲ့ Cobalt instance တွေကို <a href="https://cobalt.directory/" target="_blank" rel="noopener">cobalt.directory</a> မှာ ကြည့်လို့ရတယ် (Turnstile မပါတဲ့ instance ကို ရွေးပါ)။ PC bridge (bridge.py) ကနေ tool ကို ဖွင့်ထားရင် bridge ကို အလိုအလျောက် သုံးမယ် — URL ရိုက်စရာမလိုဘူး။</div>
+    </details>
+  </div>
+
   <h2 style="margin-top:20px">၂ — ဆက်တင်များ</h2>
   <div class="grid2">
     <div>
@@ -1786,6 +1807,7 @@ var SrtTools = (function () {
     $('modeVideo').setAttribute('aria-pressed', m === 'video' ? 'true' : 'false');
     $('modeSrt').setAttribute('aria-pressed', m === 'srt' ? 'true' : 'false');
     $('dropVideo').classList.toggle('hidden', m !== 'video');
+    $('linkRow').classList.toggle('hidden', m !== 'video');
     $('dropSrt').classList.toggle('hidden', m !== 'srt');
     $('transcriberBox').classList.toggle('hidden', m !== 'video');
     $('startBtnText').textContent = m === 'video' ? 'စတင်လုပ်ဆောင်မယ်' : 'SRT ကို မြန်မာပြန်ဆိုမယ်';
@@ -1830,7 +1852,7 @@ var SrtTools = (function () {
       input.value = '';
     });
   }
-  bindDrop('dropVideo', 'fileInputVideo', function (f) {
+  function pickVideoFile(f) {
     videoFile = f;
     showFileMeta();
     /* a restored project has cues but no file — re-picking the video brings the preview back (any mode: SRT-translated cues burn the same way) */
@@ -1842,7 +1864,273 @@ var SrtTools = (function () {
       $('preview').src = objUrl;
       $('previewBg').src = objUrl;
     }
+  }
+  bindDrop('dropVideo', 'fileInputVideo', pickVideoFile);
+
+  /* ---------- link download via Cobalt (YouTube / TikTok) ---------- */
+  /* cobalt API (docs/api.md): POST / {url, videoQuality, youtubeVideoCodec, filenameStyle,
+     alwaysProxy} with Accept + Content-Type: application/json -> {status:'tunnel'|'redirect'|
+     'picker'|'error', url, filename}. alwaysProxy forces a cobalt-proxied URL so the browser
+     can fetch the bytes (CORS). Official api.cobalt.tools needs a JWT (error.api.auth.jwt.
+     missing) — not usable anonymously. Community instances from cobalt.directory with
+     Turnstile off accept direct browser POSTs; the list below was current 2026-11-12. */
+  var COBALT_INSTANCES = [
+    'https://rue-cobalt.xenon.zone',     /* Turnstile off (cobalt.directory 2026-11-12) */
+    'https://cobaltapi.cjs.nz',         /* Turnstile off */
+    'https://cobaltapi.kittycat.boo',
+    'https://cobaltapi.squair.xyz',
+    'https://api.cobalt.liubquanti.click'
+  ];
+  var COBALT_POST_TIMEOUT = 15000;
+  var COBALT_DL_TIMEOUT = 300000; /* 5 min for the file itself */
+  var BRIDGE_TIMEOUT = 300000; /* 5 min for the bridge download */
+  var linkAbort = null;
+  function cobaltSanitizeFilename(name) {
+    var n = String(name || 'video.mp4').replace(/[\\\/:*?"<>|]/g, '_').replace(/\s+/g, ' ').trim() || 'video.mp4';
+    if (!/\.(mp4|webm|mov|mkv|m4v|mp3|wav|ogg|m4a)$/i.test(n)) n += '.mp4';
+    return n;
+  }
+  function cobaltIsRedNote(u) { return /(xiaohongshu\.com|xhslink\.com|xhs\.link)/i.test(u); }
+  function cobaltInstanceList() {
+    var list = [];
+    try {
+      var custom = (localStorage.getItem('mt_cobalt_instance') || '').trim().replace(/\/+$/, '');
+      if (custom) list.push(custom);
+      var last = (localStorage.getItem('mt_cobalt_last') || '').trim().replace(/\/+$/, '');
+      if (last && list.indexOf(last) < 0) list.push(last);
+    } catch (e) {}
+    COBALT_INSTANCES.forEach(function (u) { if (list.indexOf(u) < 0) list.push(u); });
+    return list;
+  }
+  /* PC bridge (bridge.py): same-origin when the tool is served over http(s),
+     or the saved mt_bridge_url for file:// use. Pure — testable. */
+  function bridgeBaseUrl(saved, protocol, origin) {
+    var s = (saved || '').trim().replace(/\/+$/, '');
+    if (s) return s;
+    if (/^https?:$/.test(protocol || '') && origin) return String(origin).replace(/\/+$/, '');
+    return '';
+  }
+  function bridgeBase() {
+    var saved = '';
+    try { saved = localStorage.getItem('mt_bridge_url') || ''; } catch (e) {}
+    return bridgeBaseUrl(saved, location.protocol, location.origin);
+  }
+  /* POST the link to the bridge; returns a File, null (not a bridge: 404),
+     or throws the bridge's own error message. */
+  async function bridgeDownload(base, link, signal) {
+    var res = await fetch(base + '/download', {
+      method: 'POST', signal: signal,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: link })
+    });
+    if (res.status === 404) return null;
+    var ct = res.headers.get('content-type') || '';
+    if (ct.indexOf('application/json') >= 0) {
+      var j = await res.json().catch(function () { return null; });
+      throw new Error((j && j.error) || ('Bridge error (HTTP ' + res.status + ')'));
+    }
+    if (!res.ok) throw new Error('Bridge error (HTTP ' + res.status + ')');
+    var blob = await res.blob();
+    if (!blob || !blob.size) throw new Error('Bridge က ဖိုင် အလွတ်ကြီး ပြန်ပို့တယ်');
+    var name = 'video.mp4';
+    var m = /filename="?([^";]+)"?/.exec(res.headers.get('content-disposition') || '');
+    if (m) name = cobaltSanitizeFilename(m[1]);
+    return new File([blob], name, { type: blob.type || 'video/mp4' });
+  }
+  /* pure: turn a cobalt JSON reply into {url, filename} or throw a Burmese reason */
+  function cobaltPickVideoUrl(resp) {
+    if (!resp || typeof resp !== 'object') throw new Error('Cobalt က ဘာမှ ပြန်မပို့ဘူး');
+    if (resp.status === 'tunnel' || resp.status === 'redirect') {
+      if (!resp.url) throw new Error('Cobalt က download link မပါဘူး');
+      return { url: resp.url, filename: cobaltSanitizeFilename(resp.filename) };
+    }
+    if (resp.status === 'picker') {
+      var items = Array.isArray(resp.picker) ? resp.picker : [], vid = null;
+      for (var i = 0; i < items.length; i++) {
+        if (items[i] && items[i].type === 'video' && items[i].url) { vid = items[i]; break; }
+      }
+      if (!vid) throw new Error('ဒီ link က video မဟုတ်ဘူး (ပုံ slideshow ဖြစ်နိုင်တယ်)');
+      return { url: vid.url, filename: cobaltSanitizeFilename(resp.filename) };
+    }
+    if (resp.status === 'error') {
+      var code = (resp.error && resp.error.code) || 'unknown';
+      throw new Error('Cobalt error: ' + code);
+    }
+    throw new Error('Cobalt က မသိတဲ့ အဖြေ ပြန်ပို့တယ် (' + resp.status + ')');
+  }
+  function fetchWithTimeout(url, opts, ms) {
+    var c = new AbortController();
+    var t = setTimeout(function () { c.abort(); }, ms);
+    var o = Object.assign({}, opts, { signal: c.signal });
+    return fetch(url, o).then(
+      function (r) { clearTimeout(t); return r; },
+      function (e) { clearTimeout(t); throw e; }
+    );
+  }
+  /* public CORS relay (free, no key): the tool is a local file / phone browser, so a
+     direct request can be blocked by CORS or by the network. The relay forwards the
+     same request from its own server and returns it with CORS headers. Only the
+     public video link passes through it — no keys or private data. */
+  var CORS_PROXY = 'https://corsproxy.io/?url=';
+  function corsProxyUrl(u) { return CORS_PROXY + encodeURIComponent(u); }
+  /* POST to a cobalt instance; if the direct request is blocked (CORS / network),
+     retry the same request through the CORS proxy. Only network errors (TypeError)
+     trigger the retry — HTTP errors and timeouts do not. */
+  async function cobaltPost(instance, body, onProxy) {
+    var opts = { method: 'POST', headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify(body) };
+    try {
+      var r = await fetchWithTimeout(instance + '/', opts, COBALT_POST_TIMEOUT);
+      return { res: r, viaProxy: false };
+    } catch (e) {
+      if (!(e instanceof TypeError)) throw e;
+      if (onProxy) onProxy();
+      var r2 = await fetchWithTimeout(corsProxyUrl(instance + '/'), opts, COBALT_POST_TIMEOUT);
+      return { res: r2, viaProxy: true };
+    }
+  }
+  async function cobaltFetchBlobOnce(url, signal, onProgress) {
+    var res = await fetch(url, { signal: signal });
+    if (!res.ok) throw new Error('ဖိုင် ဆွဲမရဘူး (HTTP ' + res.status + ')');
+    var total = Number(res.headers.get('content-length') || 0);
+    var ct = res.headers.get('content-type') || '';
+    var type = /^(video|audio)\//.test(ct) ? ct.split(';')[0] : 'video/mp4';
+    if (!res.body || !res.body.getReader) return await res.blob();
+    var reader = res.body.getReader(), chunks = [], got = 0;
+    for (;;) {
+      var r = await reader.read();
+      if (r.done) break;
+      chunks.push(r.value); got += r.value.length;
+      if (onProgress) onProgress(got, total);
+    }
+    return new Blob(chunks, { type: type });
+  }
+  /* fetch the video bytes; if the direct fetch is blocked (CORS), retry via the proxy */
+  async function cobaltFetchBlob(url, signal, onProgress) {
+    try {
+      return await cobaltFetchBlobOnce(url, signal, onProgress);
+    } catch (e) {
+      if (!(e instanceof TypeError)) throw e;
+      return await cobaltFetchBlobOnce(corsProxyUrl(url), signal, onProgress);
+    }
+  }
+  function setLinkStatus(t, isErr) {
+    var el = $('linkStatus');
+    el.textContent = t || '';
+    el.style.color = isErr ? 'var(--err)' : '';
+  }
+  async function cobaltDownload(link) {
+    var url = (link || '').trim();
+    if (!/^https?:\/\//i.test(url)) { setLinkStatus('link အပြည့်အစုံ ထည့်ပေးပါ (https://… နဲ့ စရမယ်)', true); return; }
+    if (cobaltIsRedNote(url)) { setLinkStatus('Red Note (小红书) က Cobalt မထောက်ပံ့သေးလို့ မရသေးဘူး — ဖုန်းထဲကနေ ဆွဲပြီး file upload လုပ်ပေးပါ', true); return; }
+    if (linkAbort) linkAbort.abort(); /* a new request cancels the old one */
+    var ctrl = new AbortController(); linkAbort = ctrl;
+    var btn = $('linkBtn'); btn.disabled = true;
+    var bridgeErr = null, timedOut = false;
+    var bUrl = bridgeBase();
+    if (bUrl) {
+      setLinkStatus('PC bridge ကနေ ဆွဲနေတယ်… (video ကြီးရင် ခဏကြာနိုင်တယ်)');
+      var bTimer = setTimeout(function () { timedOut = true; ctrl.abort(); }, BRIDGE_TIMEOUT);
+      try {
+        var bFile = await bridgeDownload(bUrl, url, ctrl.signal);
+        if (linkAbort !== ctrl) return;
+        if (bFile) {
+          pickVideoFile(bFile);
+          setLinkStatus('ရပြီ — ' + bFile.name + ' (' + fmtSize(bFile.size) + ')။ အောက်က "စတင်လုပ်ဆောင်မယ်" ကို နှိပ်ပြီး ဆက်လုပ်လို့ရပြီ။');
+          toast('PC bridge ကနေ ဗီဒီယို ရပြီ');
+          btn.disabled = false; return;
+        }
+      } catch (e) {
+        if (linkAbort !== ctrl) return;
+        bridgeErr = timedOut ? 'Bridge ကနေ ၅ မိနစ်အတွင်း ဆွဲမရဘူး' : e.message;
+        /* fall through to Cobalt */
+      } finally { clearTimeout(bTimer); }
+    }
+    var instances = cobaltInstanceList();
+    var got = null, attempts = [];
+    for (var i = 0; i < instances.length; i++) {
+      var inst = instances[i];
+      setLinkStatus('Cobalt ကနေ တောင်းနေတယ်… (' + (i + 1) + '/' + instances.length + ')');
+      try {
+        var post = await cobaltPost(inst, { url: url, videoQuality: '720', youtubeVideoCodec: 'h264', filenameStyle: 'basic', alwaysProxy: true }, function () {
+          setLinkStatus('Cobalt ကနေ တောင်းနေတယ်… (' + (i + 1) + '/' + instances.length + ') — proxy နဲ့ ပြန်စမ်းနေတယ်');
+        });
+        var resp = await post.res.json().catch(function () { return null; });
+        if (linkAbort !== ctrl) return; /* superseded by a newer request */
+        got = { inst: inst, pick: cobaltPickVideoUrl(resp) };
+        break;
+      } catch (e) {
+        if (linkAbort !== ctrl) return;
+        attempts.push({ inst: inst, err: e.message }); /* auth missing / rate limited / down — try the next instance */
+      }
+    }
+    if (!got) {
+      var el = $('linkStatus');
+      el.style.color = 'var(--err)';
+      el.textContent = 'Cobalt instance တွေကနေ ဆွဲမရဘူး — တစ်ခုချင်းစီက အကြောင်းပြန်တာ:';
+      attempts.forEach(function (a) {
+        el.appendChild(document.createElement('br'));
+        el.appendChild(document.createTextNode('• ' + a.inst.replace(/^https?:\/\//, '') + ' — ' + a.err));
+      });
+      if (bridgeErr) {
+        el.appendChild(document.createElement('br'));
+        el.appendChild(document.createTextNode('• PC bridge — ' + bridgeErr));
+      }
+      var hint = document.createElement('div');
+      hint.textContent = 'အောက်က instance setting မှာ ကိုယ့် instance ထည့်ကြည့်ပါ။';
+      el.appendChild(hint);
+      var hint2 = document.createElement('div');
+      hint2.textContent = 'HTML ဖိုင်ကို တိုက်ရိုက်ဖွင့်ထားရင် (file://) browser က တားနိုင်တယ် — python -m http.server 8000 နဲ့ localhost ကနေ ဖွင့်ကြည့်ပါ။';
+      el.appendChild(hint2);
+      btn.disabled = false; return;
+    }
+    try { localStorage.setItem('mt_cobalt_last', got.inst); } catch (e) {}
+    timedOut = false;
+    var dlTimer = setTimeout(function () { timedOut = true; ctrl.abort(); }, COBALT_DL_TIMEOUT);
+    try {
+      setLinkStatus('ဗီဒီယို ဆွဲနေတယ်… 0 MB');
+      var blob = await cobaltFetchBlob(got.pick.url, ctrl.signal, function (n, total) {
+        setLinkStatus('ဗီဒီယို ဆွဲနေတယ်… ' + (n / 1048576).toFixed(1) + ' MB' + (total ? ' / ' + (total / 1048576).toFixed(1) + ' MB' : ''));
+      });
+      if (linkAbort !== ctrl) return;
+      if (!blob || !blob.size) throw new Error('ဖိုင် အလွတ်ကြီး ရောက်လာတယ်');
+      var file = new File([blob], got.pick.filename, { type: blob.type || 'video/mp4' });
+      pickVideoFile(file);
+      setLinkStatus('ရပြီ — ' + file.name + ' (' + fmtSize(file.size) + ')။ အောက်က "စတင်လုပ်ဆောင်မယ်" ကို နှိပ်ပြီး ဆက်လုပ်လို့ရပြီ။');
+      toast('Link ကနေ ဗီဒီယို ရပြီ');
+    } catch (e) {
+      if (linkAbort !== ctrl) return;
+      if (timedOut) setLinkStatus('ဖိုင် ဆွဲတာ ၅ မိနစ်ကျော်သွားလို့ ရပ်လိုက်တယ် — video ကြီးလွန်းလို့ ဖြစ်နိုင်တယ်', true);
+      else if (ctrl.signal.aborted) setLinkStatus('ရပ်လိုက်ပြီ', true);
+      else {
+        setLinkStatus('ဖိုင် ဆွဲမရဘူး — ' + e.message + '။ ', true);
+        var a = document.createElement('a');
+        a.href = got.pick.url; a.target = '_blank'; a.rel = 'noopener';
+        a.textContent = 'ဒီ link ကနေ ဖိုင်ကို ကိုယ်တိုင် ဆွဲပြီး upload လုပ်လို့ရတယ်';
+        $('linkStatus').appendChild(document.createElement('br'));
+        $('linkStatus').appendChild(a);
+      }
+    } finally { clearTimeout(dlTimer); }
+    btn.disabled = false;
+  }
+  $('linkBtn').addEventListener('click', function () { cobaltDownload($('linkUrl').value); });
+  $('linkUrl').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); cobaltDownload($('linkUrl').value); }
   });
+  $('cobaltSave').addEventListener('click', function () {
+    var v = $('cobaltInstance').value.trim().replace(/\/+$/, '');
+    var b = $('bridgeUrl').value.trim().replace(/\/+$/, '');
+    try {
+      localStorage.setItem('mt_cobalt_instance', v);
+      localStorage.setItem('mt_bridge_url', b);
+    } catch (e) {}
+    toast('သိမ်းပြီးပြီ');
+  });
+  try {
+    var _ci = localStorage.getItem('mt_cobalt_instance') || '';
+    if (_ci) $('cobaltInstance').value = _ci;
+    var _bu = localStorage.getItem('mt_bridge_url') || '';
+    if (_bu) $('bridgeUrl').value = _bu;
+  } catch (e) {}
   bindDrop('dropSrt', 'fileInputSrt', function (f) { srtFile = f; showFileMeta(); });
   window.addEventListener('dragover', function (e) { e.preventDefault(); });
   window.addEventListener('drop', function (e) { e.preventDefault(); });
