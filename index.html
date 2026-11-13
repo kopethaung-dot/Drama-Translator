@@ -405,27 +405,27 @@ body{background-attachment:fixed}
 
   <div class="drop" id="dropVideo" role="button" tabindex="0" aria-label="ဗီဒီယို သို့မဟုတ် အသံဖိုင် ရွေးရန်">
     <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V5m0 0L8 9m4-4 4 4"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></svg>
-    <div class="t">နှိပ်ပြီး ဖိုင်ရွေးပါ (သို့) ဒီမှာ ဆွဲချလိုက်ပါ</div>
-    <div class="s">mp4, webm, mov, mp3, wav စတဲ့ ဗီဒီယို / အသံဖိုင် အားလုံး ရပါတယ်</div>
+    <div class="t">ဖိုင်ရွေးရန်နှိပ်ပါ</div>
+    <div class="s">Upload mp4, webm, mov, mp3, wav</div>
   </div>
   <input type="file" id="fileInputVideo" accept="video/*,audio/*,.mkv" class="hidden" />
 
   <div class="drop hidden" id="dropSrt" role="button" tabindex="0" aria-label="SRT သို့မဟုတ် VTT ဖိုင် ရွေးရန်">
     <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
-    <div class="t">နှိပ်ပြီး .srt / .vtt ဖိုင်ရွေးပါ (သို့) ဒီမှာ ဆွဲချလိုက်ပါ</div>
-    <div class="s">ရှိပြီးသား စာတန်းကို မြန်မာပြန်ဆိုပေးမယ် — အချိန်တွေ ဒီအတိုင်း ထားမယ်</div>
+    <div class="t">နှိပ်ပြီး .srt / .vtt ဖိုင်ရွေးပါ</div>
+    <div class="s">ရှိပြီးသား စာတန်းကို မြန်မာပြန်ဆိုပေးမယ်</div>
   </div>
   <input type="file" id="fileInputSrt" accept=".srt,.vtt,text/plain" class="hidden" />
 
   <div class="filemeta" id="fileMeta"></div>
 
   <div id="linkRow" style="margin-top:14px">
-    <label class="f" for="linkUrl">ဒါမှမဟုတ် link ကနေ ယူမယ်</label>
+    <label class="f" for="linkUrl">link ကနေ ယူမယ်</label>
     <div class="row" style="gap:8px;margin-top:6px">
       <input type="text" id="linkUrl" placeholder="https://www.youtube.com/watch?v=… / https://www.tiktok.com/…" autocomplete="off" spellcheck="false" inputmode="url" style="flex:1" />
       <button class="btn small" id="linkBtn" type="button">🔗 ဆွဲယူမယ်</button>
     </div>
-    <div style="color:var(--mut);font-size:13px;margin-top:6px;line-height:1.6">YouTube / TikTok link တွေ ရပါတယ် — TikTok က watermark မပါဘူး။ Red Note (小红书) က Cobalt မထောက်ပံ့သေးလို့ မရသေးဘူး။</div>
+    <div style="color:var(--mut);font-size:13px;margin-top:6px;line-height:1.6">YouTube / TikTok link No watermark</div>
     <div id="linkStatus" style="font-size:13px;margin-top:6px;line-height:1.6"></div>
     <details style="margin-top:6px">
       <summary style="font-size:13px;color:var(--mut);cursor:pointer">Cobalt instance / PC bridge ကိုယ်တိုင် သတ်မှတ်မယ် (မရရင်)</summary>
@@ -436,7 +436,7 @@ body{background-attachment:fixed}
         <input type="text" id="bridgeUrl" placeholder="PC bridge URL — http://… (ဥပမာ http://192.168.1.5:8000)" autocomplete="off" spellcheck="false" inputmode="url" style="flex:1" />
         <button class="btn small ghost" id="cobaltSave" type="button">သိမ်းမယ်</button>
       </div>
-      <div style="color:var(--mut);font-size:13px;margin-top:4px;line-height:1.6">အလုပ်ဖြစ်တဲ့ Cobalt instance တွေကို <a href="https://cobalt.directory/" target="_blank" rel="noopener">cobalt.directory</a> မှာ ကြည့်လို့ရတယ် (Turnstile မပါတဲ့ instance ကို ရွေးပါ)။ PC bridge (bridge.py) ကနေ tool ကို ဖွင့်ထားရင် bridge ကို အလိုအလျောက် သုံးမယ် — URL ရိုက်စရာမလိုဘူး။</div>
+      <div style="color:var(--mut);font-size:13px;margin-top:4px;line-height:1.6">အလုပ်ဖြစ်တဲ့ Cobalt instance တွေကို <a href="https://cobalt.directory/" target="_blank" rel="noopener">cobalt.directory</a></div>
     </details>
   </div>
 
@@ -470,15 +470,15 @@ body{background-attachment:fixed}
         <label class="f" for="geminiModel">Gemini မော်ဒယ်</label>
         <select id="geminiModel">
 <optgroup label="လက်ရှိ ထွက်ရှိနေတဲ့ မော်ဒယ်များ">
-<option value="gemini-3.8-flash" selected>Gemini 3.8 Flash — မြန် + တိကျ (အကြံပြု)</option>
+<option value="gemini-3.8-flash" selected>Gemini 3.8 Flash — မြန် + တိကျ</option>
 <option value="gemini-3.6-flash">Gemini 3.6 Flash</option>
 <option value="gemini-3-flash-preview">Gemini 3 Flash Preview</option>
-<option value="gemini-3.1-pro-preview">Gemini 3.1 Pro — အတိကျဆုံး (နှေးနိုင်)</option>
+<option value="gemini-3.1-pro-preview">Gemini 3.1 Pro — အတိကျဆုံး</option>
 </optgroup>
 </select>
-<label class="f" for="geminiModelCustom" style="margin-top:8px">ဒါမှမဟုတ် မော်ဒယ်အမည် ကိုယ်တိုင်ရိုက်ပါ</label>
+<label class="f" for="geminiModelCustom" style="margin-top:8px">မော်ဒယ်အမည် ရိုက်ပါ</label>
 <input type="text" id="geminiModelCustom" placeholder="ဥပမာ gemini-3.6-flash" autocomplete="off" spellcheck="false" />
-<div class="hint">ဒီကွက်မှာ ရိုက်ထားရင် အပေါ်က ရွေးထားတာထက် ဒါကို အရင်သုံးမယ်။</div>
+<div class="hint">ရိုက်ထားရင် ဒါကို အရင်သုံးမယ်။</div>
       </div>
     </div>
     <div id="transcriberBox" style="margin-top:14px">
@@ -486,7 +486,7 @@ body{background-attachment:fixed}
         <div>
           <label class="f" for="transcriber">🎙️ အသံနားထောင်မယ့် Engine</label>
           <select id="transcriber">
-            <option value="gemini" selected>Gemini — နားထောင် + ပြန် (မူလ)</option>
+            <option value="gemini" selected>Gemini — နားထောင် + ဘာသာပြန်</option>
             <option value="groq">Groq Whisper — နားထောင်မြန်၊ အခမဲ့</option>
             <option value="scribe">ElevenLabs Scribe — အတိကျဆုံး</option>
             <option value="deepgram">Deepgram Nova-3 — $200 credit အခမဲ့</option>
@@ -495,6 +495,7 @@ body{background-attachment:fixed}
             <option value="hf">HF Whisper — အခမဲ့ (large-v3)</option>
           </select>
         </div>
+        <label style="display:flex;gap:8px;align-items:flex-start;margin:10px 0 0"><input type="checkbox" id="transcribeOnly" /> <span><b>ဘာသာပြန်စရာ မလိုဘူး</b> — နားထောင်ရတဲ့ စာသားအတိုင်း SRT ထုတ်မယ် (မြန်မာအသံအတွက်)။</span></label>
         <div id="groqKeyWrap" class="hidden">
           <label class="f" for="groqKey">Groq API Key</label>
           <input type="password" id="groqKey" placeholder="gsk_…" autocomplete="off" spellcheck="false" />
@@ -515,32 +516,21 @@ body{background-attachment:fixed}
           <label class="f" for="hfKey">Hugging Face Token</label>
           <input type="password" id="hfKey" placeholder="hf_…" autocomplete="off" spellcheck="false" />
         </div>
-      </div>
-      <div class="hint" id="transcriberHint">Gemini က အသံနားထောင်ပြီး ဘာသာပြန်တယ် — quota အများဆုံး သုံးတယ်။ Groq Whisper / Scribe က အသံပဲ နားထောင်ပြီး၊ Gemini က စာသားပဲ ပြန်တယ် — Gemini quota သက်သာတယ်။</div>
+      <div class="hint" id="transcriberHint">Groq / Scribe သုံးရင် Gemini quota သက်သာတယ်။</div>
       <div class="hint hidden" id="groqKeyHint">Key မရှိရင် <a href="https://console.groq.com/keys" target="_blank" rel="noopener">Groq Console</a> မှာ အခမဲ့ ထုတ်ပါ (ကတ်မလို)။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။ Whisper large-v3 သုံးတယ် — တစ်နေ့ကို အသံ ၈ နာရီစာ အခမဲ့။</div>
       <div class="hint hidden" id="scribeHint">Scribe က TTS tab ထဲက ElevenLabs API Key ကို သုံးမယ် — key အသစ် မလိုဘူး။ တစ်လ ၂၇၀ မိနစ်စာ အခမဲ့၊ ပြီးရင် တစ်နာရီ $0.22။</div>
       <div class="hint hidden" id="deepgramKeyHint">Key မရှိရင် <a href="https://console.deepgram.com/" target="_blank" rel="noopener">Deepgram Console</a> မှာ အကောင့်ဖွင့်ပြီး API Key ထုတ်ပါ — $200 credit အခမဲ့ (ကတ်မလို)၊ ကုန်သွားရင် တစ်မိနစ် $0.0043။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။</div>
       <div class="hint hidden" id="assemblyKeyHint">Key မရှိရင် <a href="https://www.assemblyai.com/dashboard/signup" target="_blank" rel="noopener">AssemblyAI</a> မှာ အကောင့်ဖွင့်ပြီး API Key ထုတ်ပါ — $50 credit အခမဲ့ (ကတ်မလို)၊ ကုန်သွားရင် တစ်နာရီ $0.15။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။</div>
       <div class="hint hidden" id="gladiaKeyHint">Key မရှိရင် <a href="https://app.gladia.io/signup" target="_blank" rel="noopener">Gladia</a> မှာ အကောင့်ဖွင့်ပြီး API Key ထုတ်ပါ — €50 credit အခမဲ့ (ကတ်မလို၊ အသံ နာရီ ၃၀၀ လောက်)၊ ကုန်သွားရင် တစ်နာရီ 0.16€။ ၁၀၀+ ဘာသာစကား၊ စာလုံးအချိန်မှတ် ပါတယ်။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။</div>
       <div class="hint hidden" id="hfKeyHint">Token မရှိရင် <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener">Hugging Face</a> မှာ အကောင့်ဖွင့်ပြီး token အခမဲ့ ဖန်တီးပါ (Inference Providers permission ပါအောင်) — တစ်နေ့ request ~၁,၀၀၀ အခမဲ့၊ ကတ်မလို။ Groq နဲ့ မော်ဒယ်အတူတူ (Whisper large-v3)။ လူများရင် နှေးတတ်တယ် / model loading စောင့်ရတတ်တယ်။</div>
-      <details class="adv" id="extToolsBox" style="margin-top:10px">
-        <summary>🌐 အပြင်က transcript tool တွေနဲ့ နားထောင်မယ်</summary>
-        <div class="hint" style="margin-top:8px">အပေါ်က Engine တွေနဲ့ အဆင်မပြေရင် အပြင်မှာ transcribe လုပ်ပြီး SRT ဖိုင် ထုတ်ပါ — ပြီးရင် ဒီ tool မှာ SRT ဖိုင်ကို ပြန်ဆိုလို့ရတယ်။</div>
-        <ul style="margin:8px 0 0 18px; line-height:1.9">
-          <li><b>CapCut</b> — Text → Auto captions (တရုတ်) → SRT ထုတ်။ SRT ထုတ်တာက Pro လိုတယ်; အခမဲ့နည်းက <a href="https://exportsrt.com/en/" target="_blank" rel="noopener">exportsrt.com</a> မှာ CapCut draft ဖိုင်ကနေ ထုတ်ပါ။ <a href="https://www.capcut.com/tools/ai-caption-generator" target="_blank" rel="noopener">CapCut ဖွင့်မယ်</a></li>
-          <li><b>TurboScribe</b> — ဖိုင်တင် → SRT ဒေါင်း။ အခမဲ့ တစ်နေ့ ၃ ဖိုင်၊ တစ်ဖိုင် မိနစ် ၃၀ ထိ။ <a href="https://turboscribe.ai/" target="_blank" rel="noopener">TurboScribe ဖွင့်မယ်</a></li>
-          <li><b>YouTube Studio</b> — ဗီဒီယို unlisted တင် → auto captions ရပြီး Subtitles → ⋮ → Download → .srt (ကိုယ့်ဗီဒီယိုပဲ ရတယ်)။ <a href="https://studio.youtube.com" target="_blank" rel="noopener">YouTube Studio ဖွင့်မယ်</a></li>
-          <li><b>Whisper Web</b> — browser ထဲမှာ Whisper run တယ်၊ key မလို၊ အသံ တင်စရာမလို (PC Chrome အကောင်းဆုံး၊ ဖုန်းမှာ နှေးတယ်)။ <a href="https://whisperweb.dev" target="_blank" rel="noopener">Whisper Web ဖွင့်မယ်</a></li>
-        </ul>
-        <div class="hint" style="margin-top:8px">SRT ဖိုင် ရရင်: အပေါ်က <b>“SRT ဖိုင်ကို ပြန်ဆိုမယ်”</b> ခလုတ် နှိပ် → SRT ဖိုင် ရွေး → စတင်မယ် → ပြီးရင် ဗီဒီယို ရွေးပြီး burn လုပ်လို့ရတယ်။</div>
-      </details>
+      </div>
     </div>
     <details class="adv"><summary>အဆင့်မြင့် ဆက်တင်များ (Pacing၊ batch၊ fallback)</summary>
     <div style="margin-top:12px;max-width:300px">
       <label class="f" for="paceSec">⏱️ Request ကြား စောင့်ချိန် — Pacing (စက္ကန့်)</label>
       <input type="number" id="paceSec" value="7" min="0" max="60" step="1" inputmode="numeric" />
     </div>
-    <div class="hint">Request တွေကြား စောင့်ချိန် — ၇ စက္ကန့်ဆို 429 (limit) ထိတာ အများကြီး လျော့တယ်။ 0 = မစောင့်ဘူး။</div>
+    <div class="hint">၇ စက္ကန့်ဆို limit ထိတာ လျော့တယ်။ 0 = မစောင့်ဘူး။</div>
 <label class="f" for="batchSize">Gemini စာသားဘာသာပြန်: တစ်ကြိမ်ပို့တဲ့ စာတန်းအရေအတွက်</label>
 <select id="batchSize">
 <option value="">မူလ (၃၀ ကြောင်း)</option>
@@ -548,26 +538,26 @@ body{background-attachment:fixed}
 <option value="100">၁၀၀ ကြောင်း (request အနည်းဆုံး၊ ပျက်ရင် ပိုဆုံး)</option>
 </select>
 <div class="row"><button class="btn small ghost" type="button" id="trMemClear">ဘာသာပြန်မှတ်ဉာဏ် ရှင်းမယ်</button></div>
-<div class="hint">ဘာသာပြန်ပြီးသား စာတန်းတွေကို မှတ်ထားပြီး ပျက်လို့ ပြန်လုပ်ရင် မပို့တော့ဘူး၊ စာသားတူတာကို တစ်ခါပဲ ပို့တယ်။ Model၊ ပုံစံ box၊ Glossary ပြောင်းရင် အလိုအလျောက် အသစ်ပြန်ဘာသာပြန်မယ်။</div>
+<div class="hint">ပြန်ပြီးသား စာတန်းတွေ မှတ်ထားတယ် — ပြန်မပို့ဘူး။</div>
 <label class="f" for="geminiChunk">Gemini ကို အသံအပိုင်းလိုက် ပို့တဲ့ အရှည်</label>
 <select id="geminiChunk">
 <option value="60">၆၀ စက္ကန့် (အချိန် ပိုတိကျ၊ request ပိုများ)</option>
 <option value="90">၉၀ စက္ကန့်</option>
 <option value="120" selected>၁၂၀ စက္ကန့် (မူလ)</option>
 </select>
-<label style="display:flex;gap:8px;align-items:flex-start;margin:14px 0 6px"><input type="checkbox" id="autoModelSwitch" checked /> <span><b>မော်ဒယ် အလိုအလျောက် ပြောင်းမယ်</b> — ရွေးထားတဲ့ မော်ဒယ် မရရင် (404 / 429 / 503) နောက်ထပ် ရနိုင်တဲ့ Gemini မော်ဒယ်ဆီ တစ်ခုပြီးတစ်ခု ပြောင်းပြီး ဆက်ဘာသာပြန်မယ်</span></label>
-<label style="display:flex;gap:8px;align-items:flex-start;margin:14px 0 6px"><input type="checkbox" id="gtPolish" /> <span><b>Google Translate နဲ့ အရင် ပြန်ပြီး Gemini နဲ့ ပြင်မယ်</b> — Google (အခမဲ့၊ key မလို) က မြန်မြန် ပြန်ပြီး၊ Gemini က မြန်မာစာကို သဘာဝကျကျ ပြန်ပြင်ပေးမယ်။ Gemini quota သက်သာတယ်။ Google မရရင် Gemini အစကနေ ပြန်ဆိုတဲ့ လမ်းကြောင်း အတိုင်း အလိုအလျောက် ပြောင်းလုပ်မယ်။ SRT mode ရော ဗီဒီယို mode မှာပါ သုံးတယ်။</span></label>
+<label style="display:flex;gap:8px;align-items:flex-start;margin:14px 0 6px"><input type="checkbox" id="autoModelSwitch" checked /> <span><b>မော်ဒယ် အလိုအလျောက် ပြောင်းမယ်</b> — မော်ဒယ် မရရင် (404 / 429 / 503) နောက်မော်ဒယ်ဆီ အလိုအလျောက် ပြောင်းမယ်</span></label>
+<label style="display:flex;gap:8px;align-items:flex-start;margin:14px 0 6px"><input type="checkbox" id="gtPolish" /> <span><b>Google Translate နဲ့ အရင် ပြန်ပြီး Gemini နဲ့ ပြင်မယ်</b> — Google (အခမဲ့) အရင်ပြန်ပြီး Gemini က သဘာဝကျကျ ပြင်ပေးမယ်။</span></label>
     </details>
-    <div class="hint">Key မရှိရင် <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> မှာ အခမဲ့ ထုတ်ပါ။ Key ကို ဒီ browser မှာ မှတ်ထားမယ် — browser ပိတ်ပြီး ပြန်ဖွင့်လည်း ကျန်နေမယ်။ ဖျက်ချင်ရင် အကွက်ထဲက စာကို ဖျက်လိုက်ပါ။</div>
+    <div class="hint">Key မရှိရင် <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> မှာ အခမဲ့ ထုတ်ပါ။ Key က ဒီ browser မှာ မှတ်ထားမယ်။</div>
   </div>
-  <div class="note" id="geminiNote">Gemini မုဒ်မှာ အကြောင်းအရာကို Google server သို့ ပို့ရတယ်။ 429 ထိရင် အလိုအလျောက် စောင့်ပြီး ပြန်ကြိုးစားပေးမယ်။</div>
+  <div class="note" id="geminiNote">429 ထိရင် အလိုအလျောက် စောင့်ပြီး ပြန်ကြိုးစားပေးမယ်။</div>
 
   <details class="adv"><summary>ဘာသာပြန်ပုံစံ (Style) နဲ့ နာမည်မှတ်တမ်း (Glossary) — မလိုရင် ကျော်ပါ</summary>
 <div style="margin-top:16px">
 <label class="f" for="styleText">ကိုယ်ပိုင် ဘာသာပြန်ပုံစံ (Style)</label>
 <textarea class="my" id="styleText" rows="5" placeholder="ဥပမာ —&#10;စကားပြောလေသံ၊ ကျွန်တော်/ကျွန်မ သုံးပုံ၊ စာတိုတိုရေးပုံ&#10;နမူနာ — 你怎么来了 → မင်း ဘာလို့ လာတာလဲ"></textarea>
 <div class="row"><button class="btn small ghost" type="button" id="exportCorr">ပြင်ထားတဲ့စာတန်းတွေ ဒေတာအဖြစ် ထုတ်မယ် (JSONL)</button></div>
-<div class="hint">ဒီစာကို Gemini ဘာသာပြန်တိုင်း ထည့်ပေးမယ်၊ ဒီ browser မှာ မှတ်ထားမယ်။ ပြင်ဆင်ရေးထဲမှာ ပြင်ခဲ့တဲ့ စာတန်းတွေကို မူရင်း၊ စက်ပြန်၊ သင်ပြင်တာ အတွဲလိုက် ထုတ်ပေးတာက နမူနာအသစ်တွေ ရေးဖို့ အသုံးဝင်တယ်။</div>
+<div class="hint">ဘာသာပြန်တိုင်း ဒီစာကို ထည့်ပေးမယ်။</div>
 </div>
 <div style="margin-top:16px">
     <label class="f" for="glossaryText">ဇာတ်ကောင်နာမည် / ဝေါဟာရ မှတ်တမ်း (Glossary)</label>
@@ -576,10 +566,9 @@ body{background-attachment:fixed}
       <button class="btn small ghost" id="glossarySave">မှတ်တမ်း သိမ်းမယ်</button>
       <button class="btn small ghost" id="glossaryAi">Gemini နဲ့ နာမည်တွေ အလိုအလျောက် ထုတ်မယ်</button>
     </div>
-    <div class="hint">ဒီနာမည်တွေကို ဘာသာပြန်တိုင်း ဒီပုံစံအတိုင်းပဲ သုံးမယ် — အပိုင်းများတဲ့ ဇာတ်လမ်းမှာ နာမည် မလွဲအောင်။ "အလိုအလျောက် ထုတ်မယ်" က Gemini + Key လိုတယ်။</div>
+    <div class="hint">ဘာသာပြန်တိုင်း ဒီနာမည်တွေကို ဒီပုံစံအတိုင်း သုံးမယ်။</div>
   </div>
 
-</details>
   <div class="hint" style="margin-top:14px">
 <label style="display:flex;gap:8px;align-items:flex-start;margin:0 0 6px"><input type="checkbox" id="autoFinish" checked /> <span><b>One-click</b> — ပြီးတာနဲ့ ရှည်တဲ့စာတန်းတွေ အလိုအလျောက်ခွဲ၊ အချိန်ကိုက်ညှိပြီး SRT ကို ဒေါင်းလုဒ်ချမယ်</span></label>
 </div>
@@ -603,7 +592,7 @@ body{background-attachment:fixed}
     <button class="btn ghost hidden" id="batchDlAll">ပြီးတဲ့ SRT အကုန် ဒေါင်းမယ်</button>
     <button class="btn small danger-ghost hidden" id="batchClear">တန်းစီ ရှင်းမယ်</button>
   </div>
-  <div class="hint">အပေါ်က ဆက်တင်တွေကို အပိုင်းအားလုံးအတွက် သုံးမယ်။ လုပ်နေတုန်း tab မပိတ်ပါနဲ့၊ screen ဖွင့်ထားပါ။</div>
+  <div class="hint">လုပ်နေတုန်း tab မပိတ်ပါနဲ့။</div>
   </details>
 </section>
 
@@ -644,7 +633,6 @@ body{background-attachment:fixed}
         <div id="titleCue"><span id="titleText"></span><span id="titleResize" title="ဆွဲပြီး စာလုံးအရွယ် ပြောင်းမယ်">⤡</span></div>
         <img id="logoImg" class="hidden" alt="" />
       </div>
-      <div class="hint">ဗီဒီယို ဖွင့်ရင် စာတန်းတွေ အပေါ်မှာ တက်ပြမယ်။</div>
 
       <details class="burnbox" id="syncBox">
 <summary>စာတန်းအချိန် လွဲနေရင် ညှိရန် (Sync)</summary>
@@ -658,12 +646,12 @@ body{background-attachment:fixed}
 <span style="align-self:center">စက္ကန့်</span>
 <button class="btn small" type="button" id="syncShift">စာတန်းအားလုံး ရွှေ့မယ်</button>
 </div>
-<div class="hint">စာတန်း စောနေရင် <b>+</b> ထည့်ပါ (ဥပမာ +0.5 — စာတန်း နောက်ကျသွားမယ်)၊ နောက်ကျနေရင် <b>−</b> ထည့်ပါ။ ပြန်ဆုတ်ချင်ရင် အောက်က ↩ ပြန်ဆုတ်မယ် ကို နှိပ်ပါ။</div>
+<div class="hint">စောရင် +၊ နောက်ကျရင် − ထည့်ပါ (ဥပမာ +0.5)။</div>
 <div class="row" style="margin-top:8px">
 <button class="btn small" type="button" id="syncSnap">🎙️ အသံနဲ့ ပြန်ကပ်မယ်</button>
 </div>
-<div class="hint">Gemini က အချိန်ခန့်မှန်းတာ အပိုင်းလိုက် လွဲနေရင် — အသံထဲက စကားတကယ်ပြောတဲ့နေရာကို ရှာပြီး စာတန်းတစ်ကြောင်းချင်းစီရဲ့ အစ/အဆုံးကို ကပ်ပေးတယ်။ ဗီဒီယိုဖိုင် လိုပါတယ်။ မကြိုက်ရင် ↩ ပြန်ဆုတ်မယ် နဲ့ ပြန်ယူလို့ရတယ်။</div>
-<div class="hint">တိကျအောင် ညှိချင်ရင် — စာတန်းအစပိုင်းက တစ်ကြောင်း၊ အဆုံးပိုင်းက တစ်ကြောင်း ရွေးပါ။ စာတန်းအမှတ်ကို ထည့်ပြီး ဗီဒီယိုကို အဲဒီစကားပြောတဲ့နေရာကို ရွှေ့ကာ ⏱ ကိုနှိပ်ပါ။ ညှိမယ်ကို နှိပ်ရင် စာတန်းအားလုံးရဲ့ အချိန်ကို အချိုးကျ ပြန်တွက်ပေးမယ်။</div>
+<div class="hint">စာတန်းတစ်ကြောင်းချင်းကို တကယ်ပြောတဲ့နေရာနဲ့ ကပ်ပေးတယ်။ ဗီဒီယိုဖိုင် လိုပါတယ်။</div>
+<div class="hint">အစနဲ့ အဆုံးက စာတန်းတစ်ကြောင်းစီ ရွေးပြီး ⏱ နှိပ်ပါ — ကျန်တာကို အချိုးကျ ပြန်တွက်ပေးမယ်။</div>
 <div class="grid2">
 <div><label class="f" for="syncN1">အချက် A — စာတန်းအမှတ် (အစပိုင်း)</label><input type="number" id="syncN1" min="1" inputmode="numeric" /><div class="hint" id="syncT1"></div>
 <label class="f" for="syncR1">ဗီဒီယိုမှာ တကယ်ပေါ်တဲ့ အချိန် (စက္ကန့်)</label><input type="number" id="syncR1" step="0.1" /><button class="btn small ghost" type="button" id="syncS1" style="margin-top:6px">⏱ ယခုနေရာ</button></div>
@@ -677,7 +665,6 @@ body{background-attachment:fixed}
 </details>
 <div class="burnbox" id="burnBox">
         <h3>စာတန်းထိုးပြီး ဗီဒီယို ထုတ်မယ်</h3>
-        <div class="hint" style="margin-top:0">စာတန်းကို ဗီဒီယိုထဲ တိုက်ရိုက် ထည့်ပြီး ဖိုင်အသစ် ထုတ်မယ်။ ချိန်လိုက်တာနဲ့ အစမ်းပြမှာ ချက်ချင်း ပြောင်းပြမယ်။</div>
         <div class="burngrid">
           <div class="full">
             <label class="f">စာတန်း နေရာ</label>
@@ -699,7 +686,7 @@ body{background-attachment:fixed}
               <button class="btn small ghost" type="button" id="fontPlus" aria-label="တိုးမယ်">+</button>
             </div></div>
             <input type="range" id="burnFont" min="0" max="120" step="1" value="39" style="margin-top:8px" />
-            <div class="hint">နံပါတ်က ဗီဒီယိုအမြင့် 1080 px အပေါ် အခြေခံတဲ့ ဖောင့်ဆိုဒ်ပါ (ဥပမာ 24 = သေးသေး၊ 39 = ပုံမှန်၊ 60 = ကြီး)။ ဒသမ ရိုက်လို့ရတယ် (ဥပမာ 0.5)။ 0 ထည့်ရင် စာတန်း လုံးဝ မမြင်ရတော့ဘူး။ ဗီဒီယိုအရွယ်ကွာရင်လည်း အချိုးကျ ပြောင်းပေးမယ်။</div>
+            <div class="hint">  </div>
           </div>
           <div>
             <label class="f" for="burnColor">စာသား အရောင်</label>
@@ -719,7 +706,7 @@ body{background-attachment:fixed}
           <div>
             <label class="f" for="burnStroke">စာသား ဘောင် (Stroke) အထူ <span class="val" id="burnStrokeVal">0 px — ပိတ်ထား</span></label>
             <input type="range" id="burnStroke" min="0" max="12" step="0.5" value="0" />
-            <div class="hint">စာသားအနားမှာ ဘောင်လိုင်း ထည့်ပေးတာ — ဗီဒီယိုအလင်းရောင်ပေါ်မှာပါ စာဖတ်ရလွယ်သွားမယ်။ 0 = ပိတ်ထား၊ 2–4 px = အကြံပြုထားတဲ့ အထူ။</div>
+            <div class="hint">0 = ပိတ်ထား၊ 2–4 px = အကြံပြု။</div>
           </div>
           <div>
             <label class="f" for="burnStrokeColor">ဘောင် အရောင်</label>
@@ -782,9 +769,9 @@ body{background-attachment:fixed}
               <div><label class="f" for="burnBlurW">အကျယ် <span class="val" id="burnBlurWVal">100%</span></label><input type="range" id="burnBlurW" min="5" max="100" step="1" value="100" /></div>
               <div><label class="f" for="burnBlurH2">အမြင့် <span class="val" id="burnBlurH2Val">15%</span></label><input type="range" id="burnBlurH2" min="5" max="100" step="1" value="15" /></div>
             </div>
-            <div class="hint">X/Y = ဘယ်ဘက်/အပေါ်ဘက်ကနေ ဘယ်လောက်ဝေးလဲ၊ အကျယ်/အမြင့် = blur အကွက်ရဲ့ အရွယ်။ Preview မှာရော ထုတ်တဲ့ ဗီဒီယိုမှာပါ အတူတူ ဖုံးပေးမယ်။</div>
+            <div class="hint">X/Y = အကွက်ရဲ့ နေရာ၊ အကျယ်/အမြင့် = အရွယ်။</div>
           </div>
-          <div class="full"><div class="hint">ဗီဒီယိုထဲမှာ ကပ်ပါလာတဲ့ တရုတ်စာတန်း / လိုဂိုကို မှုန်ဝါးအောင် ဖုံးပေးမယ် — ထုတ်တဲ့ ဗီဒီယိုမှာရော၊ preview မှာပါ မြင်ရမယ်။ မြန်မာစာတန်းက blur အပေါ်မှာ ကြည်ကြည်လင်လင် ပေါ်မယ်။</div></div>
+          <div class="full"><div class="hint">ဗီဒီယိုထဲက စာတန်းကို ဖုံးမယ်။</div></div>
           </div></details>
           <div class="full">
             <label class="f">ဗီဒီယို အရည်အသွေး (Quality)</label>
@@ -793,7 +780,7 @@ body{background-attachment:fixed}
               <button id="q1080" aria-pressed="true">1080p</button>
               <button id="qOrig" aria-pressed="false">Original</button>
             </div>
-            <div class="hint">ကြည်လေ ဖိုင်ကြီးပြီး ကြာလေပဲ။ မူရင်းထက် သေးရင် မူရင်းအရွယ်အတိုင်းပဲ ထုတ်မယ်။</div>
+            <div class="hint">ကြည်လေ ဖိုင်ကြီးလေ။</div>
           </div>
           <div class="full">
             <label class="f">ထုတ်မယ့် ဖိုင် ပုံစံ</label>
@@ -801,7 +788,7 @@ body{background-attachment:fixed}
               <button id="fmtWebm" aria-pressed="true">WebM</button>
               <button id="fmtMp4" aria-pressed="false">MP4</button>
             </div>
-            <div class="hint">WebM — Gallery မှာ ဖွင့်လို့ရ၊ ဒါပေမဲ့ TikTok / Facebook / CapCut မှာ တင်မရဘူး။ MP4 — ဆိုရှယ်မီဒီယာတိုင်းမှာ တင်လို့ရ၊ ဗီဒီယို အရှည်အတိုင်း 1x နဲ့ ချောချောထုတ်ပေးတယ်၊ အသံကို ဖုန်းကနေ တိုက်ရိုက် ထည့်ပေးတယ်။<span id="mp4AudioCap"></span></div>
+            <div class="hint">WebM က TikTok / CapCut မှာ တင်မရဘူး။ MP4 က နေရာတိုင်းမှာ တင်လို့ရတယ်။<span id="mp4AudioCap"></span></div>
           </div>
           <details class="full adv"><summary>ကိုယ်ပိုင်ဖောင့် / Logo ထည့်ရန်</summary><div class="burngrid">
           <div class="full">
@@ -811,7 +798,7 @@ body{background-attachment:fixed}
               <button class="btn small ghost hidden" id="fontReset">မူရင်း ဖောင့် ပြန်သုံးမယ်</button>
             </div>
             <input type="file" id="fontFile" accept=".ttf,.otf,.woff,.woff2" class="hidden" />
-            <div class="hint" id="fontStatus">အခု သုံးနေတာ — A Test (မူရင်း)။ ကိုယ်ပိုင်ဖောင့်က ဒီ tab ဖွင့်ထားသရွေ့ပဲ ရမယ်။</div>
+            <div class="hint" id="fontStatus">အခု — A Test (မူရင်း)။</div>
             <div id="fontSample" style="margin-top:6px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;font-size:17px;line-height:1.6">မြန်မာစာတန်းထိုး — ABC 123</div>
           </div>
           <div class="full">
@@ -821,7 +808,7 @@ body{background-attachment:fixed}
               <button class="btn small ghost hidden" id="logoRemove">Logo ဖြုတ်မယ်</button>
             </div>
             <input type="file" id="logoFile" accept="image/*" class="hidden" />
-            <div class="hint" id="logoStatus">Logo မထည့်ရသေးဘူး။ PNG (နောက်ခံ ပွင့်လင်း) ဆို အလှဆုံးပဲ။</div>
+            <div class="hint" id="logoStatus">Logo မထည့်ရသေးဘူး။</div>
           </div>
           <div class="full">
             <label class="f">Logo နေရာ</label>
@@ -852,11 +839,14 @@ body{background-attachment:fixed}
           <button class="btn small danger-ghost hidden" id="burnCancel" style="margin-top:8px">ရပ်မယ်</button>
           <button class="btn small hidden" id="burnShareBtn" style="margin-top:8px">📤 Share နဲ့ သိမ်းမယ်</button>
         </div>
-        <div class="note">သတိ — WebM ရော MP4 ရော အချိန်မှန်အတိုင်း (1x) ပြန်ဖွင့်ပြီး ထုတ်တာမို့ ဗီဒီယိုရှည်သလောက် ကြာမယ်။ ထုတ်နေတုန်း tab မပိတ်ပါနဲ့။</div>
+        <div class="note">ထုတ်နေတုန်း tab မပိတ်ပါနဲ့ — ဗီဒီယိုအရှည်အတိုင်း ကြာမယ်။</div>
       </div>
     </div>
     <div>
       <div class="dl-stack">
+        <label class="f" for="srtName">SRT ဖိုင်နာမည်</label>
+        <input type="text" id="srtName" placeholder="subtitles" autocomplete="off" spellcheck="false" />
+        <div class="hint" style="margin:0">ဖိုင်က [နာမည်].srt ဖြစ်မယ်။</div>
         <button class="btn" id="dlSrt">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11m0 0-4-4m4 4 4-4"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></svg>
           SRT ဒေါင်းလုဒ်ဆွဲမယ်
@@ -890,16 +880,16 @@ body{background-attachment:fixed}
   </div>
 
   <h2 style="margin-top:22px">စာတန်းများ ပြင်ဆင်မယ်</h2>
-  <div class="hint" style="margin-top:0">ဒေါင်းမဆွဲခင် စာသားနဲ့ အချိန်တွေ ဒီမှာ ပြင်လို့ရတယ်။ အချိန်ကို စက္ကန့် (65.5) နဲ့ရော 0:01:05.5 နဲ့ရော ရိုက်လို့ရတယ်။</div>
+  <div class="hint" style="margin-top:0">အချိန်ကို 65.5 ဒါမှမဟုတ် 0:01:05.5 လို့ ရိုက်လို့ရတယ်။</div>
   <div class="row" style="margin-top:10px">
-<button class="btn small" type="button" id="splitAll">&#9986; ရှည်တဲ့စာတန်းတွေ အလိုအလျောက် ခွဲမယ်</button>
+<button class="btn small" type="button" id="splitAll">&#9986;စာတန်းရှည်တွေ အလိုအလျောက် ခွဲမယ်</button>
 <button class="btn small ghost" type="button" id="splitUndo" disabled>&#8630; ပြန်ဆုတ်မယ်</button>
 </div>
 <div class="row" style="margin-top:8px;align-items:center">
 <label class="f" for="splitMax" style="margin:0">စာတန်းတစ်ခုမှာ စာလုံးအများဆုံး</label>
 <input type="number" id="splitMax" value="40" min="12" max="120" inputmode="numeric" style="width:90px" />
 </div>
-<div class="hint">အလိုအလျောက်ခွဲရင် ကန့်သတ်ထက်ရှည်တဲ့ စာတန်းတွေကို "။" "၊" နဲ့ space ကျတဲ့နေရာမှာ ဖြတ်ပြီး အချိန်ကို စာလုံးအရေအတွက်အလိုက် ခွဲပေးတယ်။ တစ်ခုချင်းခွဲချင်ရင် စာတန်းအကွက်ထဲမှာ ခွဲချင်တဲ့နေရာကို နှိပ်ထားပြီး အပေါ်က &#9986; ကိုနှိပ်ပါ။</div>
+<div class="hint">ရှည်တဲ့စာတန်းတွေကို "။" "၊" space မှာ ဖြတ်ပြီး အချိန်ခွဲပေးတယ်။</div>
 <div id="segList"></div>
   <div class="row">
     <button class="btn small ghost" id="addSeg">
@@ -920,7 +910,7 @@ body{background-attachment:fixed}
 </section>
 <section class="card hidden" id="cardTimeline">
   <h2>⏱ Timeline — CapCut လို ဖြတ်ညှပ်မယ်</h2>
-  <div class="hint" style="margin-top:0">ဗီဒီယို အပိုင်းကို ခွဲ / ဖြတ် / ဖျက်ပြီး၊ စာတန်း အကွက်တွေကို ဆွဲရွှေ့ / အစ-အဆုံး ဖြတ်လို့ရတယ်။ ဖြတ်ထားတဲ့ အတိုင်းပဲ စာတန်းထိုးပြီး ဗီဒီယိုထုတ်မယ် (burn-in) နဲ့ SRT / VTT ပါ လိုက်ထုတ်ပေးမယ်။</div>
+  <div class="hint" style="margin-top:0">ဖြတ်ထားတဲ့ အတိုင်းပဲ ဗီဒီယိုနဲ့ SRT ထုတ်ပေးမယ်။</div>
   <div class="row" style="margin-top:10px">
     <button class="btn small" id="tlSplitVideo" type="button">✂ ဗီဒီယို ခွဲမယ်</button>
     <button class="btn small" id="tlSplitSub" type="button">✂ စာတန်း ခွဲမယ်</button>
@@ -972,8 +962,7 @@ body{background-attachment:fixed}
 
 <div id="panelTts" class="hidden">
 <section class="card" id="cardTts">
-  <h2>&#128266; Movie Recap မြန်မာအသံထုတ် (TTS)</h2>
-  <div class="hint" style="margin-top:0">Recap စာသား (script) ကို ဒီမှာ paste လုပ်ပြီး မြန်မာအသံဖိုင် (WAV) ထုတ်ပါ။</div>
+  <h2>&#128266; Movie Recap (TTS)</h2>
 
   <div style="margin-top:14px">
     <label class="f" id="ttsProvLabel">အသံထုတ် Engine</label>
@@ -987,7 +976,7 @@ body{background-attachment:fixed}
 
   <div style="margin-top:14px">
     <label class="f" for="ttsText">Recap စာသား</label>
-    <textarea class="my" id="ttsText" rows="10" placeholder="ဒီမှာ recap စာသား ထည့်ပါ… (စာပိုဒ်ကြားမှာ အကွာအဝေး အလိုအလျောက် ထည့်ပေးမယ်)"></textarea>
+    <textarea class="my" id="ttsText" rows="10" placeholder="ဒီမှာ recap စာသား ထည့်ပါ…"></textarea>
     <div class="row" style="align-items:center">
       <button class="btn small ghost" type="button" id="ttsLoadTxt">.txt ဖိုင်က ထည့်မယ်</button>
       <button class="btn small ghost danger-ghost" type="button" id="ttsClearTxt">စာသား ရှင်းမယ်</button>
@@ -1023,7 +1012,7 @@ body{background-attachment:fixed}
         </select>
       </div>
       <div>
-        <label class="f" for="ttsStyle">လေသံ (မလိုရင် ကျော်ပါ)</label>
+        <label class="f" for="ttsStyle">လေသံ</label>
         <input type="text" id="ttsStyle" placeholder="ဥပမာ energetic movie narrator" autocomplete="off" spellcheck="false" />
       </div>
       <div>
@@ -1031,7 +1020,7 @@ body{background-attachment:fixed}
         <input type="password" id="ttsKey" placeholder="AIza…" autocomplete="off" spellcheck="false" />
       </div>
     </div>
-    <div class="hint">Key ကို ဒီ browser မှာ မှတ်ထားမယ် — browser ပိတ်ပြီး ပြန်ဖွင့်လည်း ကျန်နေမယ်။ ဖျက်ချင်ရင် အကွက်ထဲက စာကို ဖျက်လိုက်ပါ။ Request တစ်ခုချင်းကြား စောင့်ချိန်ကို ဘာသာပြန် tab ထဲက Gemini "Pacing" နဲ့ တူတူ သုံးမယ် (မူလ ၇ စက္ကန့်)။ မော်ဒယ် မရရင် (404 / 429 / 503) တခြား TTS မော်ဒယ်ကို အလိုအလျောက် ပြောင်းပေးမယ် ("မော်ဒယ် အလိုအလျောက် ပြောင်းမယ်" ကို ဖွင့်ထားရင်)။</div>
+    <div class="hint">မော်ဒယ် မရရင် (404 / 429 / 503) တခြား TTS မော်ဒယ်ကို အလိုအလျောက် ပြောင်းပေးမယ်။</div>
   </div>
 
   <div id="ttsBoxE" class="hidden">
@@ -1056,14 +1045,14 @@ body{background-attachment:fixed}
           <option value="pNInz6obpgDQGcFmaJgB">Adam (M)</option>
           <option value="JBFqnCBsd6RMkjVDRZzb">George (M)</option>
         </select>
-        <div class="row"><button class="btn small ghost" type="button" id="elLoadVoices">ကိုယ့်အကောင့်က Voice စာရင်း ဆွဲမယ်</button></div>
+        <div class="row"><button class="btn small ghost" type="button" id="elLoadVoices">Elevenlabs Voice စာရင်း ဆွဲမယ်</button></div>
       </div>
       <div>
-        <label class="f" for="elVoiceCustom">ဒါမှမဟုတ် Voice ID ကိုယ်တိုင်ထည့်ပါ</label>
+        <label class="f" for="elVoiceCustom">Voice ID ထည့်ပါ</label>
         <input type="text" id="elVoiceCustom" placeholder="ဥပမာ 21m00Tcm4TlvDq8ikWAM" autocomplete="off" spellcheck="false" />
       </div>
     </div>
-    <div class="hint">Key ကို <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" rel="noopener">ElevenLabs</a> မှာ ထုတ်ပါ။ Key ကို ဒီ browser မှာ မှတ်ထားမယ် — browser ပိတ်ပြီး ပြန်ဖွင့်လည်း ကျန်နေမယ်။ ဖျက်ချင်ရင် အကွက်ထဲက စာကို ဖျက်လိုက်ပါ။ မြန်မာစာကို Eleven v4 နဲ့ပဲ ဖတ်နိုင်တယ် (v3 က မြန်မာစာ မဖတ်နိုင်လို့ ဖြုတ်ထားတယ်)။ Free plan မှာ ကိုယ့်အကောင့်ထဲ ရှိပြီးသား Voice တွေပဲ API နဲ့ သုံးလို့ရတယ် (Library voice တွေက အခကြေးငွေ plan လိုတယ်)။ Voice ID ရိုက်ထည့်ထားရင် အပေါ်က ရွေးထားတာထက် ဒါကို အရင်သုံးမယ်။</div>
+    <div class="hint">Key ကို <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" rel="noopener">ElevenLabs</a> မှာ ထုတ်ပါ။ မြန်မာစာကို v4 နဲ့ပဲ ဖတ်နိုင်တယ်။</div>
   </div>
 
   <div id="ttsBoxM" class="hidden">
@@ -1086,7 +1075,7 @@ body{background-attachment:fixed}
         </select>
       </div>
     </div>
-    <div class="hint">Microsoft Edge ရဲ့ Read Aloud မြန်မာအသံ (Thiha / Nilar) — API Key မလို၊ အခမဲ့၊ limit မရှိ။ စာသားကို Microsoft server သို့ ပို့ရတယ်။ Microsoft က version အဟောင်းကို ပိတ်တတ်လို့ version အသစ်တွေ အလိုအလျောက် စမ်းပေးမယ်။ မရရင် စက်နာရီ (အချိန်) မှန်မမှန်နဲ့ အင်တာနက်ကို စစ်ပါ။</div>
+    <div class="hint">Key မလို၊ အခမဲ့</div>
   </div>
 
   <div id="ttsBoxA" class="hidden">
@@ -1117,12 +1106,12 @@ body{background-attachment:fixed}
         </select>
       </div>
     </div>
-    <div class="hint">Microsoft Azure<a href="https://portal.azure.com/" target="_blank" rel="noopener">Azure Portal</a> မှာ Speech resource (F0 — အခမဲ့, တစ်လ စာလုံး 500,000) ဖွင့်ပြီး Keys and Endpoint က Key + Region ကို ကူးထည့်ပါ။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။ Azure account ဖွင့်ဖို့ ကတ် လိုတယ် (အခမဲ့အတွက်တောင်)။ တစ်ကြောင်း စာလုံး 2,000 အထိ ရတယ်။</div>
+    <div class="hint"><a href="https://portal.azure.com/" target="_blank" rel="noopener">Azure Portal</a> → Speech resource (F0 အခမဲ့) → Key + Region ကူးထည့်ပါ။ အကောင့်ဖွင့်ဖို့ ကတ် လိုတယ်။</div>
   </div>
 
   <div class="grid2" style="margin-top:12px">
     <div>
-      <label class="f" for="ttsChunk">အပိုင်းတစ်ခုချင်း အရှည် (စာလုံး)</label>
+      <label class="f" for="ttsChunk">အပိုင်းတစ်ခုချင်း အရှည်</label>
       <select id="ttsChunk">
         <option value="300">၃၀၀ — request များ၊ ပိုတည်ငြိမ်</option>
         <option value="450" selected>၄၅၀ (မူလ)</option>
@@ -1139,17 +1128,17 @@ body{background-attachment:fixed}
   </div>
   <div id="ttsResult" class="hidden" style="margin-top:14px">
     <audio id="ttsAudio" controls style="width:100%"></audio>
-    <div class="row"><button class="btn" id="ttsDl">WAV ဒေါင်းလုဒ်ဆွဲမယ်</button></div>
+    <div class="row"><button class="btn" id="ttsDl">WAV ဒေါင်းလုဒ်ဆွဲမယ်</button><button class="btn ghost" id="ttsDlSrt">SRT ဒေါင်းလုဒ်ဆွဲမယ်</button></div>
   </div>
   <div class="row"><button class="btn small ghost" type="button" id="ttsCacheClear">မှတ်ထားတဲ့အသံ ရှင်းမယ်</button></div>
-  <div class="hint">ပျက်သွားရင် (429 စတာ) "အသံထုတ်မယ်" ကို ပြန်နှိပ်ပါ — ထုတ်ပြီးသား အပိုင်းတွေ ပြန်မထုတ်တော့ဘူး။ စာသား၊ အသံ၊ Engine၊ လေသံ တစ်ခုခု ပြောင်းရင်တော့ အသစ်ပြန်ထုတ်မယ်။</div>
+  <div class="hint">ပျက်သွားရင် ပြန်နှိပ်ပါ</div>
 </section>
 </div>
 
 <div id="panelRecap" class="hidden">
 <section class="card" id="cardRecap">
   <h2>🎬 Movie Recap — Dubbing လုပ်မယ်</h2>
-  <div class="hint" style="margin-top:0">ဗီဒီယို ထည့် → transcript → မြန်မာပြန် → Thiha / Nilar အသံနဲ့ TTS → မူရင်းအသံ တိုးတိုးလေးထားပြီး မြန်မာအသံ အပေါ်က တင် (dubbing) → မြန်မာစာတန်းထိုးပါ ပါတဲ့ MP4 ထုတ် — အားလုံး ဒီ tab တစ်ခုတည်းမှာ။ ဗီဒီယိုက အပေါ်မှာ ပုံသေကပ်နေမယ်၊ အောက်ကဟာတွေပဲ ရွေ့မယ်။</div>
+  <div class="hint" style="margin-top:0">ဗီဒီယို → မြန်မာပြန် → Thiha / Nilar အသံနဲ့ dub → MP4 ထုတ် — အားလုံး ဒီ tab တစ်ခုတည်းမှာ။</div>
   <div id="recapStage" class="hidden" style="margin-top:14px">
     <video id="recapVideo" controls playsinline></video>
     <div class="blurBar" id="recapBlurT"></div>
@@ -1189,7 +1178,7 @@ body{background-attachment:fixed}
       </select>
     </div>
   </div>
-  <div class="hint">Engine / ဘာသာစကား ရွေးတာက ဘာသာပြန် tab နဲ့ တစ်ထပ်တည်း ဖြစ်မယ် — ဒီမှာ ပြောင်းရင် အဲဒီမှာလည်း ပြောင်းသွားမယ်။ Key တွေကို ဒီ tab ထဲက အောက်က အကွက်မှာ ထည့်လို့ရတယ် — တခြား tab ကို သွားစရာ မလိုဘူး။</div>
+  <div class="hint">Engine / ဘာသာစကား ရွေးတာက ဘာသာပြန် tab နဲ့ တစ်ထပ်တည်း ဖြစ်မယ်။</div>
   <div id="recapKeyBox" style="margin-top:12px">
     <label class="f">🔑 API Key များ <span style="font-weight:400">(ရွေးထားတဲ့ Engine / အသံ အတွက်ပဲ ပြမယ် — ဒီမှာ ထည့်တဲ့ Key က တခြား tab တွေနဲ့ပါ အတူတူ သုံးမယ်)</span></label>
     <div class="grid2" style="margin-top:6px">
@@ -1244,7 +1233,6 @@ body{background-attachment:fixed}
     <button class="btn primary" id="recapAutoBtn">▶ အစကနေ Recap လုပ်မယ် (transcript + ဘာသာပြန်)</button>
   </div>
   <div id="recapEmpty" style="margin-top:12px">
-    <div class="hint">စာတန်း မရှိသေးပါဘူး — အပေါ်မှာ ဗီဒီယို ရွေးပြီး "▶ အစကနေ Recap လုပ်မယ်" ကို နှိပ်ပါ။</div>
   </div>
   <div id="recapMain" class="hidden">
     <div class="stats" id="recapStats" style="margin-top:10px"></div>
@@ -1276,7 +1264,7 @@ body{background-attachment:fixed}
         </select>
       </div>
     </div>
-    <div class="hint" id="recapKeyHint" style="margin-top:8px">Edge အခမဲ့ အသံ — Key မလို။ Azure ရွေးရင် Key + Region ကို TTS tab ထဲမှာ ထည့်ထားရမယ်။ Gemini / ElevenLabs ရွေးရင် TTS tab ထဲက အသံနဲ့ Key ကို သုံးမယ်။</div>
+    <div class="hint" id="recapKeyHint" style="margin-top:8px">Edge = Key မလို။ Azure / Gemini / ElevenLabs = TTS tab ထဲက Key သုံးမယ်။</div>
     <div class="row" style="margin-top:10px">
       <button class="btn small" type="button" id="recapAllThiha">အားလုံး Thiha</button>
       <button class="btn small" type="button" id="recapAllNilar">အားလုံး Nilar</button>
@@ -1291,7 +1279,7 @@ body{background-attachment:fixed}
       <label class="f" for="recapSplitMax" style="margin:0">စာတန်းတစ်ခုမှာ စာလုံးအများဆုံး</label>
       <input type="number" id="recapSplitMax" value="40" min="12" max="120" inputmode="numeric" style="width:90px" />
     </div>
-    <div class="hint">အလိုအလျောက်ခွဲရင် ကန့်သတ်ထက်ရှည်တဲ့ စာတန်းတွေကို "။" "၊" နဲ့ space ကျတဲ့နေရာမှာ ဖြတ်ပြီး အချိန်ကို စာလုံးအရေအတွက်အလိုက် ခွဲပေးတယ်။ ခွဲပြီးရင် Dub အသံ အဟောင်းက မသုံးတော့ဘူး — နောက် Dub ခလုတ် (နားထောင်မယ် / တွဲကြည့်မယ် / MP4 ထုတ်မယ်) နှိပ်ရင် အသစ်နဲ့ အလိုအလျောက် ပြန်ရောပေးမယ်။</div>
+    <div class="hint">ခွဲပြီးရင် Dub အသံ အဟောင်းက မသုံးတော့ဘူး — နောက် Dub ခလုတ်နှိပ်ရင် အသစ်ပြန်ရောပေးမယ်။</div>
     <label style="display:flex;gap:8px;align-items:center;margin-top:14px;font-size:14px"><input type="checkbox" id="recapBurnSub" checked style="width:18px;height:18px"> စာတန်းထိုး (မြန်မာစာ) ကို ဗီဒီယိုထဲမှာ ထည့်မယ် (burn-in)</label>
     <div class="grid2" style="margin-top:12px">
       <div>
@@ -1318,14 +1306,14 @@ body{background-attachment:fixed}
         <div><label class="f" for="recapBlurH2">အမြင့် <span class="val" id="recapBlurH2Val">15%</span></label><input type="range" id="recapBlurH2" min="5" max="100" step="1" value="15" /></div>
       </div>
     </div>
-    <div class="hint">ဗီဒီယိုထဲမှာ ကပ်ပါလာတဲ့ တရုတ်စာတန်း / လိုဂိုကို ဖုံးမယ် — Video tab burn box နဲ့ တစ်ထပ်တည်း ဖြစ်မယ်။ မြန်မာစာတန်းက blur အပေါ်မှာ ကြည်ကြည်လင်လင် ပေါ်မယ်။</div>
+    <div class="hint">ဗီဒီယိုထဲက တရုတ်စာတန်း / လိုဂိုကို ဖုံးမယ်။</div>
     <div style="margin-top:12px">
       <label class="f" for="recapBgMode">နောက်ခံအသံ (မူရင်းအသံ)</label>
       <select id="recapBgMode">
         <option value="mute" selected>လုံးဝ ပိတ်မယ်</option>
         <option value="duck">TTS အောက်မှာ တိုးတိုးထားမယ်</option>
       </select>
-      <div class="hint">ပိတ်ထားရင် မြန်မာအသံပဲ ကြားရမယ်။ MC စကားပြောခန်းလို မူရင်းအသံ ထားချင်တဲ့ စာကြောင်းကို အောက်က စာရင်းထဲက 🔊 ခလုတ် နှိပ်ပါ — အဲဒီစာကြောင်းမှာ မူရင်းအသံ အတိုင်း ကြားရမယ်၊ TTS မထုတ်ဘူး။</div>
+      <div class="hint">မူရင်းအသံ ထားချင်တဲ့ စာကြောင်းကို 🔊 နှိပ်ပါ။</div>
       <label class="f" for="recapDubSpeed" style="margin-top:12px">Dub အမြန်နှုန်း</label>
       <select id="recapDubSpeed">
         <option value="1">1X — အမြန်မလုပ်ဘူး (အသဘာဝကျဆုံး)</option>
@@ -1334,9 +1322,9 @@ body{background-attachment:fixed}
         <option value="2">2X</option>
         <option value="2.5">2.5X</option>
       </select>
-      <div class="hint">TTS ကို ပုံမှန်အတိုင်း ထုတ်ထားပြီး ဒီမှာပဲ အမြန်နှုန်း တင်လို့ရတယ် — အသံပြန်ထုတ်စရာ မလိုဘူး။ အမြန်နှုန်း တင်လေ စာကြောင်းတွေ slot ထဲ ဝင်လေ၊ dub ဗီဒီယိုနဲ့ ကိုက်လေ။ ဒါပေမယ့် အသံ မြန်သွားသလို အသံလည်း တက်သွားမယ် (2X / 2.5X ဆို တော်တော် မြန်သွားမယ်)။ ပြောင်းပြီးရင် Dub အသံကို အသစ်နဲ့ ပြန်ရောပေးမယ်။</div>
-      <label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14px"><input type="checkbox" id="recapFreeze" style="width:18px;height:18px" checked> ⏸ အသံက ဗီဒီယိုထက် ရှည်နေရင် နောက်ဆုံးပုံကို ရပ်ထားမယ် (freeze + ဖြည်းဖြည်း zoom)</label>
-      <div class="hint">တရုတ်စာတန်း တိုတိုကို မြန်မာလို ပြန်ဆိုရင် စာရှည်သွားပြီး အသံက ဗီဒီယိုထက် ရှည်တတ်တယ် — အဲဒီအခါ MP4 ထုတ်တဲ့အခါ ဗီဒီယိုကုန်တဲ့နေရာကနေ နောက်ဆုံးပုံကို ရပ်ထားပြီး ဖြည်းဖြည်း zoom ဆွဲပြီး အသံကုန်တဲ့အထိ ဆက်ထုတ်ပေးမယ်။ ပိတ်ထားရင် freeze မလုပ်ဘူး (အသံက ဗီဒီယိုကုန်ပြီးမှ ဆက်ထွက်နေမယ်)။</div>
+      <div class="hint">အမြန်နှုန်း တင်လေ စာကြောင်းတွေ slot ထဲ ဝင်လေ။ အသံ ပြန်ထုတ်စရာ မလိုဘူး။</div>
+      <label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14px"><input type="checkbox" id="recapFreeze" style="width:18px;height:18px" checked> ⏸ အသံက ဗီဒီယိုထက် ရှည်နေရင် နောက်ဆုံးပုံကို ရပ်ထားမယ်</label>
+      <div class="hint">ဖွင့်ထားရင် အသံကုန်တဲ့အထိ နောက်ဆုံးပုံကို ရပ်ပြီး zoom ဆွဲထုတ်ပေးမယ်။</div>
     </div>
     <div style="margin-top:12px">
       <label class="f">ဗီဒီယို အချိုးအစား (Ratio)</label>
@@ -1347,7 +1335,7 @@ body{background-attachment:fixed}
         <button type="button" id="recapRatio11" aria-pressed="false">1:1 · စတုရန်း</button>
         <button type="button" id="recapRatio45" aria-pressed="false">4:5 · Facebook</button>
       </div>
-      <div class="hint">TikTok/Reels · YouTube · 1:1 / 4:5 = ပို့စ်။ ထုတ်တဲ့ MP4 မှာ သက်ရောက်မယ် (Video tab burn box နဲ့ တစ်ထပ်တည်း)။</div>
+      <div class="hint">TikTok/Reels · YouTube · 1:1 / 4:5 = ပို့စ်။</div>
     </div>
     <details class="burnbox" id="recapSyncBox" style="margin-top:14px">
       <summary>စာတန်းအချိန် လွဲနေရင် ညှိရန် (Sync)</summary>
@@ -1364,11 +1352,9 @@ body{background-attachment:fixed}
         <button class="btn small" type="button" id="recapSyncSnap">🎙️ အသံနဲ့ ပြန်ကပ်မယ်</button>
         <button class="btn small ghost" type="button" id="recapSyncUndo">&#8630; ပြန်ဆုတ်မယ်</button>
       </div>
-      <div class="hint">Video tab Sync နဲ့ တစ်ထပ်တည်း — ဒီမှာ ညှိတာက အဲဒီမှာလည်း တစ်ထပ်တည်း ပြောင်းသွားမယ်။</div>
     </details>
     <details class="burnbox" id="recapBurnBox" style="margin-top:14px">
       <summary>စာတန်း ပုံစံ (Burn-in) — Video tab နဲ့ တစ်ထပ်တည်း</summary>
-      <div class="hint" style="margin-top:0">ဒီမှာ ချိန်တာက Video tab burn box မှာလည်း တစ်ထပ်တည်း ပြောင်းသွားမယ်။ ချိန်လိုက်တာနဲ့ အပေါ်က ဗီဒီယိုအစမ်းပြမှာ ချက်ချင်း ပြောင်းပြမယ်။</div>
       <div class="burngrid">
         <div class="full">
           <label class="f">စာတန်း နေရာ</label>
@@ -1456,7 +1442,7 @@ body{background-attachment:fixed}
             <button class="btn small ghost hidden" id="recapFontReset">မူရင်း ဖောင့် ပြန်သုံးမယ်</button>
           </div>
           <input type="file" id="recapFontFile" accept=".ttf,.otf,.woff,.woff2" class="hidden" />
-          <div class="hint" id="recapFontStatus">အခု သုံးနေတာ — A Test (မူရင်း)။ ကိုယ်ပိုင်ဖောင့်က ဒီ tab ဖွင့်ထားသရွေ့ပဲ ရမယ်။</div>
+          <div class="hint" id="recapFontStatus">အခု — A Test (မူရင်း)။</div>
           <div id="recapFontSample" style="margin-top:6px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;font-size:17px;line-height:1.6">မြန်မာစာတန်းထိုး — ABC 123</div>
         </div>
         <div class="full">
@@ -1465,7 +1451,7 @@ body{background-attachment:fixed}
             <button class="btn small ghost hidden" id="recapLogoRemove">Logo ဖြုတ်မယ်</button>
           </div>
           <input type="file" id="recapLogoFile" accept="image/*" class="hidden" />
-          <div class="hint" id="recapLogoStatus">Logo မထည့်ရသေးဘူး။ PNG (နောက်ခံ ပွင့်လင်း) ဆို အလှဆုံးပဲ။</div>
+          <div class="hint" id="recapLogoStatus">Logo မထည့်ရသေးဘူး။</div>
           <div class="full">
             <label class="f">Logo နေရာ</label>
             <div class="enginebar wrap" role="group" aria-label="Logo နေရာ ရွေးရန်">
@@ -1487,7 +1473,7 @@ body{background-attachment:fixed}
       </div>
     </details>
     <div class="row" style="margin-top:14px; flex-wrap:wrap">
-      <button class="btn primary" id="recapTtsBtn">🎙️ စာကြောင်းတွေ အသံထုတ်မယ်</button>
+      <button class="btn primary" id="recapTtsBtn">🎙️အသံထုတ်မယ်</button>
       <button class="btn" id="recapConciseBtn">✂️ စာသားတွေ တိုတိုပြန်ဆိုမယ်</button>
       <button class="btn" id="recapPreviewBtn">🔊 Dub အသံ နားထောင်မယ်</button>
       <button class="btn" id="recapWatchBtn">▶ Dub နဲ့ ဗီဒီယို တွဲကြည့်မယ်</button>
@@ -1505,7 +1491,7 @@ body{background-attachment:fixed}
       <audio id="recapAudio" controls style="width:100%"></audio>
       <div class="row"><button class="btn" id="recapDl">Dub အသံ (WAV) ဒေါင်းလုဒ်ဆွဲမယ်</button></div>
     </div>
-    <div class="hint" style="margin-top:10px">Dubbing MP4 က MP4 fast path နဲ့ပဲ ထုတ်မယ် (WebM မရ) — Export က Recap tab ထဲမှာပဲ လုပ်မယ်၊ Video tab ကို သွားစရာ မလိုဘူး။ TTS အသံက စာကြောင်းထက် ရှည်ရင် နောက်စာကြောင်းထဲ ဝင်သွားနိုင်တယ် — အဲဒီစာကြောင်းကို အပေါ်က စာတန်းပြင်တဲ့နေရာမှာ တိုအောင် ပြင်ပါ၊ ဒါမှမဟုတ် "✂️ စာသားတွေ တိုတိုပြန်ဆိုမယ်" ကို နှိပ်ပါ။ အသံက ဗီဒီယိုတစ်ခုလုံးထက် ရှည်နေရင်တော့ နောက်ဆုံးပုံကို freeze + ဖြည်းဖြည်း zoom နဲ့ ဆက်ထုတ်ပေးမယ် (အပေါ်က ⏸ ခလုတ် ဖွင့်ထားရင်)။</div>
+    <div class="hint" style="margin-top:10px">TTS ရှည်ရင် "✂️ စာသားတွေ တိုတိုပြန်ဆိုမယ်" ကို နှိပ်ပါ။</div>
   </div>
 </section>
 </div>
@@ -1513,7 +1499,7 @@ body{background-attachment:fixed}
 <div id="panelProjects" class="hidden">
 <section class="card" id="cardProjects">
   <h2>ပရောဂျက်များ</h2>
-  <div class="hint" style="margin-top:0">နာမည်ပေးပြီး သိမ်းထားရင် နောက်မှ ပြန်ဖွင့်ပြီး အချိန်မရွေး ဆက်ပြင်လို့ရတယ်။ ဗီဒီယိုဖိုင်ကိုတော့ သိမ်းမရဘူး — ပြန်ဖွင့်ရင် ဗီဒီယိုဖိုင် ပြန်ရွေးပေးရမယ် (စာတန်းနဲ့ ဗီဒီယို setting တွေကတော့ အကုန် ပြန်ရမယ်)။</div>
+  <div class="hint" style="margin-top:0">ဗီဒီယိုဖိုင်ကိုတော့ သိမ်းမရဘူး</div>
 
   <div style="margin-top:14px">
     <label class="f" for="projName">ပရောဂျက် နာမည်</label>
@@ -1537,11 +1523,11 @@ body{background-attachment:fixed}
     <button class="btn small ghost hidden" id="fbSignOut">Sign out</button>
   </div>
   <label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14px"><input type="checkbox" id="cloudAutoSave" style="width:18px;height:18px"> ☁️ Cloud မှာ အလိုအလျောက် သိမ်းမယ်</label>
-  <div class="hint" id="cloudAutoNote">ပိတ်ထားရင် ဒီစက်ထဲမှာပဲ သိမ်းမယ်။ ဖွင့်ထားရင် Google sign in ဝင်ထားရင် cloud မှာပါ အလိုအလျောက် သိမ်းမယ် (30 စက္ကန့်တစ်ခါ အများဆုံး)။</div>
+  <div class="hint" id="cloudAutoNote">ဖွင့်ထားရင် Google sign in ဝင်ထားရင် cloud မှာပါ သိမ်းမယ်။</div>
   <div id="cloudProjectList" style="margin-top:10px"></div>
   <details style="margin-top:16px">
     <summary>Firestore Security Rules (တစ်ခါပဲ ထည့်ရမယ်)</summary>
-    <div class="hint">Firebase Console → Firestore Database → Rules မှာ ဒီ rules ကို paste လုပ်ပါ — ကိုယ့် project ကိုယ်ပဲ ဖွင့်/သိမ်း/ဖျက်လို့ရမှာ ဖြစ်အောင်။</div>
+    <div class="hint">Firestore Database → Rules မှာ paste လုပ်ပါ။</div>
     <pre class="rulesbox">rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -1601,7 +1587,7 @@ service cloud.firestore {
     <button class="btn small ghost" id="aiImgDl">ပုံ ဒေါင်းမယ်</button>
     <button class="btn small ghost" id="aiImgToSlide">ဒီပုံကို slideshow ထဲ ထည့်မယ်</button>
   </div>
-  <div class="hint">Gemini ကို သုံးရင် ဘာသာပြန် tab ထဲက Gemini API Key ကို သုံးပါတယ်။ Pollinations က အခမဲ့၊ Key မလိုဘဲ ပုံထုတ်ပေးပါတယ် (အရည်အသွေးက Gemini လောက် မငြိမ်နိုင်ဘူး)။ "prompt ချဲ့မယ်" ကလည်း Pollinations စာသား AI (အခမဲ့) နဲ့ prompt အတိုကို အသေးစိတ် prompt အရှည် ဖြစ်အောင် ချဲ့ပေးတာပါ။ ElevenLabs ကို သုံးရင် အသံထုတ် tab ထဲက ElevenLabs API Key ကို သုံးပါတယ် — ပုံရတဲ့ link က ၁ နာရီလောက်ပဲ ခံလို့ ဒေါင်းတာကို မြန်မြန်လုပ်ပါ။</div>
+  <div class="hint">Pollinations = အခမဲ့၊ Key မလို။</div>
 </section>
 
 <section class="card" id="cardVideoGen">
@@ -1645,17 +1631,57 @@ service cloud.firestore {
   <div class="row hidden" id="aiVidDlRow">
     <button class="btn small ghost" id="aiVidDl">ဗီဒီယို ဒေါင်းမယ်</button>
   </div>
-  <div class="note">သတိ — Veo 3.1 preview တွေကို Google က ၂၀၂၆ အောက်တိုဘာ ၂၂ မှာ ပိတ်လိုက်လို့ Gemini API ကနေ Veo တိုက်ရိုက်သုံးမရတော့ပါဘူး။ ဒါပေမယ့် ElevenLabs နည်းနဲ့ဆို Veo 3.1 (GA မော်ဒယ်) ကို ပြန်သုံးလို့ရပါတယ်။ အခမဲ့ဗီဒီယိုလိုချင်ရင် Slideshow နည်းကို သုံးပါ — ပုံထုတ်ထားတာတွေကနေ zoom ပါတဲ့ ဗီဒီယို (webm) ကို အခမဲ့ ထုတ်ပေးပါတယ်။</div>
+  <div class="note">Gemini ကနေ Veo တိုက်ရိုက်သုံးမရတော့ဘူး — ElevenLabs နည်းနဲ့ ရတယ်။</div>
 </section>
 </div>
 
 <footer>
   <div class="credit">Powered By Maxflix Team</div>
-  CREATED WITH MUSE & CLAUDE AI (By Kwee Jein) 
+  CREATED WITH MUSE & CLAUDE AI (By Kwee Jein)<br>
+  <button type="button" id="policyOpen" style="background:none;border:none;color:var(--mut);font-size:13px;text-decoration:underline;cursor:pointer;padding:6px 0 0">Privacy Policy &amp; Copyright · ကိုယ်ရေးကိုယ်တာမူဝါဒနှင့် မူပိုင်ခွင့်</button>
 </footer>
 </div>
 
 <div id="toast" role="status" aria-live="polite"></div>
+
+<div id="policyModal" style="position:fixed;inset:0;z-index:9999;display:none;align-items:flex-start;justify-content:center;padding:18px;overflow:auto">
+  <div id="policyBackdrop" style="position:fixed;inset:0;background:rgba(0,0,0,.68)"></div>
+  <div role="dialog" aria-modal="true" aria-labelledby="policyTitle" style="position:relative;max-width:720px;width:100%;margin:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;color:var(--ink)">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+      <h2 id="policyTitle" style="margin:0;font-size:19px;line-height:1.4">Privacy Policy &amp; Copyright<br><span style="font-size:14px;color:var(--mut)">ကိုယ်ရေးကိုယ်တာမူဝါဒနှင့် မူပိုင်ခွင့်</span></h2>
+      <button class="btn small ghost" id="policyClose" type="button">✕ ပိတ်မယ်</button>
+    </div>
+    <div style="font-size:14px;line-height:1.85;margin-top:14px">
+      <h3 style="margin:16px 0 6px;font-size:15px">Privacy Policy</h3>
+      <p style="margin:0 0 8px">Last updated: 12 November 2026</p>
+      <p style="margin:0 0 8px">Maxflix Studio runs in your browser. We do not operate a server that collects your data.</p>
+      <p style="margin:0 0 8px"><b>Stored on your device only.</b> Your API keys (Gemini, ElevenLabs, Groq, and others) are saved in your browser's local storage. Your projects and settings are saved in your browser. They are never sent to us.</p>
+      <p style="margin:0 0 8px"><b>Sent to third parties when you use a feature.</b> Your video, audio, or text is sent to the provider of the feature you chose — Google Gemini, Groq, ElevenLabs, Microsoft Azure / Edge Read Aloud, Deepgram, AssemblyAI, Gladia, Hugging Face, Google Translate, or Pollinations (images / text). A video link you paste is sent to Cobalt community servers and a CORS proxy (corsproxy.io) so the video can be downloaded.</p>
+      <p style="margin:0 0 8px"><b>Cloud save is off by default.</b> If you sign in with Google and turn it on, your named projects are stored in Firebase (Google Cloud) under your own account, and only you can open them.</p>
+      <p style="margin:0 0 8px">No analytics, no advertising, no tracking cookies. This tool is not directed at children under 13. We may update this policy; the date above shows the latest version. Questions: contact the developer on Telegram — <a href="https://t.me/kopethaung778" target="_blank" rel="noopener" style="color:var(--acc)">@kopethaung778</a>.</p>
+      <h3 style="margin:16px 0 6px;font-size:15px">Copyright</h3>
+      <p style="margin:0 0 8px"><b>Your content is yours.</b> Subtitles, translations, audio, images, and videos you create with Maxflix Studio belong to you. We claim no ownership over them.</p>
+      <p style="margin:0 0 8px"><b>Your responsibility.</b> Only process videos, audio, and subtitles you have the right to use. Do not upload, translate, or publish copyrighted material without permission. Translations are for your personal use unless you have the right to share them.</p>
+      <p style="margin:0 0 8px">AI-generated images and videos follow the terms of the provider that generated them (Google, ElevenLabs, Pollinations).</p>
+      <p style="margin:0 0 8px">Maxflix Studio, its name, logo, and code — © 2026 Maxflix Team. All rights reserved.</p>
+      <p style="margin:0 0 8px"><b>Trademarks.</b> Maxflix Studio is not affiliated with, endorsed by, or connected to Netflix, Google, Microsoft, or any other company mentioned in this tool. Their names and trademarks belong to their respective owners.</p>
+      <hr style="border:none;border-top:1px solid var(--line);margin:18px 0">
+      <h3 style="margin:16px 0 6px;font-size:15px">ကိုယ်ရေးကိုယ်တာမူဝါဒ</h3>
+      <p style="margin:0 0 8px">နောက်ဆုံးပြင်ဆင်သည့်ရက်: ၁၂ နိုဝင်ဘာ ၂၀၂၆</p>
+      <p style="margin:0 0 8px">Maxflix Studio က သင့် browser ထဲမှာပဲ အလုပ်လုပ်ပါတယ်။ သင့် data တွေကို စုဆောင်းတဲ့ server ကျွန်တော်တို့ မထားပါဘူး။</p>
+      <p style="margin:0 0 8px"><b>သင့်စက်မှာပဲ သိမ်းတယ်။</b> API Key တွေ (Gemini, ElevenLabs, Groq…) က သင့် browser ထဲမှာပဲ သိမ်းတယ်။ Project နဲ့ setting တွေလည်း သင့် browser ထဲမှာပဲ ရှိတယ်။ ကျွန်တော်တို့ဆီ ဘယ်တော့မှ မရောက်ဘူး။</p>
+      <p style="margin:0 0 8px"><b>သုံးတဲ့အချိန်မှ တခြားဆီ ရောက်တယ်။</b> ဗီဒီယို / အသံ / စာသားက ရွေးထားတဲ့ ဝန်ဆောင်မှု (Google Gemini, Groq, ElevenLabs, Microsoft Azure / Edge Read Aloud, Deepgram, AssemblyAI, Gladia, Hugging Face, Google Translate, Pollinations) ဆီ ပို့ပြီး လုပ်ဆောင်တာပါ။ Link ကနေ ဗီဒီယိုဆွဲရင် link က Cobalt server တွေနဲ့ proxy (corsproxy.io) ကို ဖြတ်သွားတယ်။</p>
+      <p style="margin:0 0 8px"><b>Cloud save က ပုံမှန် ပိတ်ထားတယ်။</b> Google နဲ့ sign-in လုပ်ပြီး ဖွင့်မှ သင့် project တွေက Firebase (Google Cloud) မှာ သင့် account ထဲပဲ သိမ်းတယ်၊ သင့်ကလွဲပြီး ဘယ်သူမှ ဖွင့်လို့မရဘူး။</p>
+      <p style="margin:0 0 8px">Analytics မရှိ၊ ကြော်ငြာ မရှိ၊ tracking cookie မရှိပါ။ ဒီ tool က အသက် ၁၃ နှစ်အောက် ကလေးတွေအတွက် ရည်ရွယ်တာ မဟုတ်ပါ။ ဒီမူဝါဒကို ပြင်ဆင်နိုင်ပါတယ် — အပေါ်က ရက်စွဲက နောက်ဆုံးဗားရှင်းပါ။ မေးစရာရှိရင် Telegram — <a href="https://t.me/kopethaung778" target="_blank" rel="noopener" style="color:var(--acc)">@kopethaung778</a> ကနေ ဆက်သွယ်ပါ။</p>
+      <h3 style="margin:16px 0 6px;font-size:15px">မူပိုင်ခွင့်</h3>
+      <p style="margin:0 0 8px"><b>သင့်ဖန်တီးမှုက သင့်ဟာပါ။</b> Maxflix Studio နဲ့ ဖန်တီးတဲ့ စာတန်း၊ ဘာသာပြန်၊ အသံ၊ ပုံ၊ ဗီဒီယိုတွေက သင်ပိုင်ပါတယ်။ ကျွန်တော်တို့က ပိုင်ဆိုင်မှု မတောင်းဆိုပါဘူး။</p>
+      <p style="margin:0 0 8px"><b>သင့်တာဝန်။</b> သုံးပိုင်ခွင့်ရှိတဲ့ ဗီဒီယို / အသံ / စာတန်းတွေပဲ လုပ်ဆောင်ပါ။ ခွင့်ပြုချက်မရှိဘဲ မူပိုင်ရှိတဲ့အရာတွေကို တင်တာ၊ ပြန်ဆိုတာ၊ ဖြန့်တာတွေ မလုပ်ပါနဲ့။ ဘာသာပြန်တွေက မျှဝေခွင့်ရှိမှသာ မျှဝေပါ။</p>
+      <p style="margin:0 0 8px">AI နဲ့ ထုတ်တဲ့ ပုံ / ဗီဒီယိုတွေက ထုတ်ပေးတဲ့ ကုမ္ပဏီ (Google, ElevenLabs, Pollinations) ရဲ့ စည်းမျဉ်းတွေကို လိုက်နာရပါတယ်။</p>
+      <p style="margin:0 0 8px">Maxflix Studio၊ နာမည်၊ logo နဲ့ code — © 2026 Maxflix Team. မူပိုင်ခွင့် အားလုံး လက်ဝယ်ရှိသည်။</p>
+      <p style="margin:0"><b>ကုန်အမှတ်တံဆိပ်။</b> Maxflix Studio ဟာ Netflix, Google, Microsoft ဒါမှမဟုတ် ဒီ tool ထဲမှာ ဖော်ပြထားတဲ့ တခြားကုမ္ပဏီတွေနဲ့ ဘာမှမသက်ဆိုင်ပါ၊ သူတို့က ထောက်ခံထားတာလည်း မဟုတ်ပါ။</p>
+    </div>
+  </div>
+</div>
 
 <script>
 /* ===== Pure subtitle logic (no browser APIs) ===== */
@@ -1735,14 +1761,18 @@ var SrtTools = (function () {
   }
   function buildSrt(segments, maxChars) {
     return segments.map(function (s, i) {
+      var ls = splitLines(s.my || '', maxChars);
+      if (s.extra) ls.push.apply(ls, splitLines(s.extra, maxChars));
       return (i + 1) + '\n' + formatSrtTime(s.start) + ' --> ' + formatSrtTime(s.end) + '\n' +
-        splitLines(s.my || '', maxChars).join('\n');
+        ls.join('\n');
     }).join('\n\n') + '\n';
   }
   function buildVtt(segments, maxChars) {
     return 'WEBVTT\n\n' + segments.map(function (s, i) {
+      var ls = splitLines(s.my || '', maxChars);
+      if (s.extra) ls.push.apply(ls, splitLines(s.extra, maxChars));
       return (i + 1) + '\n' + formatVttTime(s.start) + ' --> ' + formatVttTime(s.end) + '\n' +
-        splitLines(s.my || '', maxChars).join('\n');
+        ls.join('\n');
     }).join('\n\n') + '\n';
   }
   function parseSrt(text) {
@@ -2261,7 +2291,7 @@ var SrtTools = (function () {
     return e;
   }
   function modelUnavailableMessage() {
-    return 'ရွေးထားတဲ့ Gemini မော်ဒယ်ကို Google က မပေးတော့ပါဘူး (404) — ဒါက API Key အမှား မဟုတ်ပါဘူး၊ အခမဲ့ ကန့်သတ်ချက် ပြည့်တာလည်း မဟုတ်ပါဘူး။ Gemini မော်ဒယ် အားလုံး မရတော့ပါဘူး — Google AI Studio မှာ model စာရင်း ပြန်စစ်ပြီး "မော်ဒယ်အမည် ကိုယ်တိုင်ရိုက်ပါ" ကွက်မှာ အသစ်ထည့်ပါ။';
+    return 'ရွေးထားတဲ့ Gemini မော်ဒယ်ကို Google က မပေးတော့ပါဘူး (404) — ဒါက API Key အမှား မဟုတ်ပါဘူး၊— Google AI Studio မှာ model စာရင်း ပြန်စစ်ပါ';
   }
   /* How long Google asks us to wait after a 429: the Retry-After header, or
      the retryDelay field inside the error body's google.rpc.RetryInfo
@@ -2317,8 +2347,8 @@ var SrtTools = (function () {
        done, and Continue resumes from the same spot. Cancel still works
        while paused, so a paused run can be stopped without resuming. */
     while (runPaused) {
-      if (cancelRun) throw geminiError('ရပ်လိုက်ပါပြီ — ပြန်စရင် အစက ပြန်လုပ်ရပါမယ်။', 'CANCELLED');
-      if (processing) setStatus('⏸ ခေတ္တရပ်ထားပါတယ် — "ဆက်လုပ်မယ်" နှိပ်ရင် ဆက်လုပ်ပါမယ်');
+      if (cancelRun) throw geminiError('ရပ်လိုက်ပါပြီ', 'CANCELLED');
+      if (processing) setStatus('⏸ ခေတ္တရပ်ထားပါတယ်');
       await sleepSec(1);
     }
   }
@@ -2494,6 +2524,7 @@ var SrtTools = (function () {
   } catch (e) { /* storage unavailable — keep the default 7 */ }
   try { var asSaved = localStorage.getItem('mt_autoswitch'); if (asSaved !== null && $('autoModelSwitch')) $('autoModelSwitch').checked = asSaved === '1'; } catch (e) {}
   try { var gpSaved = localStorage.getItem('mt_gtpolish'); if (gpSaved !== null && $('gtPolish')) $('gtPolish').checked = gpSaved === '1'; } catch (e) {}
+  try { var toSaved = localStorage.getItem('mt_transcribe_only'); if (toSaved !== null && $('transcribeOnly')) $('transcribeOnly').checked = toSaved === '1'; } catch (e) {}
         try {
           var gmSaved = localStorage.getItem('mt_gmodel'), gcSaved = localStorage.getItem('mt_gmodel_custom');
           if (gmSaved && $('geminiModel') && Array.prototype.some.call($('geminiModel').options, function (o) { return o.value === gmSaved; })) $('geminiModel').value = gmSaved;
@@ -2514,6 +2545,7 @@ var SrtTools = (function () {
         if ($('geminiChunk')) $('geminiChunk').addEventListener('change', function () { try { localStorage.setItem('mt_chunk', this.value); } catch (e) {} });
         if ($('autoModelSwitch')) $('autoModelSwitch').addEventListener('change', function () { try { localStorage.setItem('mt_autoswitch', this.checked ? '1' : '0'); } catch (e) {} });
         if ($('gtPolish')) $('gtPolish').addEventListener('change', function () { try { localStorage.setItem('mt_gtpolish', this.checked ? '1' : '0'); } catch (e) {} });
+        if ($('transcribeOnly')) $('transcribeOnly').addEventListener('change', function () { try { localStorage.setItem('mt_transcribe_only', this.checked ? '1' : '0'); } catch (e) {} });
   if ($('paceSec')) $('paceSec').addEventListener('change', function () {
     var v = parseFloat($('paceSec').value);
     if (!isFinite(v) || v < 0) v = 0;
@@ -2878,11 +2910,12 @@ var SrtTools = (function () {
   }
   async function runVideoGemini() {
     var srcLang = $('srcLang').value;
+    var to = transcribeOnlyVal(); /* transcribe-only: heard text IS the subtitle (e.g. Burmese audio -> Burmese SRT) */
     coverageGapSec = 0;
     titleTexts = []; tlSel = null;   /* titles belong to the previous video */
     beginProgress([
       { id: 'audio', label: 'အသံထုတ်ယူ' },
-      { id: 'gem', label: 'Gemini ပြန်ဆို' }
+      { id: 'gem', label: to ? 'Gemini နားထောင်' : 'Gemini ပြန်ဆို' }
     ]);
     var curStep = 'audio';
     try {
@@ -2911,14 +2944,14 @@ var SrtTools = (function () {
       var gtMode = gtPolishOn();
       var prompt = 'You are a professional subtitle translator for short drama videos. The attached audio is one clip from a video. ' +
         langPhrase + ' Listen carefully to the ENTIRE clip from the first second to the very last second — do not stop early and do not summarize or skip the later part. ' +
-        (gtMode
+        ((gtMode || to)
           ? 'Transcribe every spoken line in the spoken language — transcription only, no translation. Reply with ONLY a JSON array (no markdown, no explanation). Each item: {"start": <number>, "end": <number>, "original": "<line transcribed in the spoken language>"}. '
           : 'Transcribe every spoken line, and translate each line into natural, conversational Burmese (Myanmar) — the way native speakers actually talk in dramas, keeping the meaning, tone and emotion rather than translating word-for-word. ' +
           'Use correct standard Burmese spelling (Myanmar Unicode). Never repeat the same word or syllable over and over inside a line — a repetition loop is a failure; every line must read as one natural sentence. If a word is uncertain, use a simpler common word instead of repeating. ' +
           'Reply with ONLY a JSON array (no markdown, no explanation). Each item: {"start": <number>, "end": <number>, "original": "<line transcribed in the spoken language>", "my": "<natural Burmese translation>"}. ') +
         'start/end are seconds from the beginning of THIS audio clip; cues must be in chronological order, each lasting about 1 to 7 seconds and covering one spoken line — split long lines at natural pauses. Do not stretch the last line to the end of the clip — end it when the speech actually stops. Keep transcribing until the audio ends. If there is no speech at all, reply with [].';
       var glossVp = glossaryPromptText();
-      if (glossVp && !gtMode) prompt += ' For character names and terms, always use these exact Burmese forms: ' + glossVp + '.';
+      if (glossVp && !gtMode && !to) prompt += ' For character names and terms, always use these exact Burmese forms: ' + glossVp + '.';
 
       /* One Gemini request for the audio range [fromSec, toSec); returns cues
          with absolute (video) timestamps plus whether the answer was cut off. */
@@ -2945,7 +2978,7 @@ var SrtTools = (function () {
             if (!isFinite(st)) return;
             if (!isFinite(en) || en <= st) en = st + 2;
             var my = String(it.my || it.translation || '').trim();
-            if (!gtMode && !my) return;
+            if (!gtMode && !to && !my) return;
             rel.push({ st: st, en: en, text: String(it.original || '').trim(), my: my });
           });
           var fit = fitCuesToClip(rel, slice.length / 16000);
@@ -2956,7 +2989,7 @@ var SrtTools = (function () {
           /* fallback: model answered with plain SRT instead of JSON — treat it as the Burmese track
              (in Google mode it is the transcribed track, translated afterwards) */
           SrtTools.parseSrt(gres.text).forEach(function (p) {
-            cues.push({ start: p.start + fromSec, end: p.end + fromSec, text: gtMode ? p.text : '', my: gtMode ? '' : p.text, failed: false });
+            cues.push({ start: p.start + fromSec, end: p.end + fromSec, text: (gtMode || to) ? p.text : '', my: (gtMode || to) ? '' : p.text, failed: false });
           });
         }
         cues.sort(function (a, b) { return a.start - b.start; });
@@ -2970,7 +3003,7 @@ var SrtTools = (function () {
         if (cancelRun) throw geminiError('ရပ်လိုက်ပါပြီ — ပြန်စရင် အစက ပြန်လုပ်ရပါမယ်။', 'CANCELLED');
         var off = ci * CHUNK;
         var chunkEnd = Math.min(totalSec, off + CHUNK);
-        setStatus(gtMode ? 'Gemini နဲ့ နားထောင်ပြီး စာသားထုတ်နေပါတယ်… အပိုင်း ' + (ci + 1) + '/' + chunks + ' (Google + Gemini နဲ့ နောက်မှ ပြန်မယ်)' : 'Gemini နဲ့ နားထောင်ပြီး မြန်မာပြန်ဆိုနေပါတယ်… အပိုင်း ' + (ci + 1) + '/' + chunks);
+        setStatus((gtMode || to) ? 'Gemini နဲ့ နားထောင်ပြီး စာသားထုတ်နေပါတယ်… အပိုင်း ' + (ci + 1) + '/' + chunks + (gtMode && !to ? ' (Google + Gemini နဲ့ နောက်မှ ပြန်မယ်)' : '') : 'Gemini နဲ့ နားထောင်ပြီး မြန်မာပြန်ဆိုနေပါတယ်… အပိုင်း ' + (ci + 1) + '/' + chunks);
         log('အပိုင်း ' + (ci + 1) + '/' + chunks + ' ကို Gemini သို့ ပို့နေပါတယ်…');
         var res = await fetchRangeCues(off, chunkEnd);
         var cues = res.cues;
@@ -3011,10 +3044,15 @@ var SrtTools = (function () {
         }
         log('အပိုင်း ' + (ci + 1) + ' — စာကြောင်း ' + cues.length + ' ကြောင်း ရပါတယ်');
         all = all.concat(cues);
-        setBar(15 + (ci + 1) / chunks * (gtMode ? 65 : 83));
+        setBar(15 + (ci + 1) / chunks * ((gtMode && !to) ? 65 : 83));
       }
       all.sort(function (a, b) { return a.start - b.start; });
-      if (gtMode && all.length) {
+      if (to && all.length) {
+        /* transcribe-only — the heard text IS the subtitle */
+        all.forEach(function (sg) { sg.my = sg.text; });
+        log('ဘာသာမပြန်ဘူး — နားထောင်ရတဲ့ စာသားအတိုင်း SRT အဖြစ် ပြင်ဆင်ထားပါတယ်');
+        setBar(98);
+      } else if (gtMode && all.length) {
         setStatus('Google Translate နဲ့ ပြန်ပြီး Gemini နဲ့ ပြင်နေပါတယ်…');
         log('စာသား ' + all.length + ' ကြောင်း ထုတ်ပြီးပါပြီ — Google Translate နဲ့ ပြန်ပြီး Gemini နဲ့ ပြင်ပါမယ်');
         var gfailed = await translateSegmentsAuto(all, GT_SL[srcLang] || 'auto', function (done, total) {
@@ -3025,8 +3063,10 @@ var SrtTools = (function () {
         all = all.filter(function (s) { return !!s.my; });
       }
       segments = all;
-      var degN = cleanDegenerateSegments(segments);
-      if (degN) log('သတိ — စာကြောင်း ' + degN + ' ကြောင်းမှာ မော်ဒယ်က စာလုံးထပ်နေတဲ့ အမှား တွေ့လို့ ချုံ့ပြီး ပြန်ဆိုရန် အမှတ်အသားလုပ်ထားပါတယ် — "မအောင်မြင်တဲ့ စာကြောင်းတွေ ပြန်ဆိုမယ်" ခလုတ်နဲ့ ပြန်ဆိုလို့ ရပါတယ်');
+      if (!to) {
+        var degN = cleanDegenerateSegments(segments);
+        if (degN) log('သတိ — စာကြောင်း ' + degN + ' ကြောင်းမှာ မော်ဒယ်က စာလုံးထပ်နေတဲ့ အမှား တွေ့လို့ ချုံ့ပြီး ပြန်ဆိုရန် အမှတ်အသားလုပ်ထားပါတယ် — "မအောင်မြင်တဲ့ စာကြောင်းတွေ ပြန်ဆိုမယ်" ခလုတ်နဲ့ ပြန်ဆိုလို့ ရပါတယ်');
+      }
       if (!segments.length) throw new Error('NO_SPEECH');
       var finalEnd = 0;
       segments.forEach(function (s) { if (s.end > finalEnd) finalEnd = s.end; });
@@ -3063,6 +3103,7 @@ var SrtTools = (function () {
   var WHISPER_SL = { chinese: 'zh', english: 'en', korean: 'ko', japanese: 'ja', thai: 'th', burmese: 'my' };
   var SCRIBE_SL = { chinese: 'zho', english: 'eng', korean: 'kor', japanese: 'jpn', thai: 'tha', burmese: 'mya' };
   function transcriberVal() { var el = $('transcriber'); return el ? el.value : 'gemini'; }
+  function transcribeOnlyVal() { var el = $('transcribeOnly'); return !!(el && el.checked); }
   function groqKeyVal() { return ($('groqKey').value || '').trim(); }
   function transcriberRefresh() {
     var tr = transcriberVal();
@@ -3409,7 +3450,7 @@ var SrtTools = (function () {
     beginProgress([
       { id: 'audio', label: 'အသံထုတ်ယူ' },
       { id: 'tr', label: tr === 'groq' ? 'Groq Whisper နားထောင်' : tr === 'scribe' ? 'Scribe နားထောင်' : tr === 'deepgram' ? 'Deepgram နားထောင်' : tr === 'gladia' ? 'Gladia နားထောင်' : tr === 'hf' ? 'HF Whisper နားထောင်' : 'AssemblyAI နားထောင်' },
-      { id: 'tl', label: 'Gemini မြန်မာပြန်ဆို' }
+      { id: 'tl', label: transcribeOnlyVal() ? 'SRT အဆင်သင့်' : 'Gemini မြန်မာပြန်ဆို' }
     ]);
     var curStep = 'audio';
     try {
@@ -3463,15 +3504,22 @@ var SrtTools = (function () {
 
       curStep = 'tl';
       setStep('tl', 'active');
-      segments = all.map(function (s) { return { start: s.start, end: s.end, text: s.text, my: '', failed: false }; });
-      var failed = await translateSegmentsAuto(segments, GT_SL[srcLang] || 'auto', function (done, total) {
-        setBar(65 + done / total * 33);
-        setStatus('မြန်မာလို ပြန်ဆိုနေပါတယ်… ' + done + '/' + total);
-      });
-      if (failed) log('စာကြောင်း ' + failed + ' ကြောင်း ဘာသာပြန် မအောင်မြင်လို့ မူရင်းအတိုင်း ထားခဲ့ပါတယ် — အောက်မှာ ပြန်စမ်းလို့ ရပါတယ်');
-      segments = segments.filter(function (s) { return !!s.my; });
-      var degN = cleanDegenerateSegments(segments);
-      if (degN) log('သတိ — စာကြောင်း ' + degN + ' ကြောင်းမှာ မော်ဒယ်က စာလုံးထပ်နေတဲ့ အမှား တွေ့လို့ ချုံ့ပြီး ပြန်ဆိုရန် အမှတ်အသားလုပ်ထားပါတယ် — "မအောင်မြင်တဲ့ စာကြောင်းတွေ ပြန်ဆိုမယ်" ခလုတ်နဲ့ ပြန်ဆိုလို့ ရပါတယ်');
+      if (transcribeOnlyVal()) {
+        /* transcribe-only — the heard text IS the subtitle */
+        segments = all.map(function (s) { return { start: s.start, end: s.end, text: s.text, my: s.text, failed: false }; });
+        log('ဘာသာမပြန်ဘူး — နားထောင်ရတဲ့ စာသားအတိုင်း SRT အဖြစ် ပြင်ဆင်ထားပါတယ်');
+        setBar(98);
+      } else {
+        segments = all.map(function (s) { return { start: s.start, end: s.end, text: s.text, my: '', failed: false }; });
+        var failed = await translateSegmentsAuto(segments, GT_SL[srcLang] || 'auto', function (done, total) {
+          setBar(65 + done / total * 33);
+          setStatus('မြန်မာလို ပြန်ဆိုနေပါတယ်… ' + done + '/' + total);
+        });
+        if (failed) log('စာကြောင်း ' + failed + ' ကြောင်း ဘာသာပြန် မအောင်မြင်လို့ မူရင်းအတိုင်း ထားခဲ့ပါတယ် — အောက်မှာ ပြန်စမ်းလို့ ရပါတယ်');
+        segments = segments.filter(function (s) { return !!s.my; });
+        var degN = cleanDegenerateSegments(segments);
+        if (degN) log('သတိ — စာကြောင်း ' + degN + ' ကြောင်းမှာ မော်ဒယ်က စာလုံးထပ်နေတဲ့ အမှား တွေ့လို့ ချုံ့ပြီး ပြန်ဆိုရန် အမှတ်အသားလုပ်ထားပါတယ် — "မအောင်မြင်တဲ့ စာကြောင်းတွေ ပြန်ဆိုမယ်" ခလုတ်နဲ့ ပြန်ဆိုလို့ ရပါတယ်');
+      }
       if (!segments.length) throw new Error('NO_SPEECH');
       var finalEnd = 0;
       segments.forEach(function (s) { if (s.end > finalEnd) finalEnd = s.end; });
@@ -3549,6 +3597,7 @@ var SrtTools = (function () {
   if ($('hfKey')) $('hfKey').addEventListener('input', function () { $('recapHfKey').value = this.value; saveKeys(); });
   if ($('transcriberBox')) $('transcriberBox').classList.toggle('hidden', mode !== 'video');
   transcriberRefresh();
+
   try { checkMp4AudioCap(); } catch (e) {}
 
   /* ---------- start: SRT mode ---------- */
@@ -3701,6 +3750,7 @@ var SrtTools = (function () {
     var runAuto = autoFinishPending; autoFinishPending = false;
     if (runAuto) setTimeout(autoFinishNow, 600);
     $('cardResult').classList.remove('hidden');
+    if ($('srtName')) $('srtName').value = baseName();
     segments.forEach(function (s) { if (s.mt === undefined) s.mt = s.my || ''; });
     activeIdx = -1;
     var isVideoMode = mode === 'video';
@@ -3737,11 +3787,12 @@ var SrtTools = (function () {
     var t = $('preview').currentTime, ids = [];
     for (var i = 0; i < segments.length; i++) { if (t >= segments[i].start && t < segments[i].end) ids.push(i); }
     var idx = ids.length ? ids[0] : -1;
-    var txt = ids.slice(-2).map(function (k) { return SrtTools.splitLines(segments[k].my || '', maxCharsVal).join('\n'); }).filter(Boolean).join('\n');
+    var txt = ids.slice(-2).map(function (k) { return subDisplayText(segments[k]); }).filter(Boolean).join('\n');
     if (txt !== lastCueText) { lastCueText = txt; $('cueText').textContent = txt; applyCueStyle(); }
-    var titleNow = null;
-    for (var ti = 0; ti < titleTexts.length; ti++) { if (t >= titleTexts[ti].start && t < titleTexts[ti].end) { titleNow = titleTexts[ti]; break; } }
-    var titleTxt = titleNow ? titleNow.text : '';
+    var titlesNow = [];
+    for (var ti = 0; ti < titleTexts.length; ti++) { if (t >= titleTexts[ti].start && t < titleTexts[ti].end) titlesNow.push(titleTexts[ti]); }
+    var titleNow = titlesNow.length ? titlesNow[0] : null;
+    var titleTxt = titlesNow.map(function (tt) { return tt.text || ''; }).filter(Boolean).join('\n');
     if (titleTxt !== lastTitleText || titleNow !== curTitleObj) {
       lastTitleText = titleTxt; curTitleObj = titleNow;
       $('titleText').textContent = titleTxt;
@@ -4092,6 +4143,7 @@ head += '<button class="iconbtn red del" title="ဖျက်မယ်" aria-labe
         '<span class="dur">' + dur + ' စက္ကန့်</span></div>' +
         '<textarea class="origEdit" rows="1" aria-label="မူရင်းစာသား ' + (i + 1) + '" placeholder="မူရင်းစာသား (transcript) — ပြင်လို့ရတယ်"></textarea>' +
         '<textarea class="my" rows="2" aria-label="မြန်မာစာတန်း ' + (i + 1) + '"></textarea>' +
+        '<textarea class="origEdit extraEdit" rows="1" aria-label="ထပ်ဖြည့်စာတန်း ' + (i + 1) + '" placeholder="ထပ်ဖြည့်စာတန်း (လိုအပ်မှ ဖြည့် — မြန်မာစာတန်းအောက်မှာ ထပ်ပေါ်မယ်)"></textarea>' +
         (s.failed ? '<span class="failbadge">ဘာသာပြန် မအောင်မြင်ခဲ့ပါ</span>' : '');
       var ta = d.querySelector('.my');
       ta.value = s.my || '';
@@ -4102,6 +4154,15 @@ head += '<button class="iconbtn red del" title="ဖျက်မယ်" aria-labe
       oe.addEventListener('input', function (e) {
         s.text = e.target.value;
         autogrowOrig();
+        scheduleSave();
+      });
+      var ex = d.querySelector('.extraEdit');
+      ex.value = s.extra || '';
+      function autogrowExtra() { ex.style.height = 'auto'; ex.style.height = ex.scrollHeight + 'px'; }
+      autogrowExtra();
+      ex.addEventListener('input', function (e) {
+        s.extra = e.target.value;
+        autogrowExtra();
         scheduleSave();
       });
       ta.addEventListener('input', function (e) {
@@ -4738,8 +4799,8 @@ var seekBtn = d.querySelector('.seek');
     burn.fontName = '';
     $('fontReset').classList.add('hidden');
     $('recapFontReset').classList.add('hidden');
-    $('fontStatus').textContent = 'အခု သုံးနေတာ — A Test (မူရင်း)။';
-    $('recapFontStatus').textContent = 'အခု သုံးနေတာ — A Test (မူရင်း)။';
+    $('fontStatus').textContent = 'အခု — A Test (မူရင်း)။';
+    $('recapFontStatus').textContent = 'အခု — A Test (မူရင်း)။';
     var sample = $('fontSample');
     if (sample) sample.style.fontFamily = burn.fontFamily;
     var rsample = $('recapFontSample');
@@ -4815,8 +4876,8 @@ var seekBtn = d.querySelector('.seek');
     $('recapLogoImg').removeAttribute('src');
     $('logoRemove').classList.add('hidden');
     $('recapLogoRemove').classList.add('hidden');
-    $('logoStatus').textContent = 'Logo မထည့်ရသေးဘူး။ PNG (နောက်ခံ ပွင့်လင်း) ဆို အလှဆုံးပဲ။';
-    $('recapLogoStatus').textContent = 'Logo မထည့်ရသေးဘူး။ PNG (နောက်ခံ ပွင့်လင်း) ဆို အလှဆုံးပဲ။';
+    $('logoStatus').textContent = 'Logo မထည့်ရသေးဘူး။';
+    $('recapLogoStatus').textContent = 'Logo မထည့်ရသေးဘူး။';
     applyLogoStyle();
     toast('Logo ဖြုတ်လိုက်ပါပြီ');
   }
@@ -4853,20 +4914,48 @@ var seekBtn = d.querySelector('.seek');
      at grapheme boundaries — the font size never changes, the text just wraps
      to another line instead of shrinking (Burmese has almost no spaces, so
      wrapping must cut at grapheme clusters, not at spaces) */
+  /* Wrap a line to the frame width — but break at a word/phrase boundary
+     (space, ။, ၊, punctuation) first, so a Burmese word is never split
+     across two lines. Only a single word longer than the frame falls back
+     to a hard grapheme break. */
   function wrapToWidth(cx, line, availW) {
     if (cx.measureText(line).width <= availW) return [line];
-    var gs = gchars(line), out = [], cur = '';
+    function isWrapBreak(g) { return /[\s\u104A\u104B!?,.;:\uFF1A\u3002\uFF01\uFF1F]/.test(g); }
+    var gs = gchars(line), out = [], cur = [], lastBreak = -1;
     for (var i = 0; i < gs.length; i++) {
-      var t = cur + gs[i];
-      if (cx.measureText(t).width > availW && cur) { out.push(cur); cur = gs[i]; }
-      else cur = t;
+      var g = gs[i];
+      if (cur.length && cx.measureText(cur.join('') + g).width > availW) {
+        if (lastBreak > 0) {
+          out.push(cur.slice(0, lastBreak).join('').trim());
+          cur = cur.slice(lastBreak);
+          while (cur.length && /^\s$/.test(cur[0])) cur.shift();
+          lastBreak = -1;
+          for (var j = 0; j < cur.length; j++) if (isWrapBreak(cur[j])) lastBreak = j + 1;
+        } else {
+          out.push(cur.join(''));
+          cur = [];
+          lastBreak = -1;
+        }
+      }
+      cur.push(g);
+      if (isWrapBreak(g)) lastBreak = cur.length;
     }
-    if (cur) out.push(cur);
+    if (cur.length) out.push(cur.join(''));
     return out.length ? out : [line];
   }
   /* Set during a Recap MP4 export when the "စာတန်းထိုး မထည့်ဘူး" box is
      unchecked — the burn-in export then skips subtitles (dub audio only). */
   var recapBurnSubOff = false;
+  /* Display lines for one subtitle cue: the Burmese line(s) plus the
+     optional extra line the user added in the editor (shown under the
+     main line in preview, burn and SRT/VTT — never spoken by the dub). */
+  function subDisplayLines(s) {
+    var out = [];
+    if (s.my) out.push.apply(out, SrtTools.splitLines(s.my, maxCharsVal));
+    if (s.extra) out.push.apply(out, SrtTools.splitLines(s.extra, maxCharsVal));
+    return out;
+  }
+  function subDisplayText(s) { return subDisplayLines(s).join('\n'); }
   function drawBurnSub(cx, W, H, t) {
     if (recapBurnSubOff) return;
     var act = [], lines = [];
@@ -4878,7 +4967,7 @@ var seekBtn = d.querySelector('.seek');
       var sh = dubShiftByIdx ? (dubShiftByIdx[i] || 0) : 0;
       if (t >= segments[i].start + sh && t < segments[i].end + sh) act.push(segments[i]);
     }
-    act.slice(-2).forEach(function (s) { var tx = String(s.my || '').trim(); if (tx) lines = lines.concat(SrtTools.splitLines(tx, maxCharsVal)); });
+    act.slice(-2).forEach(function (s) { lines = lines.concat(subDisplayLines(s)); });
     if (!lines.length) return;
     /* safe area: the subtitle box must stay inside the frame — margins on every
        side. The font size is FIXED (burn.fontFrac * H): a line that is still
@@ -4944,60 +5033,77 @@ var seekBtn = d.querySelector('.seek');
   }
 
   /* custom title overlay burned into the export — same style as the subtitles,
-     but 1.5x bigger, at the position picked for that title */
+     but 1.5x bigger, at the position picked for that title. When several
+     titles are active at the same moment they stack vertically around the
+     first title's anchor, so 2-3 texts can sit at one place. */
   function drawTitleText(cx, W, H, t) {
-    var act = null;
+    var acts = [];
     for (var i = 0; i < titleTexts.length; i++) {
-      if (t >= titleTexts[i].start && t < titleTexts[i].end) { act = titleTexts[i]; break; }
+      if (t >= titleTexts[i].start && t < titleTexts[i].end && titleTexts[i].text) { normalizeTitle(titleTexts[i]); acts.push(titleTexts[i]); }
     }
-    if (!act || !act.text) return;
-    normalizeTitle(act);
+    if (!acts.length) return;
     var safeMx = Math.round(W * 0.04);
     var availW = Math.max(40, W - safeMx * 2);
-    var fs = burn.fontFrac * H * 1.5 * act.size;
-    if (fs < 0.4) return;
-    function setFont() { cx.font = (burn.bold ? '700 ' : '400 ') + fs + 'px ' + titleFontFamily(act.font); }
-    setFont();
-    cx.textAlign = 'center';
-    cx.textBaseline = 'middle';
-    var lines = SrtTools.splitLines(act.text, maxCharsVal);
-    var wrappedT = [];
-    lines.forEach(function (l) { wrappedT.push.apply(wrappedT, wrapToWidth(cx, l, availW)); });
-    lines = wrappedT;
-    var maxW = 0;
-    lines.forEach(function (l) { maxW = Math.max(maxW, cx.measureText(l).width); });
-    var lh = fs * 1.5, padX = fs * 0.55, padY = fs * 0.3;
-    var boxW = Math.min(availW, maxW + padX * 2);
-    var boxH = lines.length * lh + padY * 2;
-    var x0 = Math.max(safeMx, Math.min(Math.max(safeMx, W - safeMx - boxW), Math.round(act.x * W - boxW / 2)));
-    var y0 = Math.max(0, Math.min(Math.max(0, H - boxH), Math.round(act.y * H - boxH / 2)));
-    if (burn.bgOp > 0) {
-      cx.fillStyle = hexToRgba(burn.bg, burn.bgOp);
-      if (typeof cx.roundRect === 'function') {
-        cx.beginPath();
-        cx.roundRect(x0, y0, boxW, boxH, Math.max(2, fs * 0.18));
-        cx.fill();
-      } else cx.fillRect(x0, y0, boxW, boxH);
-    }
-    if (burn.bgOp < 0.35) {
-      cx.shadowColor = 'rgba(0,0,0,0.9)';
-      cx.shadowBlur = Math.max(2, fs * 0.12);
-      cx.shadowOffsetY = Math.max(1, fs * 0.04);
-    }
-    cx.fillStyle = burn.color;
-    if (burn.stroke > 0) {
-      cx.save();
-      cx.shadowColor = 'transparent'; cx.shadowBlur = 0; cx.shadowOffsetY = 0;
-      cx.strokeStyle = burn.strokeColor;
-      cx.lineWidth = Math.max(1, burn.stroke * H / 1080 * 1.5 * act.size);
-      cx.lineJoin = 'round';
+    var boxes = [];
+    acts.forEach(function (act) {
+      var fs = burn.fontFrac * H * 1.5 * act.size;
+      var lines = [];
+      if (fs >= 0.4) {
+        cx.font = (burn.bold ? '700 ' : '400 ') + fs + 'px ' + titleFontFamily(act.font);
+        cx.textAlign = 'center';
+        cx.textBaseline = 'middle';
+        var raw = SrtTools.splitLines(act.text, maxCharsVal);
+        raw.forEach(function (l) { lines.push.apply(lines, wrapToWidth(cx, l, availW)); });
+      }
+      var maxW = 0;
+      lines.forEach(function (l) { maxW = Math.max(maxW, cx.measureText(l).width); });
+      var lh = fs * 1.5, padX = fs * 0.55, padY = fs * 0.3;
+      boxes.push({ act: act, fs: fs, lines: lines, lh: lh, padX: padX, padY: padY,
+        boxW: Math.min(availW, maxW + padX * 2), boxH: lines.length * lh + padY * 2 });
+    });
+    var gap = Math.max(4, Math.round(boxes[0].fs * 0.35));
+    var totalH = gap * (boxes.length - 1);
+    boxes.forEach(function (b) { totalH += b.boxH; });
+    var ax = acts[0].x, ay = acts[0].y;
+    var y = Math.max(0, Math.min(Math.max(0, H - totalH), Math.round(ay * H - totalH / 2)));
+    boxes.forEach(function (b) {
+      if (!b.lines.length) return;
+      var act = b.act, fs = b.fs, lines = b.lines, lh = b.lh, padX = b.padX, padY = b.padY;
+      var boxW = b.boxW, boxH = b.boxH;
+      var x0 = Math.max(safeMx, Math.min(Math.max(safeMx, W - safeMx - boxW), Math.round(ax * W - boxW / 2)));
+      var y0 = y;
+      cx.font = (burn.bold ? '700 ' : '400 ') + fs + 'px ' + titleFontFamily(act.font);
+      cx.textAlign = 'center';
+      cx.textBaseline = 'middle';
+      if (burn.bgOp > 0) {
+        cx.fillStyle = hexToRgba(burn.bg, burn.bgOp);
+        if (typeof cx.roundRect === 'function') {
+          cx.beginPath();
+          cx.roundRect(x0, y0, boxW, boxH, Math.max(2, fs * 0.18));
+          cx.fill();
+        } else cx.fillRect(x0, y0, boxW, boxH);
+      }
+      if (burn.bgOp < 0.35) {
+        cx.shadowColor = 'rgba(0,0,0,0.9)';
+        cx.shadowBlur = Math.max(2, fs * 0.12);
+        cx.shadowOffsetY = Math.max(1, fs * 0.04);
+      }
+      cx.fillStyle = burn.color;
+      if (burn.stroke > 0) {
+        cx.save();
+        cx.shadowColor = 'transparent'; cx.shadowBlur = 0; cx.shadowOffsetY = 0;
+        cx.strokeStyle = burn.strokeColor;
+        cx.lineWidth = Math.max(1, burn.stroke * H / 1080 * 1.5 * act.size);
+        cx.lineJoin = 'round';
+        lines.forEach(function (l, li) {
+          cx.strokeText(l, x0 + boxW / 2, y0 + padY + lh * (li + 0.5));
+        });
+        cx.restore();
+      }
       lines.forEach(function (l, li) {
-        cx.strokeText(l, x0 + boxW / 2, y0 + padY + lh * (li + 0.5));
+        cx.fillText(l, x0 + boxW / 2, y0 + padY + lh * (li + 0.5));
       });
-      cx.restore();
-    }
-    lines.forEach(function (l, li) {
-      cx.fillText(l, x0 + boxW / 2, y0 + padY + lh * (li + 0.5));
+      y += boxH + gap;
     });
     cx.shadowColor = 'transparent';
     cx.shadowBlur = 0;
@@ -6424,7 +6530,7 @@ var seekBtn = d.querySelector('.seek');
       srtFileName: srtFile ? srtFile.name : '',
       srtText: mode === 'srt' ? srtTextCache : '',
       segments: segments.map(function (s) {
-        return { start: s.start, end: s.end, text: s.text || '', my: s.my || '', failed: !!s.failed, dubVoice: s.dubVoice || '', keepOrig: !!s.keepOrig };
+        return { start: s.start, end: s.end, text: s.text || '', my: s.my || '', extra: s.extra || '', failed: !!s.failed, dubVoice: s.dubVoice || '', keepOrig: !!s.keepOrig };
       }),
       burn: { pos: burn.pos, off: burn.off, fontFrac: burn.fontFrac, color: burn.color, bg: burn.bg,
         bgOp: burn.bgOp, bold: burn.bold, stroke: burn.stroke, strokeColor: burn.strokeColor,
@@ -6531,7 +6637,7 @@ var seekBtn = d.querySelector('.seek');
     if (p.maxChars) { $('maxChars').value = String(p.maxChars); maxCharsVal = p.maxChars; }
     if (p.glossary != null) { $('glossaryText').value = p.glossary; saveGlossary(); }
     segments = (p.segments || []).map(function (s) {
-      return { start: +s.start || 0, end: +s.end || 0, text: s.text || '', my: s.my || '', failed: !!s.failed, dubVoice: s.dubVoice || '', keepOrig: !!s.keepOrig };
+      return { start: +s.start || 0, end: +s.end || 0, text: s.text || '', my: s.my || '', extra: s.extra || '', failed: !!s.failed, dubVoice: s.dubVoice || '', keepOrig: !!s.keepOrig };
     });
     coverageGapSec = 0;
     lastAutoVidKey = p.videoFileName || p.srtFileName || ''; /* editing an opened project updates its entry */
@@ -6699,7 +6805,7 @@ var seekBtn = d.querySelector('.seek');
     segments.forEach(function (s) {
       var a = outTime(s.start), b = outTime(s.end);
       if (b - a < 0.05) return;
-      out.push({ start: a, end: b, text: s.text || '', my: s.my || '', failed: !!s.failed });
+      out.push({ start: a, end: b, text: s.text || '', my: s.my || '', extra: s.extra || '', failed: !!s.failed });
     });
     return out;
   }
@@ -6953,7 +7059,11 @@ var seekBtn = d.querySelector('.seek');
     var d = vidDur(); if (!d) return;
     var t = $('preview').currentTime;
     var start = Math.max(0, Math.min(d - 0.5, t));
-    var nt = { start: start, end: Math.min(d, start + 3), text: 'ခေါင်းစဉ်', pos: 'top', x: 0.5, y: 0.1, size: 1, font: 'default' };
+    /* a title added while another one is showing lands on the same spot, so
+       2-3 texts stack at one place instead of piling up at the default top */
+    var at = null;
+    for (var ai = 0; ai < titleTexts.length; ai++) { if (start >= titleTexts[ai].start && start < titleTexts[ai].end) { at = titleTexts[ai]; break; } }
+    var nt = { start: start, end: Math.min(d, start + 3), text: 'ခေါင်းစဉ်', pos: at ? (at.pos || 'top') : 'top', x: at ? at.x : 0.5, y: at ? at.y : 0.1, size: 1, font: 'default' };
     titleTexts.push(nt);
     titleTexts.sort(function (a, b) { return a.start - b.start; });
     tlSel = { kind: 'title', idx: titleTexts.indexOf(nt) };
@@ -7012,6 +7122,13 @@ var seekBtn = d.querySelector('.seek');
       titleDrag = { mode: e.target.id === 'titleResize' ? 'resize' : 'move',
         sx: e.clientX, sy: e.clientY, ox: curTitleObj.x, oy: curTitleObj.y, os: curTitleObj.size,
         w: r.width, h: r.height };
+      /* drag the whole stack together: other titles sitting on the same spot
+         move with the one being dragged */
+      titleDrag.group = titleTexts.filter(function (tt) {
+        if (tt === curTitleObj) return false;
+        normalizeTitle(tt);
+        return Math.abs(tt.x - curTitleObj.x) < 0.02 && Math.abs(tt.y - curTitleObj.y) < 0.02;
+      }).map(function (tt) { return { tt: tt, ox: tt.x, oy: tt.y }; });
       el.classList.add('dragging');
       try { el.setPointerCapture(e.pointerId); } catch (err) {}
       e.preventDefault(); e.stopPropagation();
@@ -7028,6 +7145,11 @@ var seekBtn = d.querySelector('.seek');
         curTitleObj.x = Math.max(hw + 0.01, Math.min(0.99 - hw, titleDrag.ox + dx / titleDrag.w));
         curTitleObj.y = Math.max(hh + 0.01, Math.min(0.99 - hh, titleDrag.oy + dy / titleDrag.h));
         curTitleObj.pos = 'custom';
+        (titleDrag.group || []).forEach(function (g) {
+          g.tt.x = Math.max(0.04, Math.min(0.96, g.ox + dx / titleDrag.w));
+          g.tt.y = Math.max(0.04, Math.min(0.96, g.oy + dy / titleDrag.h));
+          g.tt.pos = 'custom';
+        });
       }
       applyTitleStyle();
     });
@@ -7405,6 +7527,14 @@ var seekBtn = d.querySelector('.seek');
     var f = mode === 'video' ? videoFile : srtFile;
     return f ? f.name.replace(/\.[^.]+$/, '') : 'subtitles';
   }
+  /* the SRT/VTT/TXT file name: the editable #srtName field (pre-filled from
+     the video/srt file name), cleaned of characters a file name can't hold */
+  function outName(ext) {
+    var v = ($('srtName') && $('srtName').value || '').trim().replace(/\.(srt|vtt|txt)$/i, '');
+    v = v.replace(/[\\\/:*?"<>|]/g, '').replace(/\s+/g, ' ').trim();
+    if (!v) v = baseName();
+    return v + ext;
+  }
   function download(blob, name) {
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -7431,25 +7561,36 @@ var seekBtn = d.querySelector('.seek');
   }
   $('burnShareBtn').addEventListener('click', shareExport);
   $('recapShareBtn').addEventListener('click', shareExport);
+  /* Privacy Policy & Copyright modal */
+  function openPolicy() { var m = $('policyModal'); if (m) { m.style.display = 'flex'; document.body.style.overflow = 'hidden'; } }
+  function closePolicy() { var m = $('policyModal'); if (m) { m.style.display = 'none'; document.body.style.overflow = ''; } }
+  $('policyOpen').addEventListener('click', openPolicy);
+  $('policyOpenNote').addEventListener('click', openPolicy);
+  $('policyClose').addEventListener('click', closePolicy);
+  $('policyBackdrop').addEventListener('click', closePolicy);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closePolicy(); });
   function guardSegments() {
     if (!segments.length) { toast('စာကြောင်း မရှိသေးပါဘူး'); return false; }
     return true;
   }
   $('dlSrt').addEventListener('click', function () {
     if (!guardSegments()) return;
-    download(new Blob(['\uFEFF' + collectSrt()], { type: 'text/plain;charset=utf-8' }), baseName() + '.my.srt');
-    toast('SRT ဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
+    var n = outName('.my.srt');
+    download(new Blob(['\uFEFF' + collectSrt()], { type: 'text/plain;charset=utf-8' }), n);
+    toast('SRT ဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ — ' + n);
   });
   $('dlVtt').addEventListener('click', function () {
     if (!guardSegments()) return;
-    download(new Blob(['\uFEFF' + collectVtt()], { type: 'text/vtt;charset=utf-8' }), baseName() + '.my.vtt');
-    toast('VTT ဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
+    var n = outName('.my.vtt');
+    download(new Blob(['\uFEFF' + collectVtt()], { type: 'text/vtt;charset=utf-8' }), n);
+    toast('VTT ဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ — ' + n);
   });
   $('dlTxt').addEventListener('click', function () {
     if (!guardSegments()) return;
     var txt = segments.map(function (s, i) { return (i + 1) + '. ' + (s.my || ''); }).join('\n\n');
-    download(new Blob(['\uFEFF' + txt], { type: 'text/plain;charset=utf-8' }), baseName() + '.my.txt');
-    toast('စာသားဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
+    var n = outName('.my.txt');
+    download(new Blob(['\uFEFF' + txt], { type: 'text/plain;charset=utf-8' }), n);
+    toast('စာသားဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ — ' + n);
   });
   $('copySrt').addEventListener('click', async function () {
     if (!guardSegments()) return;
@@ -7499,7 +7640,7 @@ var seekBtn = d.querySelector('.seek');
     toast('စာတန်းအချိန်အားလုံး ' + shift + ' စက္ကန့် ရွှေ့ပြီးပါပြီ');
   });
   /* ---------- TTS tab (Movie Recap voice-over): Gemini / ElevenLabs / Edge (Thiha, Nilar) ---------- */
-  var ttsCache = {}, ttsRun = null, ttsUrl = '', ttsWavOut = null, ttsWavName = 'recap-voice.wav', ttsProv = 'gemini';
+  var ttsCache = {}, ttsRun = null, ttsUrl = '', ttsWavOut = null, ttsWavName = 'recap-voice.wav', ttsProv = 'gemini', ttsSrtSegs = null, ttsSrtName = 'recap-voice.srt';
   function ttsError(msg, code) { var e = new Error(msg); e.isTts = true; if (code) e.ttsCode = code; return e; }
   function ttsVoice() { return $('ttsVoice').value || 'Charon'; }
   function ttsModel() { return $('ttsModel').value || 'gemini-3.8-flash-lite-tts'; }
@@ -7948,6 +8089,34 @@ var seekBtn = d.querySelector('.seek');
     if (ttsProv === 'azure') return { prov: 'azure', voice: $('azureVoice').value, label: $('azureVoice').value.replace(/^my-MM-|Neural$/g, ''), model: 'azure', extra: $('azureRate').value, key: azureKeyVal(), region: azureRegionVal() };
     return { prov: 'gemini', voice: ttsVoice(), label: ttsVoice(), model: ttsModel(), extra: ttsStyle(), key: ttsKeyVal() };
   }
+  /* TTS chunks -> SRT cues: each chunk's real audio length is shared across its
+     subtitle lines (at most 2 lines per cue) in proportion to their length,
+     so the SRT stays in sync with the generated voice-over. Pure — testable. */
+  function buildTtsSrt(chunks, pieces, sr) {
+    var mc = (typeof maxCharsVal === 'number' && maxCharsVal) ? maxCharsVal : 42;
+    var segs = [], t = 0;
+    for (var i = 0; i < chunks.length; i++) {
+      var dur = pieces[i].data.length / sr;
+      var lines = SrtTools.splitLines(chunks[i].text, mc);
+      var groups = [];
+      for (var g = 0; g < lines.length; g += 2) groups.push(lines.slice(g, g + 2));
+      var lens = [], total = 0;
+      groups.forEach(function (gr) {
+        var n = 0;
+        gr.forEach(function (ln) { n += gchars(ln).length; });
+        lens.push(n); total += n;
+      });
+      var cur = t;
+      groups.forEach(function (gr, gi) {
+        var d = total > 0 ? dur * lens[gi] / total : dur / groups.length;
+        if (!(d > 0)) d = 0.1;
+        segs.push({ start: cur, end: cur + d, my: gr.join(' ') });
+        cur += d;
+      });
+      t += dur + pieces[i].gap / sr;
+    }
+    return segs;
+  }
   async function ttsGenerateAll() {
     if (ttsRun) return;
     var text = $('ttsText').value.trim();
@@ -7988,13 +8157,15 @@ var seekBtn = d.querySelector('.seek');
       var all = new Float32Array(total), pos = 0;
       pieces.forEach(function (pc) { all.set(pc.data, pos); pos += pc.data.length + pc.gap; });
       ttsWavOut = encodeWav(all, SR);
+      ttsSrtSegs = buildTtsSrt(chunks, pieces, SR);
+      ttsSrtName = ttsWavName.replace(/\.wav$/i, '.srt');
       ttsWavName = 'recap-voice-' + String(cfg.label).replace(/[^\w\-]+/g, '_') + '.wav';
       if (ttsUrl) URL.revokeObjectURL(ttsUrl);
       ttsUrl = URL.createObjectURL(new Blob([ttsWavOut], { type: 'audio/wav' }));
       $('ttsAudio').src = ttsUrl;
       $('ttsResult').classList.remove('hidden');
       $('ttsBar').style.width = '100%';
-      $('ttsStatus').textContent = 'ပြီးပါပြီ — အပိုင်း ' + chunks.length + ' ခု · ကြာချိန် ' + fmtT(total / SR) + ' · ' + cfg.label;
+      $('ttsStatus').textContent = 'ပြီးပါပြီ — အပိုင်း ' + chunks.length + ' ခု · ကြာချိန် ' + fmtT(total / SR) + ' · ' + cfg.label + ' · SRT လည်း ဒေါင်းလို့ရပြီ';
       toast('မြန်မာအသံ အဆင်သင့်ပါပြီ');
     } catch (e) {
       console.error(e);
@@ -8013,6 +8184,11 @@ var seekBtn = d.querySelector('.seek');
     if (!ttsWavOut) return;
     download(new Blob([ttsWavOut], { type: 'audio/wav' }), ttsWavName);
     toast('WAV ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
+  });
+  $('ttsDlSrt').addEventListener('click', function () {
+    if (!ttsSrtSegs || !ttsSrtSegs.length) { toast('အရင်ဆုံး အသံထုတ်ပေးပါ'); return; }
+    download(new Blob(['\uFEFF' + SrtTools.buildSrt(ttsSrtSegs, maxCharsVal)], { type: 'text/plain;charset=utf-8' }), ttsSrtName);
+    toast('SRT ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
   });
 
   /* ---------- Movie Recap tab: per-line TTS (Thiha / Nilar) + dubbing mix + MP4 export ---------- */
@@ -8141,9 +8317,9 @@ var seekBtn = d.querySelector('.seek');
          later by the reflow — show the subtitle at the shifted time so the
          cue follows the voice, not the original timing. */
       var sh = (typeof dubWatch !== 'undefined' && dubWatch.playing && dubShiftByIdx) ? (dubShiftByIdx[i] || 0) : 0;
-      if (t >= segments[i].start + sh && t < segments[i].end + sh) { txt = segments[i].my || ''; break; }
+      if (t >= segments[i].start + sh && t < segments[i].end + sh) { txt = subDisplayText(segments[i]); break; }
     }
-    $('recapCueText').textContent = txt ? SrtTools.splitLines(txt, maxCharsVal).join('\n') : '';
+    $('recapCueText').textContent = txt;
   }
   $('recapPickVideo').addEventListener('click', function () { $('recapVideoInput').click(); });
   $('recapVideoInput').addEventListener('change', function () {
@@ -8239,12 +8415,13 @@ var seekBtn = d.querySelector('.seek');
         '<span class="dur">' + dur + ' စက္ကန့်</span></div>' +
         '<textarea class="origEdit recapOrig" data-i="' + i + '" rows="1" aria-label="မူရင်းစာသား ' + (i + 1) + '" placeholder="မူရင်းစာသား (transcript) — ပြင်လို့ရတယ်">' + escapeHtml(s.text || '') + '</textarea>' +
         '<textarea class="my recapMy" data-i="' + i + '" rows="2" aria-label="မြန်မာစာတန်း ' + (i + 1) + '">' + escapeHtml(s.my || '') + '</textarea>' +
+        '<textarea class="origEdit recapExtra" data-i="' + i + '" rows="1" aria-label="ထပ်ဖြည့်စာတန်း ' + (i + 1) + '" placeholder="ထပ်ဖြည့်စာတန်း (လိုအပ်မှ ဖြည့်)">' + escapeHtml(s.extra || '') + '</textarea>' +
         (s.failed ? '<span class="failbadge">ဘာသာပြန် မအောင်မြင်ခဲ့ပါ</span>' : '') +
         '</div>';
     });
     list.innerHTML = html;
     /* grow the original-text boxes to fit, like the Edit tab does */
-    var oes = list.querySelectorAll('.recapOrig');
+    var oes = list.querySelectorAll('.recapOrig, .recapExtra');
     for (var k = 0; k < oes.length; k++) { oes[k].style.height = 'auto'; oes[k].style.height = oes[k].scrollHeight + 'px'; }
     updateRecapStats();
   }
@@ -8288,11 +8465,13 @@ var seekBtn = d.querySelector('.seek');
     var t = ev.target;
     var my = t.closest ? t.closest('.recapMy') : null;
     var oe = t.closest ? t.closest('.recapOrig') : null;
-    if (!my && !oe) return;
-    var i = parseInt((my || oe).getAttribute('data-i'), 10);
+    var ex = t.closest ? t.closest('.recapExtra') : null;
+    if (!my && !oe && !ex) return;
+    var i = parseInt((my || oe || ex).getAttribute('data-i'), 10);
     var sg = segments[i];
     if (!sg) return;
     if (my) { sg.my = t.value; recapSetPcm(sg, null); clearDubMix(); }
+    else if (ex) { sg.extra = t.value; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }
     else { sg.text = t.value; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }
     scheduleSave();
   });
