@@ -405,27 +405,27 @@ body{background-attachment:fixed}
 
   <div class="drop" id="dropVideo" role="button" tabindex="0" aria-label="ဗီဒီယို သို့မဟုတ် အသံဖိုင် ရွေးရန်">
     <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V5m0 0L8 9m4-4 4 4"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></svg>
-    <div class="t">ဖိုင်ရွေးရန်နှိပ်ပါ</div>
-    <div class="s">Upload mp4, webm, mov, mp3, wav</div>
+    <div class="t">နှိပ်ပြီး ဖိုင်ရွေးပါ (သို့) ဒီမှာ ဆွဲချလိုက်ပါ</div>
+    <div class="s">mp4, webm, mov, mp3, wav စတဲ့ ဗီဒီယို / အသံဖိုင် အားလုံး ရပါတယ်</div>
   </div>
   <input type="file" id="fileInputVideo" accept="video/*,audio/*,.mkv" class="hidden" />
 
   <div class="drop hidden" id="dropSrt" role="button" tabindex="0" aria-label="SRT သို့မဟုတ် VTT ဖိုင် ရွေးရန်">
     <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
-    <div class="t">နှိပ်ပြီး .srt / .vtt ဖိုင်ရွေးပါ</div>
-    <div class="s">ရှိပြီးသား စာတန်းကို မြန်မာပြန်ဆိုပေးမယ်</div>
+    <div class="t">နှိပ်ပြီး .srt / .vtt ဖိုင်ရွေးပါ (သို့) ဒီမှာ ဆွဲချလိုက်ပါ</div>
+    <div class="s">ရှိပြီးသား စာတန်းကို မြန်မာပြန်ဆိုပေးမယ် — အချိန်တွေ ဒီအတိုင်း ထားမယ်</div>
   </div>
   <input type="file" id="fileInputSrt" accept=".srt,.vtt,text/plain" class="hidden" />
 
   <div class="filemeta" id="fileMeta"></div>
 
   <div id="linkRow" style="margin-top:14px">
-    <label class="f" for="linkUrl">link ကနေ ယူမယ်</label>
+    <label class="f" for="linkUrl">ဒါမှမဟုတ် link ကနေ ယူမယ်</label>
     <div class="row" style="gap:8px;margin-top:6px">
       <input type="text" id="linkUrl" placeholder="https://www.youtube.com/watch?v=… / https://www.tiktok.com/…" autocomplete="off" spellcheck="false" inputmode="url" style="flex:1" />
       <button class="btn small" id="linkBtn" type="button">🔗 ဆွဲယူမယ်</button>
     </div>
-    <div style="color:var(--mut);font-size:13px;margin-top:6px;line-height:1.6">YouTube / TikTok link No watermark</div>
+    <div style="color:var(--mut);font-size:13px;margin-top:6px;line-height:1.6">YouTube / TikTok link တွေ ရပါတယ် — TikTok က watermark မပါဘူး။ Red Note (小红书) က Cobalt မထောက်ပံ့သေးလို့ မရသေးဘူး။</div>
     <div id="linkStatus" style="font-size:13px;margin-top:6px;line-height:1.6"></div>
     <details style="margin-top:6px">
       <summary style="font-size:13px;color:var(--mut);cursor:pointer">Cobalt instance / PC bridge ကိုယ်တိုင် သတ်မှတ်မယ် (မရရင်)</summary>
@@ -436,7 +436,7 @@ body{background-attachment:fixed}
         <input type="text" id="bridgeUrl" placeholder="PC bridge URL — http://… (ဥပမာ http://192.168.1.5:8000)" autocomplete="off" spellcheck="false" inputmode="url" style="flex:1" />
         <button class="btn small ghost" id="cobaltSave" type="button">သိမ်းမယ်</button>
       </div>
-      <div style="color:var(--mut);font-size:13px;margin-top:4px;line-height:1.6">အလုပ်ဖြစ်တဲ့ Cobalt instance တွေကို <a href="https://cobalt.directory/" target="_blank" rel="noopener">cobalt.directory</a></div>
+      <div style="color:var(--mut);font-size:13px;margin-top:4px;line-height:1.6">အလုပ်ဖြစ်တဲ့ Cobalt instance တွေကို <a href="https://cobalt.directory/" target="_blank" rel="noopener">cobalt.directory</a> မှာ ကြည့်လို့ရတယ် (Turnstile မပါတဲ့ instance ကို ရွေးပါ)။ PC bridge (bridge.py) ကနေ tool ကို ဖွင့်ထားရင် bridge ကို အလိုအလျောက် သုံးမယ် — URL ရိုက်စရာမလိုဘူး။</div>
     </details>
   </div>
 
@@ -470,15 +470,15 @@ body{background-attachment:fixed}
         <label class="f" for="geminiModel">Gemini မော်ဒယ်</label>
         <select id="geminiModel">
 <optgroup label="လက်ရှိ ထွက်ရှိနေတဲ့ မော်ဒယ်များ">
-<option value="gemini-3.8-flash" selected>Gemini 3.8 Flash — မြန် + တိကျ</option>
+<option value="gemini-3.8-flash" selected>Gemini 3.8 Flash — မြန် + တိကျ (အကြံပြု)</option>
 <option value="gemini-3.6-flash">Gemini 3.6 Flash</option>
 <option value="gemini-3-flash-preview">Gemini 3 Flash Preview</option>
-<option value="gemini-3.1-pro-preview">Gemini 3.1 Pro — အတိကျဆုံး</option>
+<option value="gemini-3.1-pro-preview">Gemini 3.1 Pro — အတိကျဆုံး (နှေးနိုင်)</option>
 </optgroup>
 </select>
-<label class="f" for="geminiModelCustom" style="margin-top:8px">မော်ဒယ်အမည် ရိုက်ပါ</label>
+<label class="f" for="geminiModelCustom" style="margin-top:8px">ဒါမှမဟုတ် မော်ဒယ်အမည် ကိုယ်တိုင်ရိုက်ပါ</label>
 <input type="text" id="geminiModelCustom" placeholder="ဥပမာ gemini-3.6-flash" autocomplete="off" spellcheck="false" />
-<div class="hint">ရိုက်ထားရင် ဒါကို အရင်သုံးမယ်။</div>
+<div class="hint">ဒီကွက်မှာ ရိုက်ထားရင် အပေါ်က ရွေးထားတာထက် ဒါကို အရင်သုံးမယ်။</div>
       </div>
     </div>
     <div id="transcriberBox" style="margin-top:14px">
@@ -486,7 +486,7 @@ body{background-attachment:fixed}
         <div>
           <label class="f" for="transcriber">🎙️ အသံနားထောင်မယ့် Engine</label>
           <select id="transcriber">
-            <option value="gemini" selected>Gemini — နားထောင် + ဘာသာပြန်</option>
+            <option value="gemini" selected>Gemini — နားထောင် + ပြန် (မူလ)</option>
             <option value="groq">Groq Whisper — နားထောင်မြန်၊ အခမဲ့</option>
             <option value="scribe">ElevenLabs Scribe — အတိကျဆုံး</option>
             <option value="deepgram">Deepgram Nova-3 — $200 credit အခမဲ့</option>
@@ -569,6 +569,17 @@ body{background-attachment:fixed}
     <div class="hint">ဘာသာပြန်တိုင်း ဒီနာမည်တွေကို ဒီပုံစံအတိုင်း သုံးမယ်။</div>
   </div>
 
+</details>
+  <details style="margin-top:14px">
+    <summary style="font-size:13px;color:var(--mut);cursor:pointer">🔒 Privacy — key နဲ့ data တွေ ဘယ်သွားလဲ</summary>
+    <div style="font-size:13px;line-height:1.8;margin-top:6px">
+      • API Key တွေ (Gemini / ElevenLabs / Groq…) က ကိုယ့် browser မှာပဲ သိမ်းတယ် — tool လုပ်တဲ့သူဆီ မရောက်ဘူး။ သုံးတဲ့အချိန်မှာပဲ ရွေးထားတဲ့ API ကုမ္ပဏီဆီ ရောက်တယ်။ သူများကွန်ပြူတာမှာ key မထည့်ပါနဲ့။<br>
+      • ဗီဒီယို / အသံ / စာသားက ရွေးထားတဲ့ ဝန်ဆောင်မှု (Gemini / Groq / ElevenLabs / Azure / Google Translate) ဆီ ပို့ပြီး ပြန်ဆို / အသံထုတ်တာပါ။<br>
+      • Link ကနေ ဗီဒီယိုဆွဲရင် link က Cobalt server တွေနဲ့ proxy ကို ဖြတ်သွားတယ် — private link တွေ မထည့်ပါနဲ့။<br>
+      • Cloud save က ပုံမှန် ပိတ်ထားတယ် — Google နဲ့ sign-in လုပ်မှ သိမ်းတယ်၊ ကိုယ့် account ထဲမှာပဲ ရှိတယ်။<br>
+      အပြည့်အစုံကို <button type="button" id="policyOpenNote" style="background:none;border:none;color:var(--acc);font-size:13px;text-decoration:underline;cursor:pointer;padding:0">Privacy Policy &amp; Copyright</button> မှာ ဖတ်လို့ရတယ်။
+    </div>
+  </details>
   <div class="hint" style="margin-top:14px">
 <label style="display:flex;gap:8px;align-items:flex-start;margin:0 0 6px"><input type="checkbox" id="autoFinish" checked /> <span><b>One-click</b> — ပြီးတာနဲ့ ရှည်တဲ့စာတန်းတွေ အလိုအလျောက်ခွဲ၊ အချိန်ကိုက်ညှိပြီး SRT ကို ဒေါင်းလုဒ်ချမယ်</span></label>
 </div>
@@ -686,7 +697,7 @@ body{background-attachment:fixed}
               <button class="btn small ghost" type="button" id="fontPlus" aria-label="တိုးမယ်">+</button>
             </div></div>
             <input type="range" id="burnFont" min="0" max="120" step="1" value="39" style="margin-top:8px" />
-            <div class="hint">  </div>
+            <div class="hint">1080p အပေါ် အခြေခံတဲ့ ဖောင့်ဆိုဒ် (39 = ပုံမှန်)။ 0 = စာတန်း မမြင်ရဘူး။</div>
           </div>
           <div>
             <label class="f" for="burnColor">စာသား အရောင်</label>
@@ -771,7 +782,7 @@ body{background-attachment:fixed}
             </div>
             <div class="hint">X/Y = အကွက်ရဲ့ နေရာ၊ အကျယ်/အမြင့် = အရွယ်။</div>
           </div>
-          <div class="full"><div class="hint">ဗီဒီယိုထဲက စာတန်းကို ဖုံးမယ်။</div></div>
+          <div class="full"><div class="hint">ဗီဒီယိုထဲက တရုတ်စာတန်း / လိုဂိုကို ဖုံးမယ်။</div></div>
           </div></details>
           <div class="full">
             <label class="f">ဗီဒီယို အရည်အသွေး (Quality)</label>
@@ -846,7 +857,7 @@ body{background-attachment:fixed}
       <div class="dl-stack">
         <label class="f" for="srtName">SRT ဖိုင်နာမည်</label>
         <input type="text" id="srtName" placeholder="subtitles" autocomplete="off" spellcheck="false" />
-        <div class="hint" style="margin:0">ဖိုင်က [နာမည်].srt ဖြစ်မယ်။</div>
+        <div class="hint" style="margin:0">ဖိုင်က [နာမည်].my.srt ဖြစ်မယ်။</div>
         <button class="btn" id="dlSrt">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11m0 0-4-4m4 4 4-4"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></svg>
           SRT ဒေါင်းလုဒ်ဆွဲမယ်
@@ -882,7 +893,7 @@ body{background-attachment:fixed}
   <h2 style="margin-top:22px">စာတန်းများ ပြင်ဆင်မယ်</h2>
   <div class="hint" style="margin-top:0">အချိန်ကို 65.5 ဒါမှမဟုတ် 0:01:05.5 လို့ ရိုက်လို့ရတယ်။</div>
   <div class="row" style="margin-top:10px">
-<button class="btn small" type="button" id="splitAll">&#9986;စာတန်းရှည်တွေ အလိုအလျောက် ခွဲမယ်</button>
+<button class="btn small" type="button" id="splitAll">&#9986; ရှည်တဲ့စာတန်းတွေ အလိုအလျောက် ခွဲမယ်</button>
 <button class="btn small ghost" type="button" id="splitUndo" disabled>&#8630; ပြန်ဆုတ်မယ်</button>
 </div>
 <div class="row" style="margin-top:8px;align-items:center">
@@ -962,7 +973,7 @@ body{background-attachment:fixed}
 
 <div id="panelTts" class="hidden">
 <section class="card" id="cardTts">
-  <h2>&#128266; Movie Recap (TTS)</h2>
+  <h2>&#128266; Movie Recap မြန်မာအသံထုတ် (TTS)</h2>
 
   <div style="margin-top:14px">
     <label class="f" id="ttsProvLabel">အသံထုတ် Engine</label>
@@ -976,7 +987,7 @@ body{background-attachment:fixed}
 
   <div style="margin-top:14px">
     <label class="f" for="ttsText">Recap စာသား</label>
-    <textarea class="my" id="ttsText" rows="10" placeholder="ဒီမှာ recap စာသား ထည့်ပါ…"></textarea>
+    <textarea class="my" id="ttsText" rows="10" placeholder="ဒီမှာ recap စာသား ထည့်ပါ… (စာပိုဒ်ကြားမှာ အကွာအဝေး အလိုအလျောက် ထည့်ပေးမယ်)"></textarea>
     <div class="row" style="align-items:center">
       <button class="btn small ghost" type="button" id="ttsLoadTxt">.txt ဖိုင်က ထည့်မယ်</button>
       <button class="btn small ghost danger-ghost" type="button" id="ttsClearTxt">စာသား ရှင်းမယ်</button>
@@ -1012,7 +1023,7 @@ body{background-attachment:fixed}
         </select>
       </div>
       <div>
-        <label class="f" for="ttsStyle">လေသံ</label>
+        <label class="f" for="ttsStyle">လေသံ (မလိုရင် ကျော်ပါ)</label>
         <input type="text" id="ttsStyle" placeholder="ဥပမာ energetic movie narrator" autocomplete="off" spellcheck="false" />
       </div>
       <div>
@@ -1045,10 +1056,10 @@ body{background-attachment:fixed}
           <option value="pNInz6obpgDQGcFmaJgB">Adam (M)</option>
           <option value="JBFqnCBsd6RMkjVDRZzb">George (M)</option>
         </select>
-        <div class="row"><button class="btn small ghost" type="button" id="elLoadVoices">Elevenlabs Voice စာရင်း ဆွဲမယ်</button></div>
+        <div class="row"><button class="btn small ghost" type="button" id="elLoadVoices">ကိုယ့်အကောင့်က Voice စာရင်း ဆွဲမယ်</button></div>
       </div>
       <div>
-        <label class="f" for="elVoiceCustom">Voice ID ထည့်ပါ</label>
+        <label class="f" for="elVoiceCustom">ဒါမှမဟုတ် Voice ID ကိုယ်တိုင်ထည့်ပါ</label>
         <input type="text" id="elVoiceCustom" placeholder="ဥပမာ 21m00Tcm4TlvDq8ikWAM" autocomplete="off" spellcheck="false" />
       </div>
     </div>
@@ -1075,7 +1086,7 @@ body{background-attachment:fixed}
         </select>
       </div>
     </div>
-    <div class="hint">Key မလို၊ အခမဲ့</div>
+    <div class="hint">Key မလို၊ အခမဲ့။ မရရင် အင်တာနက်နဲ့ စက်နာရီကို စစ်ပါ။</div>
   </div>
 
   <div id="ttsBoxA" class="hidden">
@@ -1111,7 +1122,7 @@ body{background-attachment:fixed}
 
   <div class="grid2" style="margin-top:12px">
     <div>
-      <label class="f" for="ttsChunk">အပိုင်းတစ်ခုချင်း အရှည်</label>
+      <label class="f" for="ttsChunk">အပိုင်းတစ်ခုချင်း အရှည် (စာလုံး)</label>
       <select id="ttsChunk">
         <option value="300">၃၀၀ — request များ၊ ပိုတည်ငြိမ်</option>
         <option value="450" selected>၄၅၀ (မူလ)</option>
@@ -1128,10 +1139,10 @@ body{background-attachment:fixed}
   </div>
   <div id="ttsResult" class="hidden" style="margin-top:14px">
     <audio id="ttsAudio" controls style="width:100%"></audio>
-    <div class="row"><button class="btn" id="ttsDl">WAV ဒေါင်းလုဒ်ဆွဲမယ်</button><button class="btn ghost" id="ttsDlSrt">SRT ဒေါင်းလုဒ်ဆွဲမယ်</button></div>
+    <div class="row"><button class="btn" id="ttsDl">WAV ဒေါင်းလုဒ်ဆွဲမယ်</button><button class="btn ghost" id="ttsDlSrt">SRT ဒေါင်းလုဒ်ဆွဲမယ် (အသံနဲ့ အချိန်ကိုက်)</button></div>
   </div>
   <div class="row"><button class="btn small ghost" type="button" id="ttsCacheClear">မှတ်ထားတဲ့အသံ ရှင်းမယ်</button></div>
-  <div class="hint">ပျက်သွားရင် ပြန်နှိပ်ပါ</div>
+  <div class="hint">ပျက်သွားရင် ပြန်နှိပ်ပါ — ထုတ်ပြီးသား အပိုင်းတွေ ပြန်မထုတ်ဘူး။</div>
 </section>
 </div>
 
@@ -1323,7 +1334,7 @@ body{background-attachment:fixed}
         <option value="2.5">2.5X</option>
       </select>
       <div class="hint">အမြန်နှုန်း တင်လေ စာကြောင်းတွေ slot ထဲ ဝင်လေ။ အသံ ပြန်ထုတ်စရာ မလိုဘူး။</div>
-      <label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14px"><input type="checkbox" id="recapFreeze" style="width:18px;height:18px" checked> ⏸ အသံက ဗီဒီယိုထက် ရှည်နေရင် နောက်ဆုံးပုံကို ရပ်ထားမယ်</label>
+      <label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14px"><input type="checkbox" id="recapFreeze" style="width:18px;height:18px" checked> ⏸ အသံက ဗီဒီယိုထက် ရှည်နေရင် နောက်ဆုံးပုံကို ရပ်ထားမယ် (freeze + ဖြည်းဖြည်း zoom)</label>
       <div class="hint">ဖွင့်ထားရင် အသံကုန်တဲ့အထိ နောက်ဆုံးပုံကို ရပ်ပြီး zoom ဆွဲထုတ်ပေးမယ်။</div>
     </div>
     <div style="margin-top:12px">
@@ -1473,7 +1484,7 @@ body{background-attachment:fixed}
       </div>
     </details>
     <div class="row" style="margin-top:14px; flex-wrap:wrap">
-      <button class="btn primary" id="recapTtsBtn">🎙️အသံထုတ်မယ်</button>
+      <button class="btn primary" id="recapTtsBtn">🎙️ စာကြောင်းတွေ အသံထုတ်မယ်</button>
       <button class="btn" id="recapConciseBtn">✂️ စာသားတွေ တိုတိုပြန်ဆိုမယ်</button>
       <button class="btn" id="recapPreviewBtn">🔊 Dub အသံ နားထောင်မယ်</button>
       <button class="btn" id="recapWatchBtn">▶ Dub နဲ့ ဗီဒီယို တွဲကြည့်မယ်</button>
@@ -1491,7 +1502,7 @@ body{background-attachment:fixed}
       <audio id="recapAudio" controls style="width:100%"></audio>
       <div class="row"><button class="btn" id="recapDl">Dub အသံ (WAV) ဒေါင်းလုဒ်ဆွဲမယ်</button></div>
     </div>
-    <div class="hint" style="margin-top:10px">TTS ရှည်ရင် "✂️ စာသားတွေ တိုတိုပြန်ဆိုမယ်" ကို နှိပ်ပါ။</div>
+    <div class="hint" style="margin-top:10px">TTS အသံက စာကြောင်းထက် ရှည်ရင် "✂️ စာသားတွေ တိုတိုပြန်ဆိုမယ်" ကို နှိပ်ပါ။</div>
   </div>
 </section>
 </div>
@@ -1499,7 +1510,7 @@ body{background-attachment:fixed}
 <div id="panelProjects" class="hidden">
 <section class="card" id="cardProjects">
   <h2>ပရောဂျက်များ</h2>
-  <div class="hint" style="margin-top:0">ဗီဒီယိုဖိုင်ကိုတော့ သိမ်းမရဘူး</div>
+  <div class="hint" style="margin-top:0">ဗီဒီယိုဖိုင်ကိုတော့ သိမ်းမရဘူး — ပြန်ဖွင့်ရင် ဗီဒီယိုဖိုင် ပြန်ရွေးပေးရမယ်။</div>
 
   <div style="margin-top:14px">
     <label class="f" for="projName">ပရောဂျက် နာမည်</label>
@@ -1587,7 +1598,7 @@ service cloud.firestore {
     <button class="btn small ghost" id="aiImgDl">ပုံ ဒေါင်းမယ်</button>
     <button class="btn small ghost" id="aiImgToSlide">ဒီပုံကို slideshow ထဲ ထည့်မယ်</button>
   </div>
-  <div class="hint">Pollinations = အခမဲ့၊ Key မလို။</div>
+  <div class="hint">Pollinations = အခမဲ့၊ Key မလို။ ElevenLabs ပုံရတဲ့ link က ၁ နာရီလောက်ပဲ ခံတယ် — မြန်မြန်ဒေါင်းပါ။</div>
 </section>
 
 <section class="card" id="cardVideoGen">
@@ -1631,7 +1642,7 @@ service cloud.firestore {
   <div class="row hidden" id="aiVidDlRow">
     <button class="btn small ghost" id="aiVidDl">ဗီဒီယို ဒေါင်းမယ်</button>
   </div>
-  <div class="note">Gemini ကနေ Veo တိုက်ရိုက်သုံးမရတော့ဘူး — ElevenLabs နည်းနဲ့ ရတယ်။</div>
+  <div class="note">Gemini ကနေ Veo တိုက်ရိုက်သုံးမရတော့ဘူး — ElevenLabs နည်းနဲ့ ရတယ်။ အခမဲ့လိုချင်ရင် Slideshow သုံးပါ။</div>
 </section>
 </div>
 
@@ -1674,11 +1685,11 @@ service cloud.firestore {
       <p style="margin:0 0 8px"><b>Cloud save က ပုံမှန် ပိတ်ထားတယ်။</b> Google နဲ့ sign-in လုပ်ပြီး ဖွင့်မှ သင့် project တွေက Firebase (Google Cloud) မှာ သင့် account ထဲပဲ သိမ်းတယ်၊ သင့်ကလွဲပြီး ဘယ်သူမှ ဖွင့်လို့မရဘူး။</p>
       <p style="margin:0 0 8px">Analytics မရှိ၊ ကြော်ငြာ မရှိ၊ tracking cookie မရှိပါ။ ဒီ tool က အသက် ၁၃ နှစ်အောက် ကလေးတွေအတွက် ရည်ရွယ်တာ မဟုတ်ပါ။ ဒီမူဝါဒကို ပြင်ဆင်နိုင်ပါတယ် — အပေါ်က ရက်စွဲက နောက်ဆုံးဗားရှင်းပါ။ မေးစရာရှိရင် Telegram — <a href="https://t.me/kopethaung778" target="_blank" rel="noopener" style="color:var(--acc)">@kopethaung778</a> ကနေ ဆက်သွယ်ပါ။</p>
       <h3 style="margin:16px 0 6px;font-size:15px">မူပိုင်ခွင့်</h3>
-      <p style="margin:0 0 8px"><b>သင့်ဖန်တီးမှုက သင့်ဟာပါ။</b> Maxflix Studio နဲ့ ဖန်တီးတဲ့ စာတန်း၊ ဘာသာပြန်၊ အသံ၊ ပုံ၊ ဗီဒီယိုတွေက သင်ပိုင်ပါတယ်။ ကျွန်တော်တို့က ပိုင်ဆိုင်မှု မတောင်းဆိုပါဘူး။</p>
+      <p style="margin:0 0 8px"><b>သင့်ဖန်တီးမှုက သင့်ဟာပါ။</b> Maxflix Studio နဲ့ ဖန်တီးတဲ့ စာတန်း၊ ဘာသာပြန်၊ အသံ၊ ပုံ၊ ဗီဒီယိုတွေက သင့်ပိုင်ပါတယ်။ ကျွန်တော်တို့က ပိုင်ဆိုင်မှု မတောင်းဆိုပါဘူး။</p>
       <p style="margin:0 0 8px"><b>သင့်တာဝန်။</b> သုံးပိုင်ခွင့်ရှိတဲ့ ဗီဒီယို / အသံ / စာတန်းတွေပဲ လုပ်ဆောင်ပါ။ ခွင့်ပြုချက်မရှိဘဲ မူပိုင်ရှိတဲ့အရာတွေကို တင်တာ၊ ပြန်ဆိုတာ၊ ဖြန့်တာတွေ မလုပ်ပါနဲ့။ ဘာသာပြန်တွေက မျှဝေခွင့်ရှိမှသာ မျှဝေပါ။</p>
       <p style="margin:0 0 8px">AI နဲ့ ထုတ်တဲ့ ပုံ / ဗီဒီယိုတွေက ထုတ်ပေးတဲ့ ကုမ္ပဏီ (Google, ElevenLabs, Pollinations) ရဲ့ စည်းမျဉ်းတွေကို လိုက်နာရပါတယ်။</p>
       <p style="margin:0 0 8px">Maxflix Studio၊ နာမည်၊ logo နဲ့ code — © 2026 Maxflix Team. မူပိုင်ခွင့် အားလုံး လက်ဝယ်ရှိသည်။</p>
-      <p style="margin:0"><b>ကုန်အမှတ်တံဆိပ်။</b> Maxflix Studio ဟာ Netflix, Google, Microsoft ဒါမှမဟုတ် ဒီ tool ထဲမှာ ဖော်ပြထားတဲ့ တခြားကုမ္ပဏီတွေနဲ့ ဘာမှမသက်ဆိုင်ပါ၊ သူတို့က ထောက်ခံထားတာလည်း မဟုတ်ပါ။</p>
+      <p style="margin:0"><b>ကုန်အမှတ်တံဆိပ်။</b> Maxflix Studio ဟာ Netflix, Google, Microsoft ဒါမှမဟုတ် ဒီ tool ထဲမှာ ဖော်ပြထားတဲ့ တခြားကုမ္ပဏီတွေနဲ့ ဘာမှမသက်ဆိုင်ပါ၊ သူတို့က ထောက်ခံထားတာလည်း မဟုတ်ပါ။ အဲဒီ နာမည်နဲ့ တံဆိပ်တွေက သက်ဆိုင်ရာ ပိုင်ရှင်တွေရဲ့ ဥစ္စာပါ။</p>
     </div>
   </div>
 </div>
@@ -2291,7 +2302,7 @@ var SrtTools = (function () {
     return e;
   }
   function modelUnavailableMessage() {
-    return 'ရွေးထားတဲ့ Gemini မော်ဒယ်ကို Google က မပေးတော့ပါဘူး (404) — ဒါက API Key အမှား မဟုတ်ပါဘူး၊— Google AI Studio မှာ model စာရင်း ပြန်စစ်ပါ';
+    return 'ရွေးထားတဲ့ Gemini မော်ဒယ်ကို Google က မပေးတော့ပါဘူး (404) — ဒါက API Key အမှား မဟုတ်ပါဘူး၊ အခမဲ့ ကန့်သတ်ချက် ပြည့်တာလည်း မဟုတ်ပါဘူး။ Gemini မော်ဒယ် အားလုံး မရတော့ပါဘူး — Google AI Studio မှာ model စာရင်း ပြန်စစ်ပြီး "မော်ဒယ်အမည် ကိုယ်တိုင်ရိုက်ပါ" ကွက်မှာ အသစ်ထည့်ပါ။';
   }
   /* How long Google asks us to wait after a 429: the Retry-After header, or
      the retryDelay field inside the error body's google.rpc.RetryInfo
@@ -2347,8 +2358,8 @@ var SrtTools = (function () {
        done, and Continue resumes from the same spot. Cancel still works
        while paused, so a paused run can be stopped without resuming. */
     while (runPaused) {
-      if (cancelRun) throw geminiError('ရပ်လိုက်ပါပြီ', 'CANCELLED');
-      if (processing) setStatus('⏸ ခေတ္တရပ်ထားပါတယ်');
+      if (cancelRun) throw geminiError('ရပ်လိုက်ပါပြီ — ပြန်စရင် အစက ပြန်လုပ်ရပါမယ်။', 'CANCELLED');
+      if (processing) setStatus('⏸ ခေတ္တရပ်ထားပါတယ် — "ဆက်လုပ်မယ်" နှိပ်ရင် ဆက်လုပ်ပါမယ်');
       await sleepSec(1);
     }
   }
