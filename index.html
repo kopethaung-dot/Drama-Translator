@@ -184,7 +184,19 @@ select:focus,input:focus,textarea:focus{border-color:var(--blue);outline:none;bo
 #videoStage{position:sticky;top:0;z-index:30;background:#000;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 12px 28px rgba(0,0,0,.5)}
 #videoStage #vwrap{position:relative;box-shadow:none}
 /* Recap tab: the video stays pinned at the top like the Video tab's stage */
-#recapStage{position:sticky;top:0;z-index:30;background:#000;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 12px 28px rgba(0,0,0,.5)}
+#recapStage{position:sticky;top:0;z-index:30;background:#000;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 12px 28px rgba(0,0,0,.5);margin-left:auto;margin-right:auto}
+/* Recap stage framing — mirrors the Video tab .vwrap.framed rules so the
+   Recap ratio buttons frame the Recap video the same way */
+#recapPreviewBg{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:cover;filter:blur(16px) brightness(.55);transform:scale(1.15);z-index:0;display:none;background:#000}
+#recapStage.framed.blurbg #recapPreviewBg{display:block}
+#recapStage.framed #recapVideo{position:absolute;inset:0;width:100%;height:100%;max-height:none;z-index:1;background:transparent}
+#recapStage.framed #recapVideo.contain{object-fit:contain}
+#recapStage.framed #recapVideo.cover{object-fit:cover}
+#recapStage.framed #recapCue{z-index:2}
+#recapStage.framed #recapBlurT,#recapStage.framed #recapBlurB,#recapStage.framed #recapBlurRect{z-index:2}
+/* same fix for the Video tab: in framed mode the video is z-index 1, so the
+   blur bars (z-index auto) painted behind it and vanished with a ratio picked */
+.vwrap.framed #blurBarT,.vwrap.framed #blurBarB,.vwrap.framed #blurRect{z-index:2}
 #recapCue{position:absolute;left:0;right:0;bottom:10px;text-align:center;padding:0 14px;font-size:19px;font-weight:700;color:#fff;
   text-shadow:0 2px 6px #000,0 0 2px #000;pointer-events:none;line-height:1.55}
 #recapCueText{display:inline-block;padding:.16em .55em;border-radius:.3em;white-space:pre-line;max-width:100%;overflow-wrap:break-word}
@@ -1155,6 +1167,7 @@ body{background-attachment:fixed}
   <h2>🎬 Movie Recap — Dubbing လုပ်မယ်</h2>
   <div class="hint" style="margin-top:0">ဗီဒီယို → မြန်မာပြန် → Thiha / Nilar အသံနဲ့ dub → MP4 ထုတ် — အားလုံး ဒီ tab တစ်ခုတည်းမှာ။</div>
   <div id="recapStage" class="hidden" style="margin-top:14px">
+    <video id="recapPreviewBg" muted playsinline preload="metadata" aria-hidden="true"></video>
     <video id="recapVideo" controls playsinline></video>
     <div class="blurBar" id="recapBlurT"></div>
     <div class="blurBar" id="recapBlurB"></div>
@@ -4431,6 +4444,47 @@ var seekBtn = d.querySelector('.seek');
     }
     applyCueStyle();
   }
+  /* Recap stage framing — the same output frame as the Video tab preview,
+     applied to the Recap stage. applyRatioPreview() only frames
+     #vwrap/#preview, so the Recap ratio buttons changed burn.ratio (and the
+     export, which reads it) but the Recap video never moved. */
+  function applyRecapRatio() {
+    var stage = $('recapStage'), rv = $('recapVideo');
+    if (!stage || !rv) return;
+    if (burn.ratio === 'original') {
+      stage.classList.remove('framed', 'blurbg');
+      stage.style.aspectRatio = '';
+      stage.style.width = '';
+      rv.classList.remove('contain', 'cover');
+      var rbg0 = $('recapPreviewBg');
+      if (rbg0) { try { rbg0.pause(); } catch (e) {} }
+      /* original size: the video's own aspect, capped like the Video tab */
+      var pw = stage.parentElement ? stage.parentElement.clientWidth : 0;
+      if (pw && rv.videoWidth) {
+        stage.style.aspectRatio = rv.videoWidth + ' / ' + rv.videoHeight;
+        stage.style.width = Math.min(pw, Math.round(window.innerHeight * 0.42 * rv.videoWidth / rv.videoHeight)) + 'px';
+      }
+      applyCueStyle();
+      return;
+    }
+    var parts = burn.ratio.split(':');
+    var r = parseInt(parts[0], 10) / parseInt(parts[1], 10);
+    stage.classList.add('framed');
+    stage.classList.toggle('blurbg', burn.fill === 'blur');
+    rv.classList.toggle('contain', burn.fill !== 'crop');
+    rv.classList.toggle('cover', burn.fill === 'crop');
+    stage.style.aspectRatio = parts[0] + ' / ' + parts[1];
+    var parentW = stage.parentElement ? stage.parentElement.clientWidth : 0;
+    if (parentW > 0) {
+      var maxH = Math.round(window.innerHeight * 0.42);
+      var w = parentW;
+      if (Math.round(w / r) > maxH) w = Math.max(160, Math.round(maxH * r));
+      stage.style.width = w + 'px';
+    } else {
+      stage.style.width = '';
+    }
+    applyCueStyle();
+  }
   function syncBurnControls() {
     $('posTop').setAttribute('aria-pressed', burn.pos === 'top' ? 'true' : 'false');
     $('posMid').setAttribute('aria-pressed', burn.pos === 'middle' ? 'true' : 'false');
@@ -4535,6 +4589,7 @@ var seekBtn = d.querySelector('.seek');
     applyLogoStyle();
     applyCueStyle();
     applyRatioPreview();
+    applyRecapRatio();
     saveBurnStyle();
   }
   /* Preview blur bars: backdrop-filter blurs the original video under the
@@ -4921,6 +4976,25 @@ var seekBtn = d.querySelector('.seek');
   });
 
   $('preview').addEventListener('loadedmetadata', applyRatioPreview);
+  $('recapVideo').addEventListener('loadedmetadata', applyRecapRatio);
+  /* keep the Recap blurred preview background in sync with the Recap video */
+  (function () {
+    var rv = $('recapVideo'), rbg = $('recapPreviewBg');
+    if (!rv || !rbg) return;
+    rv.addEventListener('play', function () {
+      if (!rbg.getAttribute('src')) return;
+      try { rbg.currentTime = rv.currentTime; } catch (e) {}
+      var p = rbg.play();
+      if (p && p.catch) p.catch(function () {});
+    });
+    rv.addEventListener('pause', function () { try { rbg.pause(); } catch (e) {} });
+    rv.addEventListener('seeked', function () { try { rbg.currentTime = rv.currentTime; } catch (e) {} });
+    rv.addEventListener('timeupdate', function () {
+      if (rbg.getAttribute('src') && !rbg.paused && Math.abs(rbg.currentTime - rv.currentTime) > 0.4) {
+        try { rbg.currentTime = rv.currentTime; } catch (e) {}
+      }
+    });
+  })();
   window.addEventListener('resize', applyRatioPreview);
   loadBurnStyle();
   syncBurnControls();
@@ -6736,7 +6810,7 @@ var seekBtn = d.querySelector('.seek');
     $('pageHead').classList.toggle('hidden', name !== 'translate');
     if (name === 'edit') $('editEmpty').classList.toggle('hidden', !$('cardResult').classList.contains('hidden'));
     if (name === 'video') { updateVideoEmpty(); applyRatioPreview(); syncInfo(); }
-    if (name === 'recap') renderRecapList();
+    if (name === 'recap') { renderRecapList(); applyRecapRatio(); }
     else { var rv = $('recapVideo'); if (rv && !rv.paused) rv.pause(); }
     if (name === 'projects') { refreshLocalList(); if (fbUser) refreshCloudList(); }
   }
@@ -8303,7 +8377,7 @@ var seekBtn = d.querySelector('.seek');
      picked here, not in the Translate tab) ----- */
   var recapVideoFile = null, recapVideoUrl = '';
   function syncRecapVideo() {
-    var v = $('recapVideo');
+    var v = $('recapVideo'), rbg = $('recapPreviewBg');
     if (!videoFile) {
       $('recapStage').classList.add('hidden');
       $('recapVideoName').textContent = '';
@@ -8311,15 +8385,18 @@ var seekBtn = d.querySelector('.seek');
       recapVideoFile = null;
       v.removeAttribute('src');
       v.load();
+      if (rbg) { rbg.removeAttribute('src'); rbg.load(); }
       return;
     }
     $('recapVideoName').textContent = videoFile.name;
-    if (recapVideoFile === videoFile && recapVideoUrl) { $('recapStage').classList.remove('hidden'); return; }
+    if (recapVideoFile === videoFile && recapVideoUrl) { $('recapStage').classList.remove('hidden'); applyRecapRatio(); return; }
     if (recapVideoUrl) URL.revokeObjectURL(recapVideoUrl);
     recapVideoUrl = URL.createObjectURL(videoFile);
     recapVideoFile = videoFile;
     v.src = recapVideoUrl;
+    if (rbg) rbg.src = recapVideoUrl;
     $('recapStage').classList.remove('hidden');
+    applyRecapRatio();
   }
   function syncRecapSettings() {
     if ($('transcriber') && optHas('recapTranscriber', $('transcriber').value)) $('recapTranscriber').value = $('transcriber').value;
