@@ -94,6 +94,10 @@ button{font-family:inherit}
     border-radius:18px;padding:6px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
   .tabbar button{flex:1 1 0;min-width:0;padding:8px 2px 7px;flex-direction:column;gap:3px}
   .tabbar button svg{width:20px;height:20px}
+  /* toast must sit ABOVE the floating bottom nav, not behind it (the nav is
+     z-60 at bottom 10px; the toast was z-50 at bottom 20px, so it hid under
+     the nav and notifications were invisible on mobile) */
+  #toast{bottom:calc(86px + env(safe-area-inset-bottom))}
   .tabbar .tabLabel{display:block;font-size:10px;font-weight:600;line-height:1.2;white-space:nowrap}
 }
 .resultgrid.solo{grid-template-columns:1fr}
@@ -286,7 +290,7 @@ textarea.my{width:100%;min-height:58px;background:var(--surface);color:var(--ink
 
 #toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);
   background:#17191d;color:#f2f3f5;padding:11px 18px;border-radius:999px;font-size:14px;font-weight:600;
-  opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50;max-width:92vw;text-align:center;line-height:1.5;
+  opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:200;max-width:92vw;text-align:center;line-height:1.5;
   box-shadow:0 6px 24px rgba(0,0,0,.3)}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 footer{color:var(--mut);font-size:12.5px;margin-top:34px;line-height:1.8;text-align:center}
@@ -8575,21 +8579,37 @@ var seekBtn = d.querySelector('.seek');
     if (recapProv === 'eleven') return { prov: 'eleven', voice: elVoiceId(), model: $('elModel').value, extra: '', key: elKeyVal() };
     return { prov: 'edge', voice: v, model: 'edge', extra: $('recapRate').value, key: '' };
   }
+  /* One shared AudioContext for all TTS decoding (Recap): creating a new
+     context per line exhausts mobile browsers (context limit, and a decode
+     on a fresh suspended context can hang forever), so a whole Recap TTS
+     run would stall or fail line after line while the TTS tab — which
+     never decodes — kept working. The context is resumed on the button
+     tap (a user gesture), and a hung decode fails fast instead of
+     freezing the run. */
+  var decodeCtx = null;
+  function decodeCtxGet() {
+    if (decodeCtx) return decodeCtx;
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) throw new Error('DECODE');
+    decodeCtx = new AC();
+    return decodeCtx;
+  }
   async function decodeTo16k(bytes) {
     /* TTS bytes (WAV from Azure/Gemini, MP3 from Edge/ElevenLabs) -> 16 kHz
        mono Float32Array, same resample pattern as extractAudio. */
-    var AC = window.AudioContext || window.webkitAudioContext;
-    var ctx = new AC();
+    var ctx = decodeCtxGet();
+    try { if (ctx.state === 'suspended') { var rp = ctx.resume(); if (rp && rp.catch) rp.catch(function () {}); } } catch (e) {}
     var buf;
-    try { buf = await ctx.decodeAudioData(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)); }
-    catch (e) { try { ctx.close(); } catch (_) {} throw new Error('DECODE'); }
+    try {
+      var p = ctx.decodeAudioData(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength));
+      buf = await Promise.race([p, new Promise(function (_, rej) { setTimeout(function () { rej(new Error('DECODE')); }, 20000); })]);
+    } catch (e) { throw new Error('DECODE'); }
     var off = new OfflineAudioContext(1, Math.max(1, Math.ceil(buf.duration * 16000)), 16000);
     var src = off.createBufferSource();
     src.buffer = buf;
     src.connect(off.destination);
     src.start(0);
     var rendered = await off.startRendering();
-    try { ctx.close(); } catch (_) {}
     return rendered.getChannelData(0);
   }
   async function recapTtsAll() {
@@ -8609,7 +8629,7 @@ var seekBtn = d.querySelector('.seek');
     $('recapProg').classList.remove('hidden');
     $('recapBar').style.width = '0%';
     keepAwake(true);
-    var done = 0, failed = 0;
+    var done = 0, failed = 0, firstErr = null;
     try {
       if (recapProv === 'edge' || recapProv === 'azure') {
         /* Thiha/Nilar are one request per line, so doing them one by one
@@ -8635,6 +8655,7 @@ var seekBtn = d.querySelector('.seek');
               done++;
             } catch (e) {
               failed++;
+              if (!firstErr) firstErr = e;
               console.error(e);
               recapSetPcm(seg, null);
             }
@@ -8657,6 +8678,7 @@ var seekBtn = d.querySelector('.seek');
           done++;
         } catch (e) {
           failed++;
+          if (!firstErr) firstErr = e;
           console.error(e);
           recapSetPcm(seg, null);
         }
@@ -8666,6 +8688,9 @@ var seekBtn = d.querySelector('.seek');
       }
       $('recapBar').style.width = '100%';
       var failNote = failed ? ' · မရသေးတာ ' + failed + ' ကြောင်း' + (recapBgModeVal() === 'mute' ? ' (အဲဒီစာကြောင်းတွေ အသံတိတ်သွားမယ် — နောက်ခံအသံ ပိတ်ထားလို့)' : ' (အဲဒီစာကြောင်းတွေမှာ မူရင်းအသံပဲ ကြားရမယ်)') : '';
+      /* total failure: show WHY the first line failed, so the cause is
+         visible on the phone instead of only in the desktop console */
+      if (failed && !done && firstErr) failNote += ' — အမှား: ' + (firstErr.message === 'DECODE' ? 'အသံ decode မရဘူး (ဒီ browser မှာ MP3/WAV decode မရတာ ဖြစ်နိုင်တယ် — Gemini / Azure နဲ့ စမ်းကြည့်ပါ)' : (firstErr.message || firstErr));
       $('recapStatus').textContent = 'ပြီးပါပြီ — အသံ ' + done + ' ကြောင်း' + failNote + ' — အခု "Dub အသံ နားထောင်မယ်" နဲ့ စစ်လို့ရပြီ။';
       if (failed) toast('အသံ မရသေးတာ ' + failed + ' ကြောင်း ရှိတယ် — ပြန်နှိပ်ရင် အဲဒါတွေပဲ ထပ်ထုတ်မယ်');
       else toast('စာကြောင်းတွေ အသံ ထုတ်ပြီးပါပြီ');
