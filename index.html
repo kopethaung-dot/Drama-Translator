@@ -8619,10 +8619,36 @@ var seekBtn = d.querySelector('.seek');
     if (cfg0.prov === 'azure' && !cfg0.key) { toast('အရင်ဆုံး Azure Speech API Key ထည့်ပေးပါ — ဒီ tab ထဲက Key အကွက်မှာ ထည့်လို့ရတယ်'); $('recapAzureKey').focus(); return false; }
     if (cfg0.prov === 'gemini' && !cfg0.key) { toast('အရင်ဆုံး Gemini API Key ထည့်ပေးပါ — ဒီ tab ထဲက Key အကွက်မှာ ထည့်လို့ရတယ်'); $('recapGeminiKey').focus(); return false; }
     if (cfg0.prov === 'eleven' && !cfg0.key) { toast('အရင်ဆုံး ElevenLabs API Key ထည့်ပေးပါ — ဒီ tab ထဲက Key အကွက်မှာ ထည့်လို့ရတယ်'); $('recapElKey').focus(); return false; }
+    /* TTS needs only the text and times — not the video. outTime() is the
+       EDITED timeline: with no video loaded it returns 0 for every time
+       (clipsFor(0) is empty), so every line's edited duration was 0 and
+       the whole list got filtered out — e.g. after a reload, when the
+       project restores the subtitles but the video file itself can't be
+       stored. With no cuts the edited timeline IS the source timeline,
+       so use the raw duration there. */
+    var useOut = hasCuts();
     var lines = segments.map(function (s, i) { return { s: s, i: i }; }).filter(function (o) {
-      return o.s.my && !o.s.failed && !o.s.keepOrig && (outTime(o.s.end) - outTime(o.s.start) >= 0.05);
+      var d = useOut ? outTime(o.s.end) - outTime(o.s.start) : o.s.end - o.s.start;
+      return o.s.my && !o.s.failed && !o.s.keepOrig && d >= 0.05;
     });
-    if (!lines.length) { toast('အသံထုတ်စရာ စာကြောင်း မရှိပါဘူး'); return false; }
+    if (!lines.length) {
+      /* say WHY instead of a bare "no lines": count what excluded them, in
+         the same order the filter checks, so the cause is visible at once */
+      var nNoMy = 0, nFailed = 0, nKeep = 0, nShort = 0;
+      segments.forEach(function (sg) {
+        if (!sg.my) nNoMy++;
+        else if (sg.failed) nFailed++;
+        else if (sg.keepOrig) nKeep++;
+        else nShort++;
+      });
+      var why = '';
+      if (nFailed) why = ' — စာကြောင်း ' + nFailed + ' ကြောင်း ဘာသာပြန် မအောင်မြင်သေးလို့ (failed) ဖြစ်နေတယ်။ Edit tab မှာ "မအောင်မြင်တဲ့ စာကြောင်းတွေ ပြန်ဆိုမယ်" နှိပ်ပြီး ပြန်ဆိုပါ';
+      else if (nKeep) why = ' — စာကြောင်းတွေ မူရင်းအသံ ထားမယ် (🔊) လုပ်ထားလို့ အသံမထုတ်ဘူး';
+      else if (nNoMy) why = ' — မြန်မာစာတန်း မရှိသေးတဲ့ စာကြောင်းတွေပဲ ရှိတယ်';
+      else if (nShort) why = ' — စာကြောင်းတွေ ဖြတ်ထားတဲ့ အပိုင်းထဲမှာ ရောက်နေလို့ (ဒါမှမဟုတ် အချိန် 0.05 စက္ကန့်အောက် ဖြစ်နေလို့)';
+      toast('အသံထုတ်စရာ စာကြောင်း မရှိပါဘူး' + why);
+      return false;
+    }
     var state = { cancelled: false };
     recapRun = state;
     $('recapTtsBtn').disabled = true;
