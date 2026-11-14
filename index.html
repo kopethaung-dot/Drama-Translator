@@ -184,16 +184,20 @@ select:focus,input:focus,textarea:focus{border-color:var(--blue);outline:none;bo
 #videoStage{position:sticky;top:0;z-index:30;background:#000;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 12px 28px rgba(0,0,0,.5)}
 #videoStage #vwrap{position:relative;box-shadow:none}
 /* Recap tab: the video stays pinned at the top like the Video tab's stage */
-#recapStage{position:sticky;top:0;z-index:30;background:#000;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 12px 28px rgba(0,0,0,.5);margin-left:auto;margin-right:auto}
-/* Recap stage framing — mirrors the Video tab .vwrap.framed rules so the
-   Recap ratio buttons frame the Recap video the same way */
+#recapStage{position:sticky;top:0;z-index:30;background:#000;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 12px 28px rgba(0,0,0,.5)}
+/* Recap framing — like the Video tab, the STAGE stays full-width and sticky
+   (so the texts below scroll underneath it and disappear under the line)
+   while the inner WRAP takes the ratio framing, so the uploaded video
+   follows the chosen ratio and the blur bars/rect/cue sit INSIDE the frame */
+#recapVwrap{position:relative;border-radius:14px;overflow:hidden;background:#000}
 #recapPreviewBg{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:cover;filter:blur(16px) brightness(.55);transform:scale(1.15);z-index:0;display:none;background:#000}
-#recapStage.framed.blurbg #recapPreviewBg{display:block}
-#recapStage.framed #recapVideo{position:absolute;inset:0;width:100%;height:100%;max-height:none;z-index:1;background:transparent}
-#recapStage.framed #recapVideo.contain{object-fit:contain}
-#recapStage.framed #recapVideo.cover{object-fit:cover}
-#recapStage.framed #recapCue{z-index:2}
-#recapStage.framed #recapBlurT,#recapStage.framed #recapBlurB,#recapStage.framed #recapBlurRect{z-index:2}
+#recapVwrap.framed{margin-left:auto;margin-right:auto}
+#recapVwrap.framed.blurbg #recapPreviewBg{display:block}
+#recapVwrap.framed #recapVideo{position:absolute;inset:0;width:100%;height:100%;max-height:none;z-index:1;background:transparent}
+#recapVwrap.framed #recapVideo.contain{object-fit:contain}
+#recapVwrap.framed #recapVideo.cover{object-fit:cover}
+#recapVwrap.framed #recapCue{z-index:2}
+#recapVwrap.framed #recapBlurT,#recapVwrap.framed #recapBlurB,#recapVwrap.framed #recapBlurRect{z-index:2}
 /* same fix for the Video tab: in framed mode the video is z-index 1, so the
    blur bars (z-index auto) painted behind it and vanished with a ratio picked */
 .vwrap.framed #blurBarT,.vwrap.framed #blurBarB,.vwrap.framed #blurRect{z-index:2}
@@ -230,6 +234,11 @@ select:focus,input:focus,textarea:focus{border-color:var(--blue);outline:none;bo
 .tlHandle::after{content:'';position:absolute;top:6px;bottom:6px;left:4px;width:3px;border-radius:2px;background:rgba(255,255,255,.75)}
 #tlPlayhead{position:absolute;top:0;bottom:0;width:2px;background:#ef4444;z-index:5;pointer-events:none}
 #tlPlayhead::before{content:'';position:absolute;top:0;left:-5px;border:6px solid transparent;border-top:8px solid #ef4444}
+#recapTlScroll{overflow-x:auto;overflow-y:hidden;border:1px solid var(--line);border-radius:12px;background:var(--surface2);margin-top:10px}
+#recapTlInner{position:relative;min-width:100%;user-select:none;-webkit-user-select:none}
+#recapTlRuler{position:relative;height:24px;margin-left:64px;border-bottom:1px solid var(--line)}
+#recapTlPlayhead{position:absolute;top:0;bottom:0;width:2px;background:#ef4444;z-index:5;pointer-events:none}
+#recapTlPlayhead::before{content:'';position:absolute;top:0;left:-5px;border:6px solid transparent;border-top:8px solid #ef4444}
 .vwrap.framed{margin-left:auto;margin-right:auto}
 #previewBg{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:cover;filter:blur(16px) brightness(.55);transform:scale(1.15);z-index:0;display:none;background:#000}
 .vwrap.framed.blurbg #previewBg{display:block}
@@ -250,7 +259,9 @@ video{width:100%;display:block;max-height:52vh;background:#000}
 #blurBarT,#recapBlurT{top:0}
 #blurBarB,#recapBlurB{bottom:0}
 /* Custom blur rectangle (free position + size) — positioned by syncBlurBars */
-#blurRect,#recapBlurRect{position:absolute;pointer-events:none;display:none;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(0,0,0,.12)}
+#blurRect,#recapBlurRect{position:absolute;pointer-events:auto;display:none;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(0,0,0,.12);cursor:grab;touch-action:none}
+#blurRect.dragging,#recapBlurRect.dragging{cursor:grabbing}
+.blurResize{position:absolute;right:-11px;bottom:-11px;width:26px;height:26px;border-radius:50%;background:#3b82f6;color:#fff;font-size:13px;line-height:26px;text-align:center;cursor:nwse-resize;pointer-events:auto;box-shadow:0 2px 8px rgba(0,0,0,.5);z-index:4}
 #logoImg,#recapLogoImg{position:absolute;z-index:3;pointer-events:none}
 input[type=range]{width:100%;accent-color:var(--acc);min-height:32px;padding:0}
 input[type=color]{width:100%;height:46px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:8px;cursor:pointer}
@@ -494,7 +505,7 @@ body{background-attachment:fixed}
 </select>
 <label class="f" for="geminiModelCustom" style="margin-top:8px">ဒါမှမဟုတ် မော်ဒယ်အမည် ကိုယ်တိုင်ရိုက်ပါ</label>
 <input type="text" id="geminiModelCustom" placeholder="ဥပမာ gemini-3.6-flash" autocomplete="off" spellcheck="false" />
-<div class="hint">ဒီကွက်မှာ ရိုက်ထားရင် အပေါ်က ရွေးထားတာထက် ဒါကို အရင်သုံးမယ်။</div>
+
       </div>
     </div>
     <div id="transcriberBox" style="margin-top:14px">
@@ -532,7 +543,7 @@ body{background-attachment:fixed}
           <label class="f" for="hfKey">Hugging Face Token</label>
           <input type="password" id="hfKey" placeholder="hf_…" autocomplete="off" spellcheck="false" />
         </div>
-      <div class="hint" id="transcriberHint">Groq / Scribe သုံးရင် Gemini quota သက်သာတယ်။</div>
+      
       <div class="hint hidden" id="groqKeyHint">Key မရှိရင် <a href="https://console.groq.com/keys" target="_blank" rel="noopener">Groq Console</a> မှာ အခမဲ့ ထုတ်ပါ (ကတ်မလို)။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။ Whisper large-v3 သုံးတယ် — တစ်နေ့ကို အသံ ၈ နာရီစာ အခမဲ့။</div>
       <div class="hint hidden" id="scribeHint">Scribe က TTS tab ထဲက ElevenLabs API Key ကို သုံးမယ် — key အသစ် မလိုဘူး။ တစ်လ ၂၇၀ မိနစ်စာ အခမဲ့၊ ပြီးရင် တစ်နာရီ $0.22။</div>
       <div class="hint hidden" id="deepgramKeyHint">Key မရှိရင် <a href="https://console.deepgram.com/" target="_blank" rel="noopener">Deepgram Console</a> မှာ အကောင့်ဖွင့်ပြီး API Key ထုတ်ပါ — $200 credit အခမဲ့ (ကတ်မလို)၊ ကုန်သွားရင် တစ်မိနစ် $0.0043။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။</div>
@@ -546,7 +557,7 @@ body{background-attachment:fixed}
       <label class="f" for="paceSec">⏱️ Request ကြား စောင့်ချိန် — Pacing (စက္ကန့်)</label>
       <input type="number" id="paceSec" value="7" min="0" max="60" step="1" inputmode="numeric" />
     </div>
-    <div class="hint">၇ စက္ကန့်ဆို limit ထိတာ လျော့တယ်။ 0 = မစောင့်ဘူး။</div>
+    
 <label class="f" for="batchSize">Gemini စာသားဘာသာပြန်: တစ်ကြိမ်ပို့တဲ့ စာတန်းအရေအတွက်</label>
 <select id="batchSize">
 <option value="">မူလ (၃၀ ကြောင်း)</option>
@@ -554,7 +565,7 @@ body{background-attachment:fixed}
 <option value="100">၁၀၀ ကြောင်း (request အနည်းဆုံး၊ ပျက်ရင် ပိုဆုံး)</option>
 </select>
 <div class="row"><button class="btn small ghost" type="button" id="trMemClear">ဘာသာပြန်မှတ်ဉာဏ် ရှင်းမယ်</button></div>
-<div class="hint">ပြန်ပြီးသား စာတန်းတွေ မှတ်ထားတယ် — ပြန်မပို့ဘူး။</div>
+
 <label class="f" for="geminiChunk">Gemini ကို အသံအပိုင်းလိုက် ပို့တဲ့ အရှည်</label>
 <select id="geminiChunk">
 <option value="60">၆၀ စက္ကန့် (အချိန် ပိုတိကျ၊ request ပိုများ)</option>
@@ -564,16 +575,16 @@ body{background-attachment:fixed}
 <label style="display:flex;gap:8px;align-items:flex-start;margin:14px 0 6px"><input type="checkbox" id="autoModelSwitch" checked /> <span><b>မော်ဒယ် အလိုအလျောက် ပြောင်းမယ်</b> — မော်ဒယ် မရရင် (404 / 429 / 503) နောက်မော်ဒယ်ဆီ အလိုအလျောက် ပြောင်းမယ်</span></label>
 <label style="display:flex;gap:8px;align-items:flex-start;margin:14px 0 6px"><input type="checkbox" id="gtPolish" /> <span><b>Google Translate နဲ့ အရင် ပြန်ပြီး Gemini နဲ့ ပြင်မယ်</b> — Google (အခမဲ့) အရင်ပြန်ပြီး Gemini က သဘာဝကျကျ ပြင်ပေးမယ်။</span></label>
     </details>
-    <div class="hint">Key မရှိရင် <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> မှာ အခမဲ့ ထုတ်ပါ။ Key က ဒီ browser မှာ မှတ်ထားမယ်။</div>
+    
   </div>
-  <div class="note" id="geminiNote">429 ထိရင် အလိုအလျောက် စောင့်ပြီး ပြန်ကြိုးစားပေးမယ်။</div>
+  
 
   <details class="adv"><summary>ဘာသာပြန်ပုံစံ (Style) နဲ့ နာမည်မှတ်တမ်း (Glossary) — မလိုရင် ကျော်ပါ</summary>
 <div style="margin-top:16px">
 <label class="f" for="styleText">ကိုယ်ပိုင် ဘာသာပြန်ပုံစံ (Style)</label>
 <textarea class="my" id="styleText" rows="5" placeholder="ဥပမာ —&#10;စကားပြောလေသံ၊ ကျွန်တော်/ကျွန်မ သုံးပုံ၊ စာတိုတိုရေးပုံ&#10;နမူနာ — 你怎么来了 → မင်း ဘာလို့ လာတာလဲ"></textarea>
 <div class="row"><button class="btn small ghost" type="button" id="exportCorr">ပြင်ထားတဲ့စာတန်းတွေ ဒေတာအဖြစ် ထုတ်မယ် (JSONL)</button></div>
-<div class="hint">ဘာသာပြန်တိုင်း ဒီစာကို ထည့်ပေးမယ်။</div>
+
 </div>
 <div style="margin-top:16px">
     <label class="f" for="glossaryText">ဇာတ်ကောင်နာမည် / ဝေါဟာရ မှတ်တမ်း (Glossary)</label>
@@ -582,7 +593,7 @@ body{background-attachment:fixed}
       <button class="btn small ghost" id="glossarySave">မှတ်တမ်း သိမ်းမယ်</button>
       <button class="btn small ghost" id="glossaryAi">Gemini နဲ့ နာမည်တွေ အလိုအလျောက် ထုတ်မယ်</button>
     </div>
-    <div class="hint">ဘာသာပြန်တိုင်း ဒီနာမည်တွေကို ဒီပုံစံအတိုင်း သုံးမယ်။</div>
+    
   </div>
 
 </details>
@@ -596,9 +607,7 @@ body{background-attachment:fixed}
       အပြည့်အစုံကို <button type="button" id="policyOpenNote" style="background:none;border:none;color:var(--acc);font-size:13px;text-decoration:underline;cursor:pointer;padding:0">Privacy Policy &amp; Copyright</button> မှာ ဖတ်လို့ရတယ်။
     </div>
   </details>
-  <div class="hint" style="margin-top:14px">
-<label style="display:flex;gap:8px;align-items:flex-start;margin:0 0 6px"><input type="checkbox" id="autoFinish" checked /> <span><b>One-click</b> — ပြီးတာနဲ့ ရှည်တဲ့စာတန်းတွေ အလိုအလျောက်ခွဲ၊ အချိန်ကိုက်ညှိပြီး SRT ကို ဒေါင်းလုဒ်ချမယ်</span></label>
-</div>
+  
 <button class="btn primary" id="startBtn">
     <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
     <span id="startBtnText">စတင်လုပ်ဆောင်မယ်</span>
@@ -619,7 +628,7 @@ body{background-attachment:fixed}
     <button class="btn ghost hidden" id="batchDlAll">ပြီးတဲ့ SRT အကုန် ဒေါင်းမယ်</button>
     <button class="btn small danger-ghost hidden" id="batchClear">တန်းစီ ရှင်းမယ်</button>
   </div>
-  <div class="hint">လုပ်နေတုန်း tab မပိတ်ပါနဲ့။</div>
+  
   </details>
 </section>
 
@@ -655,7 +664,7 @@ body{background-attachment:fixed}
         <video id="preview" controls playsinline preload="metadata"></video>
         <div class="blurBar" id="blurBarT"></div>
         <div class="blurBar" id="blurBarB"></div>
-        <div id="blurRect"></div>
+        <div id="blurRect"><span class="blurResize" id="blurResize">⤡</span></div>
         <div id="cue"><span id="cueText"></span></div>
         <div id="titleCue"><span id="titleText"></span><span id="titleResize" title="ဆွဲပြီး စာလုံးအရွယ် ပြောင်းမယ်">⤡</span></div>
         <img id="logoImg" class="hidden" alt="" />
@@ -663,7 +672,7 @@ body{background-attachment:fixed}
 
       <details class="burnbox" id="syncBox">
 <summary>စာတန်းအချိန် လွဲနေရင် ညှိရန် (Sync)</summary>
-<div class="hint" id="syncInfo"></div>
+
 <div class="row">
 <button class="btn small" type="button" id="syncFit">ဗီဒီယိုအရှည်ကိုက်အောင် အလိုအလျောက် ချုံ့မယ်</button>
 <button class="btn small ghost" type="button" id="syncCheck">စစ်မယ်</button>
@@ -673,16 +682,16 @@ body{background-attachment:fixed}
 <span style="align-self:center">စက္ကန့်</span>
 <button class="btn small" type="button" id="syncShift">စာတန်းအားလုံး ရွှေ့မယ်</button>
 </div>
-<div class="hint">စောရင် +၊ နောက်ကျရင် − ထည့်ပါ (ဥပမာ +0.5)။</div>
+
 <div class="row" style="margin-top:8px">
 <button class="btn small" type="button" id="syncSnap">🎙️ အသံနဲ့ ပြန်ကပ်မယ်</button>
 </div>
-<div class="hint">စာတန်းတစ်ကြောင်းချင်းကို တကယ်ပြောတဲ့နေရာနဲ့ ကပ်ပေးတယ်။ ဗီဒီယိုဖိုင် လိုပါတယ်။</div>
-<div class="hint">အစနဲ့ အဆုံးက စာတန်းတစ်ကြောင်းစီ ရွေးပြီး ⏱ နှိပ်ပါ — ကျန်တာကို အချိုးကျ ပြန်တွက်ပေးမယ်။</div>
+
+
 <div class="grid2">
-<div><label class="f" for="syncN1">အချက် A — စာတန်းအမှတ် (အစပိုင်း)</label><input type="number" id="syncN1" min="1" inputmode="numeric" /><div class="hint" id="syncT1"></div>
+<div><label class="f" for="syncN1">အချက် A — စာတန်းအမှတ် (အစပိုင်း)</label><input type="number" id="syncN1" min="1" inputmode="numeric" />
 <label class="f" for="syncR1">ဗီဒီယိုမှာ တကယ်ပေါ်တဲ့ အချိန် (စက္ကန့်)</label><input type="number" id="syncR1" step="0.1" /><button class="btn small ghost" type="button" id="syncS1" style="margin-top:6px">⏱ ယခုနေရာ</button></div>
-<div><label class="f" for="syncN2">အချက် B — စာတန်းအမှတ် (အဆုံးပိုင်း)</label><input type="number" id="syncN2" min="1" inputmode="numeric" /><div class="hint" id="syncT2"></div>
+<div><label class="f" for="syncN2">အချက် B — စာတန်းအမှတ် (အဆုံးပိုင်း)</label><input type="number" id="syncN2" min="1" inputmode="numeric" />
 <label class="f" for="syncR2">ဗီဒီယိုမှာ တကယ်ပေါ်တဲ့ အချိန် (စက္ကန့်)</label><input type="number" id="syncR2" step="0.1" /><button class="btn small ghost" type="button" id="syncS2" style="margin-top:6px">⏱ ယခုနေရာ</button></div>
 </div>
 <div class="row" style="margin-top:10px">
@@ -713,7 +722,7 @@ body{background-attachment:fixed}
               <button class="btn small ghost" type="button" id="fontPlus" aria-label="တိုးမယ်">+</button>
             </div></div>
             <input type="range" id="burnFont" min="0" max="120" step="1" value="39" style="margin-top:8px" />
-            <div class="hint">1080p အပေါ် အခြေခံတဲ့ ဖောင့်ဆိုဒ် (39 = ပုံမှန်)။ 0 = စာတန်း မမြင်ရဘူး။</div>
+            
           </div>
           <div>
             <label class="f" for="burnColor">စာသား အရောင်</label>
@@ -733,7 +742,7 @@ body{background-attachment:fixed}
           <div>
             <label class="f" for="burnStroke">စာသား ဘောင် (Stroke) အထူ <span class="val" id="burnStrokeVal">0 px — ပိတ်ထား</span></label>
             <input type="range" id="burnStroke" min="0" max="12" step="0.5" value="0" />
-            <div class="hint">0 = ပိတ်ထား၊ 2–4 px = အကြံပြု။</div>
+            
           </div>
           <div>
             <label class="f" for="burnStrokeColor">ဘောင် အရောင်</label>
@@ -761,7 +770,7 @@ body{background-attachment:fixed}
               <button id="ratio11" aria-pressed="false">စတုရန်း</button>
               <button id="ratio45" aria-pressed="false">Facebook</button>
             </div>
-            <div class="hint">9:16 = TikTok/Reels · 16:9 = YouTube · 1:1 / 4:5 = ပို့စ်။</div>
+            
           </div>
           <div class="full hidden" id="fillRow">
             <label class="f">နေရာလွတ် ဖြည့်နည်း</label>
@@ -770,7 +779,7 @@ body{background-attachment:fixed}
               <button id="fillBlack" aria-pressed="false">အနက်ရောင် ဘောင်</button>
               <button id="fillCrop" aria-pressed="false">အပြည့် ဖြတ်ထည့် (Crop)</button>
             </div>
-            <div class="hint">မှုန်ဝါး = နောက်ခံ blur · အနက်ရောင် = letterbox ဘောင် · Crop = ဘောင်မပါ အပြည့်ဖြတ်။</div>
+            
           </div>
           </div></details>
           <details class="full adv"><summary>မူရင်း စာတန်း / လိုဂို ဖုံးဖို့ blur</summary><div class="burngrid">
@@ -796,9 +805,9 @@ body{background-attachment:fixed}
               <div><label class="f" for="burnBlurW">အကျယ် <span class="val" id="burnBlurWVal">100%</span></label><input type="range" id="burnBlurW" min="5" max="100" step="1" value="100" /></div>
               <div><label class="f" for="burnBlurH2">အမြင့် <span class="val" id="burnBlurH2Val">15%</span></label><input type="range" id="burnBlurH2" min="5" max="100" step="1" value="15" /></div>
             </div>
-            <div class="hint">X/Y = အကွက်ရဲ့ နေရာ၊ အကျယ်/အမြင့် = အရွယ်။</div>
+            
           </div>
-          <div class="full"><div class="hint">ဗီဒီယိုထဲက တရုတ်စာတန်း / လိုဂိုကို ဖုံးမယ်။</div></div>
+          <div class="full"></div>
           </div></details>
           <div class="full">
             <label class="f">ဗီဒီယို အရည်အသွေး (Quality)</label>
@@ -807,7 +816,7 @@ body{background-attachment:fixed}
               <button id="q1080" aria-pressed="true">1080p</button>
               <button id="qOrig" aria-pressed="false">Original</button>
             </div>
-            <div class="hint">ကြည်လေ ဖိုင်ကြီးလေ။</div>
+            
           </div>
           <div class="full">
             <label class="f">ထုတ်မယ့် ဖိုင် ပုံစံ</label>
@@ -815,7 +824,7 @@ body{background-attachment:fixed}
               <button id="fmtWebm" aria-pressed="true">WebM</button>
               <button id="fmtMp4" aria-pressed="false">MP4</button>
             </div>
-            <div class="hint">WebM က TikTok / CapCut မှာ တင်မရဘူး။ MP4 က နေရာတိုင်းမှာ တင်လို့ရတယ်။<span id="mp4AudioCap"></span></div>
+            
           </div>
           <details class="full adv"><summary>ကိုယ်ပိုင်ဖောင့် / Logo ထည့်ရန်</summary><div class="burngrid">
           <div class="full">
@@ -825,7 +834,7 @@ body{background-attachment:fixed}
               <button class="btn small ghost hidden" id="fontReset">မူရင်း ဖောင့် ပြန်သုံးမယ်</button>
             </div>
             <input type="file" id="fontFile" accept=".ttf,.otf,.woff,.woff2" class="hidden" />
-            <div class="hint" id="fontStatus">အခု — A Test (မူရင်း)။</div>
+            
             <div id="fontSample" style="margin-top:6px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;font-size:17px;line-height:1.6">မြန်မာစာတန်းထိုး — ABC 123</div>
           </div>
           <div class="full">
@@ -835,7 +844,7 @@ body{background-attachment:fixed}
               <button class="btn small ghost hidden" id="logoRemove">Logo ဖြုတ်မယ်</button>
             </div>
             <input type="file" id="logoFile" accept="image/*" class="hidden" />
-            <div class="hint" id="logoStatus">Logo မထည့်ရသေးဘူး။</div>
+            
           </div>
           <div class="full">
             <label class="f">Logo နေရာ</label>
@@ -866,14 +875,14 @@ body{background-attachment:fixed}
           <button class="btn small danger-ghost hidden" id="burnCancel" style="margin-top:8px">ရပ်မယ်</button>
           <button class="btn small hidden" id="burnShareBtn" style="margin-top:8px">📤 Share နဲ့ သိမ်းမယ်</button>
         </div>
-        <div class="note">ထုတ်နေတုန်း tab မပိတ်ပါနဲ့ — ဗီဒီယိုအရှည်အတိုင်း ကြာမယ်။</div>
+        
       </div>
     </div>
     <div>
       <div class="dl-stack">
         <label class="f" for="srtName">SRT ဖိုင်နာမည်</label>
         <input type="text" id="srtName" placeholder="subtitles" autocomplete="off" spellcheck="false" />
-        <div class="hint" style="margin:0">ဖိုင်က [နာမည်].my.srt ဖြစ်မယ်။</div>
+        
         <button class="btn" id="dlSrt">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11m0 0-4-4m4 4 4-4"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></svg>
           SRT ဒေါင်းလုဒ်ဆွဲမယ်
@@ -901,13 +910,13 @@ body{background-attachment:fixed}
           <input type="number" id="shiftSec" value="0" step="0.1" inputmode="decimal" />
           <button class="btn small ghost" id="applyShift">ရွှေ့မယ်</button>
         </div>
-        <div class="hint" style="margin-top:8px">နောက်ကျနေရင် +၊ စောနေရင် − ထည့်ပါ (ဥပမာ 1.5 = ၁.၅ စက္ကန့် နောက်)။</div>
+        
       </div>
     </div>
   </div>
 
   <h2 style="margin-top:22px">စာတန်းများ ပြင်ဆင်မယ်</h2>
-  <div class="hint" style="margin-top:0">အချိန်ကို 65.5 ဒါမှမဟုတ် 0:01:05.5 လို့ ရိုက်လို့ရတယ်။</div>
+  
   <div class="row" style="margin-top:10px">
 <button class="btn small" type="button" id="splitAll">&#9986; ရှည်တဲ့စာတန်းတွေ အလိုအလျောက် ခွဲမယ်</button>
 <button class="btn small ghost" type="button" id="splitUndo" disabled>&#8630; ပြန်ဆုတ်မယ်</button>
@@ -916,7 +925,7 @@ body{background-attachment:fixed}
 <label class="f" for="splitMax" style="margin:0">စာတန်းတစ်ခုမှာ စာလုံးအများဆုံး</label>
 <input type="number" id="splitMax" value="40" min="12" max="120" inputmode="numeric" style="width:90px" />
 </div>
-<div class="hint">ရှည်တဲ့စာတန်းတွေကို "။" "၊" space မှာ ဖြတ်ပြီး အချိန်ခွဲပေးတယ်။</div>
+
 <div id="segList"></div>
   <div class="row">
     <button class="btn small ghost" id="addSeg">
@@ -937,7 +946,7 @@ body{background-attachment:fixed}
 </section>
 <section class="card hidden" id="cardTimeline">
   <h2>⏱ Timeline — CapCut လို ဖြတ်ညှပ်မယ်</h2>
-  <div class="hint" style="margin-top:0">ဖြတ်ထားတဲ့ အတိုင်းပဲ ဗီဒီယိုနဲ့ SRT ထုတ်ပေးမယ်။</div>
+  
   <div class="row" style="margin-top:10px">
     <button class="btn small" id="tlSplitVideo" type="button">✂ ဗီဒီယို ခွဲမယ်</button>
     <button class="btn small" id="tlSplitSub" type="button">✂ စာတန်း ခွဲမယ်</button>
@@ -980,10 +989,10 @@ body{background-attachment:fixed}
       <button class="btn small ghost" id="tlTitleSmaller" type="button">A− သေး</button>
       <button class="btn small ghost" id="tlTitleBigger" type="button">A+ ကြီး</button>
     </div>
-    <div class="hint" style="margin-top:6px">ဗီဒီယိုပေါ်က စာသားကို လက်နဲ့ / mouse သုံးပြီးရွှေ့နိုင်</div>
-    <div class="hint" id="tlTitleMeta"></div>
+    
+    
   </div>
-  <div class="hint" id="tlInfo"></div>
+  
 </section>
 </div>
 
@@ -1047,7 +1056,7 @@ body{background-attachment:fixed}
         <input type="password" id="ttsKey" placeholder="AIza…" autocomplete="off" spellcheck="false" />
       </div>
     </div>
-    <div class="hint">မော်ဒယ် မရရင် (404 / 429 / 503) တခြား TTS မော်ဒယ်ကို အလိုအလျောက် ပြောင်းပေးမယ်။</div>
+    
   </div>
 
   <div id="ttsBoxE" class="hidden">
@@ -1079,7 +1088,7 @@ body{background-attachment:fixed}
         <input type="text" id="elVoiceCustom" placeholder="ဥပမာ 21m00Tcm4TlvDq8ikWAM" autocomplete="off" spellcheck="false" />
       </div>
     </div>
-    <div class="hint">Key ကို <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" rel="noopener">ElevenLabs</a> မှာ ထုတ်ပါ။ မြန်မာစာကို v4 နဲ့ပဲ ဖတ်နိုင်တယ်။</div>
+    
   </div>
 
   <div id="ttsBoxM" class="hidden">
@@ -1102,7 +1111,7 @@ body{background-attachment:fixed}
         </select>
       </div>
     </div>
-    <div class="hint">Key မလို၊ အခမဲ့။ မရရင် အင်တာနက်နဲ့ စက်နာရီကို စစ်ပါ။</div>
+    
   </div>
 
   <div id="ttsBoxA" class="hidden">
@@ -1133,7 +1142,7 @@ body{background-attachment:fixed}
         </select>
       </div>
     </div>
-    <div class="hint"><a href="https://portal.azure.com/" target="_blank" rel="noopener">Azure Portal</a> → Speech resource (F0 အခမဲ့) → Key + Region ကူးထည့်ပါ။ အကောင့်ဖွင့်ဖို့ ကတ် လိုတယ်။</div>
+    
   </div>
 
   <div class="grid2" style="margin-top:12px">
@@ -1158,22 +1167,24 @@ body{background-attachment:fixed}
     <div class="row"><button class="btn" id="ttsDl">WAV ဒေါင်းလုဒ်ဆွဲမယ်</button><button class="btn ghost" id="ttsDlSrt">SRT ဒေါင်းလုဒ်ဆွဲမယ် (အသံနဲ့ အချိန်ကိုက်)</button></div>
   </div>
   <div class="row"><button class="btn small ghost" type="button" id="ttsCacheClear">မှတ်ထားတဲ့အသံ ရှင်းမယ်</button></div>
-  <div class="hint">ပျက်သွားရင် ပြန်နှိပ်ပါ — ထုတ်ပြီးသား အပိုင်းတွေ ပြန်မထုတ်ဘူး။</div>
+  
 </section>
 </div>
 
 <div id="panelRecap" class="hidden">
 <section class="card" id="cardRecap">
   <h2>🎬 Movie Recap — Dubbing လုပ်မယ်</h2>
-  <div class="hint" style="margin-top:0">ဗီဒီယို → မြန်မာပြန် → Thiha / Nilar အသံနဲ့ dub → MP4 ထုတ် — အားလုံး ဒီ tab တစ်ခုတည်းမှာ။</div>
+  
   <div id="recapStage" class="hidden" style="margin-top:14px">
-    <video id="recapPreviewBg" muted playsinline preload="metadata" aria-hidden="true"></video>
-    <video id="recapVideo" controls playsinline></video>
-    <div class="blurBar" id="recapBlurT"></div>
-    <div class="blurBar" id="recapBlurB"></div>
-    <div id="recapBlurRect"></div>
-    <div id="recapCue"><span id="recapCueText"></span></div>
-    <img id="recapLogoImg" class="hidden" alt="" />
+    <div id="recapVwrap">
+      <video id="recapPreviewBg" muted playsinline preload="metadata" aria-hidden="true"></video>
+      <video id="recapVideo" controls playsinline></video>
+      <div class="blurBar" id="recapBlurT"></div>
+      <div class="blurBar" id="recapBlurB"></div>
+      <div id="recapBlurRect"><span class="blurResize" id="recapBlurResize">⤡</span></div>
+      <div id="recapCue"><span id="recapCueText"></span></div>
+      <img id="recapLogoImg" class="hidden" alt="" />
+    </div>
   </div>
   <div class="row" style="margin-top:12px; flex-wrap:wrap">
     <button class="btn" id="recapPickVideo">📁 ဗီဒီယို / အသံဖိုင် ရွေးမယ်</button>
@@ -1206,59 +1217,60 @@ body{background-attachment:fixed}
       </select>
     </div>
   </div>
-  <div class="hint">Engine / ဘာသာစကား ရွေးတာက ဘာသာပြန် tab နဲ့ တစ်ထပ်တည်း ဖြစ်မယ်။</div>
+  
   <div id="recapKeyBox" style="margin-top:12px">
     <label class="f">🔑 API Key များ <span style="font-weight:400">(ရွေးထားတဲ့ Engine / အသံ အတွက်ပဲ ပြမယ် — ဒီမှာ ထည့်တဲ့ Key က တခြား tab တွေနဲ့ပါ အတူတူ သုံးမယ်)</span></label>
     <div class="grid2" style="margin-top:6px">
       <div id="recapKeyRowGemini" class="hidden">
         <label class="f" for="recapGeminiKey">Gemini API Key</label>
         <input type="password" id="recapGeminiKey" placeholder="AIza…" autocomplete="off" />
-        <div class="hint"><a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> — အခမဲ့</div>
+        
       </div>
       <div id="recapKeyRowGroq" class="hidden">
         <label class="f" for="recapGroqKey">Groq API Key</label>
         <input type="password" id="recapGroqKey" placeholder="gsk_…" autocomplete="off" />
-        <div class="hint"><a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a> — အခမဲ့၊ ကတ် မလို</div>
+        
       </div>
       <div id="recapKeyRowEl" class="hidden">
         <label class="f" for="recapElKey">ElevenLabs API Key</label>
         <input type="password" id="recapElKey" placeholder="sk_…" autocomplete="off" />
-        <div class="hint">Scribe (နားထောင်) + ElevenLabs အသံ — TTS tab ထဲက Key နဲ့ အတူတူ</div>
+        
       </div>
       <div id="recapKeyRowDeepgram" class="hidden">
         <label class="f" for="recapDeepgramKey">Deepgram API Key</label>
         <input type="password" id="recapDeepgramKey" placeholder="" autocomplete="off" />
-        <div class="hint"><a href="https://console.deepgram.com/" target="_blank" rel="noopener">console.deepgram.com</a> — $200 credit အခမဲ့</div>
+        
       </div>
       <div id="recapKeyRowAssembly" class="hidden">
         <label class="f" for="recapAssemblyKey">AssemblyAI API Key</label>
         <input type="password" id="recapAssemblyKey" placeholder="" autocomplete="off" />
-        <div class="hint"><a href="https://www.assemblyai.com/dashboard/signup" target="_blank" rel="noopener">assemblyai.com/dashboard/signup</a> — $50 credit အခမဲ့</div>
+        
       </div>
       <div id="recapKeyRowGladia" class="hidden">
         <label class="f" for="recapGladiaKey">Gladia API Key</label>
         <input type="password" id="recapGladiaKey" placeholder="" autocomplete="off" />
-        <div class="hint"><a href="https://app.gladia.io/signup" target="_blank" rel="noopener">app.gladia.io/signup</a> — €50 credit အခမဲ့</div>
+        
       </div>
       <div id="recapKeyRowHf" class="hidden">
         <label class="f" for="recapHfKey">Hugging Face token</label>
         <input type="password" id="recapHfKey" placeholder="hf_…" autocomplete="off" />
-        <div class="hint"><a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener">huggingface.co/settings/tokens</a> — အခမဲ့ (Inference Providers ခွင့်ပြု)</div>
+        
       </div>
       <div id="recapKeyRowAzure" class="hidden">
         <label class="f" for="recapAzureKey">Azure Speech API Key</label>
         <input type="password" id="recapAzureKey" placeholder="" autocomplete="off" />
-        <div class="hint"><a href="https://portal.azure.com/" target="_blank" rel="noopener">portal.azure.com</a> → Speech resource (F0 အခမဲ့) → Keys and Endpoint — Azure အကောင့် လုပ်ဖို့ ကတ် လိုတယ်</div>
+        
       </div>
       <div id="recapKeyRowAzureRegion" class="hidden">
         <label class="f" for="recapAzureRegion">Azure Region</label>
         <input type="text" id="recapAzureRegion" placeholder="southeastasia" autocomplete="off" />
-        <div class="hint">ဥပမာ southeastasia — Key ရတဲ့ Speech resource ရဲ့ Region</div>
+        
       </div>
     </div>
   </div>
   <div class="row" style="margin-top:14px">
-    <button class="btn primary" id="recapAutoBtn">▶ အစကနေ Recap လုပ်မယ် (transcript + ဘာသာပြန်)</button>
+    <button class="btn primary" id="recapAutoBtn">▶ အစကနေ Recap လုပ်မယ် (ပုံမှန်)</button>
+    <button class="btn" id="recapConciseBtn">✂️ တိုတိုနဲ့ ထုတ်မယ်</button>
   </div>
   <div id="recapEmpty" style="margin-top:12px">
   </div>
@@ -1292,7 +1304,7 @@ body{background-attachment:fixed}
         </select>
       </div>
     </div>
-    <div class="hint" id="recapKeyHint" style="margin-top:8px">Edge = Key မလို။ Azure / Gemini / ElevenLabs = TTS tab ထဲက Key သုံးမယ်။</div>
+    
     <div class="row" style="margin-top:10px">
       <button class="btn small" type="button" id="recapAllThiha">အားလုံး Thiha</button>
       <button class="btn small" type="button" id="recapAllNilar">အားလုံး Nilar</button>
@@ -1307,7 +1319,7 @@ body{background-attachment:fixed}
       <label class="f" for="recapSplitMax" style="margin:0">စာတန်းတစ်ခုမှာ စာလုံးအများဆုံး</label>
       <input type="number" id="recapSplitMax" value="40" min="12" max="120" inputmode="numeric" style="width:90px" />
     </div>
-    <div class="hint">ခွဲပြီးရင် Dub အသံ အဟောင်းက မသုံးတော့ဘူး — နောက် Dub ခလုတ်နှိပ်ရင် အသစ်ပြန်ရောပေးမယ်။</div>
+    
     <label style="display:flex;gap:8px;align-items:center;margin-top:14px;font-size:14px"><input type="checkbox" id="recapBurnSub" checked style="width:18px;height:18px"> စာတန်းထိုး (မြန်မာစာ) ကို ဗီဒီယိုထဲမှာ ထည့်မယ် (burn-in)</label>
     <div class="grid2" style="margin-top:12px">
       <div>
@@ -1334,14 +1346,14 @@ body{background-attachment:fixed}
         <div><label class="f" for="recapBlurH2">အမြင့် <span class="val" id="recapBlurH2Val">15%</span></label><input type="range" id="recapBlurH2" min="5" max="100" step="1" value="15" /></div>
       </div>
     </div>
-    <div class="hint">ဗီဒီယိုထဲက တရုတ်စာတန်း / လိုဂိုကို ဖုံးမယ်။</div>
+    
     <div style="margin-top:12px">
       <label class="f" for="recapBgMode">နောက်ခံအသံ (မူရင်းအသံ)</label>
       <select id="recapBgMode">
         <option value="mute" selected>လုံးဝ ပိတ်မယ်</option>
         <option value="duck">TTS အောက်မှာ တိုးတိုးထားမယ်</option>
       </select>
-      <div class="hint">မူရင်းအသံ ထားချင်တဲ့ စာကြောင်းကို 🔊 နှိပ်ပါ။</div>
+      
       <label class="f" for="recapDubSpeed" style="margin-top:12px">Dub အမြန်နှုန်း</label>
       <select id="recapDubSpeed">
         <option value="1">1X — အမြန်မလုပ်ဘူး (အသဘာဝကျဆုံး)</option>
@@ -1350,9 +1362,9 @@ body{background-attachment:fixed}
         <option value="2">2X</option>
         <option value="2.5">2.5X</option>
       </select>
-      <div class="hint">အမြန်နှုန်း တင်လေ စာကြောင်းတွေ slot ထဲ ဝင်လေ။ အသံ ပြန်ထုတ်စရာ မလိုဘူး။</div>
-      <label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14px"><input type="checkbox" id="recapFreeze" style="width:18px;height:18px" checked> ⏸ အသံက ဗီဒီယိုထက် ရှည်နေရင် နောက်ဆုံးပုံကို ရပ်ထားမယ် (freeze + ဖြည်းဖြည်း zoom)</label>
-      <div class="hint">ဖွင့်ထားရင် အသံကုန်တဲ့အထိ နောက်ဆုံးပုံကို ရပ်ပြီး zoom ဆွဲထုတ်ပေးမယ်။</div>
+      
+      <label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14px"><input type="checkbox" id="recapFreeze" style="width:18px;height:18px" checked> ⏸ အသံက ဗီဒီယိုထက် ရှည်နေရင် frame ရပ်ထားမယ် — စာကြောင်းတိုင်းမှာ အသံနဲ့ ရုပ်ညီအောင် (freeze + ဖြည်းဖြည်း zoom)</label>
+      
     </div>
     <div style="margin-top:12px">
       <label class="f">ဗီဒီယို အချိုးအစား (Ratio)</label>
@@ -1363,11 +1375,11 @@ body{background-attachment:fixed}
         <button type="button" id="recapRatio11" aria-pressed="false">1:1 · စတုရန်း</button>
         <button type="button" id="recapRatio45" aria-pressed="false">4:5 · Facebook</button>
       </div>
-      <div class="hint">TikTok/Reels · YouTube · 1:1 / 4:5 = ပို့စ်။</div>
+      
     </div>
     <details class="burnbox" id="recapSyncBox" style="margin-top:14px">
       <summary>စာတန်းအချိန် လွဲနေရင် ညှိရန် (Sync)</summary>
-      <div class="hint" id="recapSyncInfo"></div>
+      
       <div class="row">
         <button class="btn small" type="button" id="recapSyncFit">ဗီဒီယိုအရှည်ကိုက်အောင် အလိုအလျောက် ချုံ့မယ်</button>
       </div>
@@ -1470,7 +1482,7 @@ body{background-attachment:fixed}
             <button class="btn small ghost hidden" id="recapFontReset">မူရင်း ဖောင့် ပြန်သုံးမယ်</button>
           </div>
           <input type="file" id="recapFontFile" accept=".ttf,.otf,.woff,.woff2" class="hidden" />
-          <div class="hint" id="recapFontStatus">အခု — A Test (မူရင်း)။</div>
+          
           <div id="recapFontSample" style="margin-top:6px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;font-size:17px;line-height:1.6">မြန်မာစာတန်းထိုး — ABC 123</div>
         </div>
         <div class="full">
@@ -1479,7 +1491,7 @@ body{background-attachment:fixed}
             <button class="btn small ghost hidden" id="recapLogoRemove">Logo ဖြုတ်မယ်</button>
           </div>
           <input type="file" id="recapLogoFile" accept="image/*" class="hidden" />
-          <div class="hint" id="recapLogoStatus">Logo မထည့်ရသေးဘူး။</div>
+          
           <div class="full">
             <label class="f">Logo နေရာ</label>
             <div class="enginebar wrap" role="group" aria-label="Logo နေရာ ရွေးရန်">
@@ -1502,7 +1514,6 @@ body{background-attachment:fixed}
     </details>
     <div class="row" style="margin-top:14px; flex-wrap:wrap">
       <button class="btn primary" id="recapTtsBtn">🎙️ စာကြောင်းတွေ အသံထုတ်မယ်</button>
-      <button class="btn" id="recapConciseBtn">✂️ စာသားတွေ တိုတိုပြန်ဆိုမယ်</button>
       <button class="btn" id="recapPreviewBtn">🔊 Dub အသံ နားထောင်မယ်</button>
       <button class="btn" id="recapWatchBtn">▶ Dub နဲ့ ဗီဒီယို တွဲကြည့်မယ်</button>
       <button class="btn" id="recapExportBtn">🎬 Dubbing MP4 ထုတ်မယ်</button>
@@ -1519,15 +1530,40 @@ body{background-attachment:fixed}
       <audio id="recapAudio" controls style="width:100%"></audio>
       <div class="row"><button class="btn" id="recapDl">Dub အသံ (WAV) ဒေါင်းလုဒ်ဆွဲမယ်</button></div>
     </div>
-    <div class="hint" style="margin-top:10px">TTS အသံက စာကြောင်းထက် ရှည်ရင် "✂️ စာသားတွေ တိုတိုပြန်ဆိုမယ်" ကို နှိပ်ပါ။</div>
+    
   </div>
+</section>
+<section class="card hidden" id="recapCardTimeline">
+  <h2>⏱ Timeline — စာတန်းနဲ့ ဗီဒီယို ဖြတ်ညှပ်မယ်</h2>
+  
+  <div class="row" style="margin-top:10px">
+    <button class="btn small" id="recapTlSplitVideo" type="button">✂ ဗီဒီယို ခွဲမယ်</button>
+    <button class="btn small" id="recapTlSplitSub" type="button">✂ စာတန်း ခွဲမယ်</button>
+    <button class="btn small" id="recapTlAddTitle" type="button">＋ စာသား ထည့်မယ်</button>
+    <button class="btn small ghost" id="recapTlDelSel" type="button">ရွေးထားတာ ဖျက်မယ်</button>
+    <button class="btn small ghost" id="recapTlResetCuts" type="button">ဗီဒီယို ပြန်ဆက်မယ်</button>
+    <span style="flex:1"></span>
+    <button class="btn small ghost" id="recapTlZoomOut" type="button">− Zoom</button>
+    <button class="btn small ghost" id="recapTlZoomFit" type="button">အပြည့်မြင်မယ်</button>
+    <button class="btn small ghost" id="recapTlZoomIn" type="button">+ Zoom</button>
+  </div>
+  <div id="recapTlScroll">
+    <div id="recapTlInner">
+      <div id="recapTlRuler"></div>
+      <div class="tlTrack"><div class="tlTag">🎬 ဗီဒီယို</div><div class="tlLane" id="recapTlVideoLane"></div></div>
+      <div class="tlTrack"><div class="tlTag">💬 စာတန်း</div><div class="tlLane" id="recapTlSubLane"></div></div>
+      <div class="tlTrack"><div class="tlTag">📝 စာသား</div><div class="tlLane" id="recapTlTitleLane"></div></div>
+      <div id="recapTlPlayhead"></div>
+    </div>
+  </div>
+  
 </section>
 </div>
 
 <div id="panelProjects" class="hidden">
 <section class="card" id="cardProjects">
   <h2>ပရောဂျက်များ</h2>
-  <div class="hint" style="margin-top:0">ဗီဒီယိုဖိုင်ကိုတော့ သိမ်းမရဘူး — ပြန်ဖွင့်ရင် ဗီဒီယိုဖိုင် ပြန်ရွေးပေးရမယ်။</div>
+  
 
   <div style="margin-top:14px">
     <label class="f" for="projName">ပရောဂျက် နာမည်</label>
@@ -1551,11 +1587,11 @@ body{background-attachment:fixed}
     <button class="btn small ghost hidden" id="fbSignOut">Sign out</button>
   </div>
   <label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14px"><input type="checkbox" id="cloudAutoSave" style="width:18px;height:18px"> ☁️ Cloud မှာ အလိုအလျောက် သိမ်းမယ်</label>
-  <div class="hint" id="cloudAutoNote">ဖွင့်ထားရင် Google sign in ဝင်ထားရင် cloud မှာပါ သိမ်းမယ်။</div>
+  
   <div id="cloudProjectList" style="margin-top:10px"></div>
   <details style="margin-top:16px">
     <summary>Firestore Security Rules (တစ်ခါပဲ ထည့်ရမယ်)</summary>
-    <div class="hint">Firestore Database → Rules မှာ paste လုပ်ပါ။</div>
+    
     <pre class="rulesbox">rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -1615,7 +1651,7 @@ service cloud.firestore {
     <button class="btn small ghost" id="aiImgDl">ပုံ ဒေါင်းမယ်</button>
     <button class="btn small ghost" id="aiImgToSlide">ဒီပုံကို slideshow ထဲ ထည့်မယ်</button>
   </div>
-  <div class="hint">Pollinations = အခမဲ့၊ Key မလို။ ElevenLabs ပုံရတဲ့ link က ၁ နာရီလောက်ပဲ ခံတယ် — မြန်မြန်ဒေါင်းပါ။</div>
+  
 </section>
 
 <section class="card" id="cardVideoGen">
@@ -1659,7 +1695,7 @@ service cloud.firestore {
   <div class="row hidden" id="aiVidDlRow">
     <button class="btn small ghost" id="aiVidDl">ဗီဒီယို ဒေါင်းမယ်</button>
   </div>
-  <div class="note">Gemini ကနေ Veo တိုက်ရိုက်သုံးမရတော့ဘူး — ElevenLabs နည်းနဲ့ ရတယ်။ အခမဲ့လိုချင်ရင် Slideshow သုံးပါ။</div>
+  
 </section>
 </div>
 
@@ -1835,6 +1871,9 @@ var SrtTools = (function () {
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
+  /* Null-safe text write — the hint/status lines were removed from the UI,
+     so a few writers now target elements that may not exist. */
+  function setText(id, t) { var e = $(id); if (e) e.textContent = t; }
   var GT_SL = { auto: 'auto', chinese: 'zh-CN', english: 'en', korean: 'ko', japanese: 'ja', thai: 'th', burmese: 'my' };
   var LANG_NAME = { auto: '', chinese: 'Chinese', english: 'English', korean: 'Korean', japanese: 'Japanese', thai: 'Thai', burmese: 'Burmese (Myanmar)' };
 
@@ -3805,9 +3844,18 @@ var SrtTools = (function () {
     scheduleSave();
     updateVideoEmpty();
     if (!batchRunning) { switchTab('edit'); $('cardResult').scrollIntoView({ behavior: 'smooth' }); }
-    /* Recap tab's one-tap flow: after transcript + translate finish, go to
-       the Recap tab and start the per-line TTS automatically. */
-    if (recapAutoNext && !batchRunning) { recapAutoNext = false; switchTab('recap'); renderRecapList(); recapTtsAll(); }
+    /* Recap tab's flow: after transcript + translate finish, go to the
+       Recap tab — but do NOT start the per-line TTS by itself. The voice
+       is only produced when the user taps "🎙️ စာကြောင်းတွေ အသံထုတ်မယ်":
+       auto-TTS ran before the user could check the text, and its result
+       came out silent, so the manual button is the next step now. */
+    if (recapAutoNext && !batchRunning) {
+      recapAutoNext = false;
+      switchTab('recap');
+      renderRecapList();
+      $('recapStatus').textContent = 'စာသားတွေ အဆင်သင့်ပါ — စစ်ပြီးရင် "🎙️ စာကြောင်းတွေ အသံထုတ်မယ်" ကို နှိပ်ပြီး အသံထုတ်ပါ။';
+      try { $('recapTtsBtn').scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+    }
   }
   var lastCueText = null, cueRaf = 0;
   var lastTitleText = null, curTitleObj = null;
@@ -4449,7 +4497,7 @@ var seekBtn = d.querySelector('.seek');
      #vwrap/#preview, so the Recap ratio buttons changed burn.ratio (and the
      export, which reads it) but the Recap video never moved. */
   function applyRecapRatio() {
-    var stage = $('recapStage'), rv = $('recapVideo');
+    var stage = $('recapVwrap'), rv = $('recapVideo');
     if (!stage || !rv) return;
     if (burn.ratio === 'original') {
       stage.classList.remove('framed', 'blurbg');
@@ -4635,6 +4683,48 @@ var seekBtn = d.querySelector('.seek');
     burn.blurBarPos = 'custom';
     syncBurnControls();
   }
+  /* Drag the blur rectangle directly on the video — finger or mouse — instead
+     of only the sliders: grab the rectangle to move it, grab the blue ⤡
+     corner to resize it. Works in both the Video tab and the Recap tab;
+     the rectangle is fractions of the frame, so it stays inside the ratio. */
+  var blurDrag = null;
+  [['blurRect', 'vwrap', 'preview'], ['recapBlurRect', 'recapVwrap', 'recapVideo']].forEach(function (pr) {
+    var el = $(pr[0]); if (!el) return;
+    el.addEventListener('pointerdown', function (e) {
+      if (burn.blurBarPos !== 'custom') return;
+      var wrap = $(pr[1]); if (!wrap) return;
+      var r = wrap.getBoundingClientRect();
+      var vid = $(pr[2]); if (vid && !vid.paused) { try { vid.pause(); } catch (err) {} }
+      blurDrag = { mode: (e.target && e.target.classList && e.target.classList.contains('blurResize')) ? 'resize' : 'move',
+        sx: e.clientX, sy: e.clientY,
+        ox: burn.blurRect.x, oy: burn.blurRect.y, ow: burn.blurRect.w, oh: burn.blurRect.h,
+        w: r.width, h: r.height, el: el };
+      el.classList.add('dragging');
+      try { el.setPointerCapture(e.pointerId); } catch (err) {}
+      e.preventDefault(); e.stopPropagation();
+    });
+    el.addEventListener('pointermove', function (e) {
+      if (!blurDrag || blurDrag.el !== el) return;
+      var dx = (e.clientX - blurDrag.sx) / blurDrag.w, dy = (e.clientY - blurDrag.sy) / blurDrag.h;
+      if (blurDrag.mode === 'resize') {
+        burn.blurRect.w = Math.max(0.05, Math.min(1 - blurDrag.ox, blurDrag.ow + dx));
+        burn.blurRect.h = Math.max(0.05, Math.min(1 - blurDrag.oy, blurDrag.oh + dy));
+      } else {
+        burn.blurRect.x = Math.max(0, Math.min(1 - burn.blurRect.w, blurDrag.ox + dx));
+        burn.blurRect.y = Math.max(0, Math.min(1 - burn.blurRect.h, blurDrag.oy + dy));
+      }
+      syncBlurBars(); /* live: the rectangle follows the finger */
+    });
+    function blurDragEnd() {
+      if (!blurDrag) return;
+      blurDrag = null;
+      el.classList.remove('dragging');
+      syncBurnControls(); /* refresh the sliders from the dragged rectangle */
+      scheduleSave();
+    }
+    el.addEventListener('pointerup', blurDragEnd);
+    el.addEventListener('pointercancel', blurDragEnd);
+  });
   function setBurnPos(p) { burn.pos = p; syncBurnControls(); }
   $('posTop').addEventListener('click', function () { setBurnPos('top'); });
   $('posMid').addEventListener('click', function () { setBurnPos('middle'); });
@@ -4845,8 +4935,8 @@ var seekBtn = d.querySelector('.seek');
         msg = 'အခု သုံးနေတာ — ' + f.name + ' (ကိုယ်ပိုင်ဖောင့်)။ သတိ — ဒီဖောင့်မှာ မြန်မာစာ မပါဘူး၊ ဒါကြောင့် မြန်မာစာတန်းတွေက မူရင်းဖောင့်အတိုင်းပဲ ပေါ်မယ်။ မြန်မာစာပါတဲ့ ဖောင့် (ဥပမာ Pyidaungsu, Myanmar3, Noto Sans Myanmar) သုံးပေးပါ။';
         toast('ဒီဖောင့်မှာ မြန်မာစာ မပါဘူး — မြန်မာစာတန်းက မပြောင်းဘူး ဖြစ်နေမယ်');
       }
-      $('fontStatus').textContent = msg;
-      $('recapFontStatus').textContent = msg;
+      setText('fontStatus', msg);
+      setText('recapFontStatus', msg);
       applyCueStyle();
     } catch (err) {
       console.error(err);
@@ -4869,8 +4959,8 @@ var seekBtn = d.querySelector('.seek');
     burn.fontName = '';
     $('fontReset').classList.add('hidden');
     $('recapFontReset').classList.add('hidden');
-    $('fontStatus').textContent = 'အခု — A Test (မူရင်း)။';
-    $('recapFontStatus').textContent = 'အခု — A Test (မူရင်း)။';
+    setText('fontStatus', 'အခု — A Test (မူရင်း)။');
+    setText('recapFontStatus', 'အခု — A Test (မူရင်း)။');
     var sample = $('fontSample');
     if (sample) sample.style.fontFamily = burn.fontFamily;
     var rsample = $('recapFontSample');
@@ -4931,8 +5021,8 @@ var seekBtn = d.querySelector('.seek');
       $('logoRemove').classList.remove('hidden');
       $('recapLogoRemove').classList.remove('hidden');
       var msg = 'Logo ထည့်ပြီး — ' + f.name + ' ။ နေရာ / အရွယ် / ပွင့်လင်းမှု ချိန်လို့ရတယ်။';
-      $('logoStatus').textContent = msg;
-      $('recapLogoStatus').textContent = msg;
+      setText('logoStatus', msg);
+      setText('recapLogoStatus', msg);
       applyLogoStyle();
       toast('Logo ထည့်ပြီးပါပြီ');
     };
@@ -4946,8 +5036,8 @@ var seekBtn = d.querySelector('.seek');
     $('recapLogoImg').removeAttribute('src');
     $('logoRemove').classList.add('hidden');
     $('recapLogoRemove').classList.add('hidden');
-    $('logoStatus').textContent = 'Logo မထည့်ရသေးဘူး။';
-    $('recapLogoStatus').textContent = 'Logo မထည့်ရသေးဘူး။';
+    setText('logoStatus', 'Logo မထည့်ရသေးဘူး။');
+    setText('recapLogoStatus', 'Logo မထည့်ရသေးဘူး။');
     applyLogoStyle();
     toast('Logo ဖြုတ်လိုက်ပါပြီ');
   }
@@ -4976,7 +5066,7 @@ var seekBtn = d.querySelector('.seek');
   });
 
   $('preview').addEventListener('loadedmetadata', applyRatioPreview);
-  $('recapVideo').addEventListener('loadedmetadata', applyRecapRatio);
+  $('recapVideo').addEventListener('loadedmetadata', function () { applyRecapRatio(); renderTimeline(); });
   /* keep the Recap blurred preview background in sync with the Recap video */
   (function () {
     var rv = $('recapVideo'), rbg = $('recapPreviewBg');
@@ -5053,6 +5143,11 @@ var seekBtn = d.querySelector('.seek');
          show that line's subtitle at the delayed time so text and voice stay
          together. (The shift is in edited seconds; with no cuts the edited
          and source timelines are identical, so this is exact.) */
+      /* When a dub mix exists (and no cuts — then edited == source time), show
+         each line for the whole time its voice is actually heard [a, e], so
+         the text does not vanish while the voice is still speaking. */
+      var sp = (!hasCuts() && dubLineSpans) ? dubLineSpans[i] : null;
+      if (sp) { if (t >= sp.a && t < sp.e) act.push(segments[i]); continue; }
       var sh = dubShiftByIdx ? (dubShiftByIdx[i] || 0) : 0;
       if (t >= segments[i].start + sh && t < segments[i].end + sh) act.push(segments[i]);
     }
@@ -5263,13 +5358,128 @@ var seekBtn = d.querySelector('.seek');
     if (over <= 0.05) return 0;
     return Math.min(over, 120); /* ၂ မိနစ်ထက် ပိုရပ်မထားဘူး — အဲဒီလောက် ရှည်နေရင် စာတိုအောင် ပြန်ဆို / Dub အမြန်နှုန်း တင်တာ ပိုသင့်တယ် */
   }
-  function dubFreezeNote(totalKeptSec, freezeSec) {
+  function dubFreezeNote(totalKeptSec, endFreezeSec, lineFreeze) {
+    var lineSec = (lineFreeze && lineFreeze.total) || 0;
+    var freezeSec = lineSec + (endFreezeSec || 0);
     if (!freezeSec || freezeSec <= 0.05) return '';
     var over = (dubAudio && dubAudio.file === videoFile && dubAudio.samples)
       ? dubAudio.samples.length / 16000 - totalKeptSec : 0;
-    var note = ' အသံက ဗီဒီယိုထက် ' + Math.round(over) + ' စက္ကန့် ရှည်နေလို့ နောက်ဆုံးပုံကို freeze + ဖြည်းဖြည်း zoom နဲ့ ဆက်ထုတ်ပေးလိုက်ပါတယ်။';
+    var note = '';
+    if (lineSec > 0.05) note += ' စာကြောင်း ' + (lineFreeze.spans ? lineFreeze.spans.length : 0) + ' ကြောင်း အသံနဲ့ ရုပ်ညီအောင် frame ရပ်ထားတယ် (' + Math.round(lineSec) + ' စက္ကန့်)။';
+    if (endFreezeSec > 0.05) note += ' အသံက ဗီဒီယိုထက် ' + Math.round(over) + ' စက္ကန့် ရှည်နေလို့ နောက်ဆုံးပုံကို freeze + ဖြည်းဖြည်း zoom နဲ့ ဆက်ထုတ်ပေးလိုက်ပါတယ်။';
     if (over > freezeSec + 0.05) note += ' (freeze ကို ' + Math.round(freezeSec) + ' စက္ကန့်အထိပဲ လုပ်ပေးထားတယ် — ကျန်တဲ့ ' + Math.round(over - freezeSec) + ' စက္ကန့်အတွက် စာသားတွေ တိုတိုပြန်ဆိုတာ / Dub အမြန်နှုန်း တင်တာ လုပ်ကြည့်ပါ။)';
     return note;
+  }
+  /* ---------- Per-line freeze: hold the picture until its dub line finishes ----------
+     A Burmese dub line is usually longer than the video segment it replaces, so
+     the picture runs ahead of the voice — over a 3-minute video the dub can lag
+     several lines behind the picture. The old fix only froze the LAST frame at
+     the very end. Now each overrun line gets its own freeze: when the video
+     reaches the end of that line's segment, the frame holds (with a slow zoom
+     so it does not look dead) until that line's voice finishes, and only then
+     does the video move on to the next line. The mix (audio) is unchanged — it
+     plays at edited times — and the video's output timestamps include the
+     freezes, so picture, subtitle and voice stay on the same timeline. */
+  var dubLineSpans = null; /* per segment: {a, e, vidEnd, vidStart} in edited seconds, or null */
+  var dubFreezeSpans = null; /* built from dubLineSpans: {editedEnd, srcTime, d, startOut, endOut, idx} */
+  var LINE_FREEZE_MAX = 8; /* seconds — one frame never holds longer than this */
+  var LINE_FREEZE_TOTAL_MAX = 120; /* seconds — all per-line freezes together */
+  function trimPcmSilence(pcm) {
+    /* Trim near-silence (< -40 dB) from the ends of a TTS clip — TTS engines
+       often pad a line with dead air, and that air is pure overrun. Never
+       trims more than 0.5 s per side, and keeps the original when the clip
+       would become shorter than 0.1 s (all-silence guard). */
+    if (!pcm || !pcm.length) return pcm;
+    var maxTrim = Math.floor(0.5 * 16000), th = 0.01, n = pcm.length, st = 0, en = n;
+    while (st < n && st < maxTrim && Math.abs(pcm[st]) < th) st++;
+    while (en > st && en > n - maxTrim && Math.abs(pcm[en - 1]) < th) en--;
+    if (en - st < Math.floor(0.1 * 16000)) return pcm;
+    return (st === 0 && en === n) ? pcm : pcm.subarray(st, en);
+  }
+  function buildLineFreezeSpans(kept, totalKeptSec) {
+    /* Pure: from the dub spans, build the per-line freezes. Each span says:
+       freeze the video at edited time editedEnd (source time srcTime) for d
+       seconds of output time, starting at startOut and ending at endOut.
+       Returns {spans, total}. Empty when freezing is off or no mix exists. */
+    var out = { spans: [], total: 0 };
+    if (!recapFreezeOn() || !dubLineSpans || !dubAudio || dubAudio.file !== videoFile || !dubAudio.samples) return out;
+    if (!kept || !kept.length || !(totalKeptSec > 0)) return out;
+    var edStart = [], acc = 0;
+    kept.forEach(function (c) { edStart.push(acc); acc += (c.end - c.start); });
+    function srcAt(ed) {
+      for (var i = kept.length - 1; i >= 0; i--) {
+        if (ed >= edStart[i] - 0.001) {
+          var t = kept[i].start + (ed - edStart[i]);
+          return Math.max(kept[i].start, Math.min(kept[i].end, t));
+        }
+      }
+      return kept[0].start;
+    }
+    var frozen = 0;
+    dubLineSpans.forEach(function (sp, idx) {
+      if (!sp) return;
+      if (sp.vidEnd <= 0.05 || sp.vidEnd >= totalKeptSec - 0.05) return;
+      if (!(sp.e > sp.vidEnd)) return;
+      var startOut = sp.vidEnd + frozen;
+      var d = sp.e - startOut;
+      if (d <= 0.05) return;
+      d = Math.min(d, LINE_FREEZE_MAX, LINE_FREEZE_TOTAL_MAX - frozen);
+      if (d <= 0.05) return;
+      out.spans.push({ editedEnd: sp.vidEnd, srcTime: srcAt(sp.vidEnd), d: d, startOut: startOut, endOut: startOut + d, idx: idx });
+      frozen += d;
+      out.total = frozen;
+    });
+    return out;
+  }
+  function dubLineFreezeAt(t) {
+    /* Freeze span whose output interval contains t (mix/output seconds), or null. */
+    if (!dubFreezeSpans) return null;
+    for (var i = 0; i < dubFreezeSpans.length; i++) {
+      var sp = dubFreezeSpans[i];
+      if (t >= sp.startOut && t < sp.endOut) return sp;
+    }
+    return null;
+  }
+  function dubPreviewFreezeAt(vidT, audioT) {
+    /* For the watch preview: the span whose video frame the picture has just
+       reached (source seconds) while its voice has not finished yet — the
+       latest such span wins. Returns null when the picture may keep moving. */
+    if (!dubFreezeSpans) return null;
+    var best = null;
+    for (var i = 0; i < dubFreezeSpans.length; i++) {
+      var sp = dubFreezeSpans[i];
+      if (vidT >= sp.srcTime - 0.05 && (!best || sp.srcTime > best.srcTime)) best = sp;
+    }
+    return (best && audioT < best.endOut) ? best : null;
+  }
+  function splitKeptForFreeze(kept, spans) {
+    /* Split kept clips at each freeze's source time, and attach the freeze to
+       the clip piece that ends there — so the export loop can run the freeze
+       between two clip pieces exactly like the end-freeze. Freezes sharing
+       one split point merge into a single hold. Returns {start, end, freeze}. */
+    var bySrc = {};
+    spans.forEach(function (sp) {
+      var k = sp.srcTime.toFixed(3);
+      if (!bySrc[k]) bySrc[k] = { d: 0, startOut: sp.startOut, endOut: sp.endOut, idx: sp.idx, editedEnd: sp.editedEnd, srcTime: sp.srcTime };
+      bySrc[k].d += sp.d;
+      bySrc[k].endOut = sp.endOut;
+    });
+    var out = [];
+    kept.forEach(function (c) {
+      var cuts = [c.start];
+      spans.forEach(function (sp) {
+        if (sp.srcTime > c.start + 0.01 && sp.srcTime < c.end - 0.01) cuts.push(sp.srcTime);
+      });
+      cuts.push(c.end);
+      cuts.sort(function (a, b) { return a - b; });
+      for (var i = 0; i < cuts.length - 1; i++) {
+        var piece = { start: cuts[i], end: cuts[i + 1], freeze: null };
+        var fz = bySrc[piece.end.toFixed(3)];
+        if (fz) piece.freeze = fz;
+        out.push(piece);
+      }
+    });
+    return out;
   }
   function drawBurnFrame(cx, W, H, vid, t, framed, srcW, srcH, zoom) {
     /* zoom > 1: ဗီဒီယိုပုံပဲ အလယ်ကနေ ဖြည်းဖြည်း ချဲ့မယ် (Ken Burns) —
@@ -5588,7 +5798,7 @@ var seekBtn = d.querySelector('.seek');
      burned-in subtitles use the same shifts so text and voice stay together. */
   var dubShiftByIdx = null;
   function clearDubMix() {
-    dubMixed = null; dubAudio = null; dubShiftByIdx = null;
+    dubMixed = null; dubAudio = null; dubShiftByIdx = null; dubLineSpans = null; dubFreezeSpans = null;
     /* a mix change invalidates the combined preview too */
     if (typeof dubWatchStop === 'function' && typeof dubWatch !== 'undefined' && dubWatch.playing) dubWatchStop(false);
   }
@@ -5873,6 +6083,16 @@ var seekBtn = d.querySelector('.seek');
          (အသံ ကုဒ်လုပ်လို့ရမှ — မရရင် ffmpeg fallback က မူရင်းအသံပဲ သုံးပြီး
          -shortest နဲ့ ဖြတ်လို့ freeze မလိုဘူး) */
       var freezeSec = audioChunks ? dubFreezeSec(totalKeptSec) : 0;
+      /* Per-line freeze: hold each overrun line's last frame until its voice
+         finishes (see buildLineFreezeSpans). The kept clips are split at the
+         freeze points and each freeze runs between two clip pieces, exactly
+         like the end-freeze below. The end-freeze then only covers what the
+         per-line freezes did not already consume. */
+      var lineFreeze = buildLineFreezeSpans(kept, totalKeptSec);
+      dubFreezeSpans = lineFreeze.spans;
+      var renderClips = splitKeptForFreeze(kept, lineFreeze.spans);
+      var endFreezeSec = Math.max(0, freezeSec - lineFreeze.total);
+      var totalFreezeSec = lineFreeze.total + endFreezeSec;
       if (state.cancelled) {
         bStatus('ရပ်လိုက်ပါပြီ — ဖိုင် မထုတ်လိုက်ပါဘူး။');
         toast('ဗီဒီယို ထုတ်တာ ရပ်လိုက်ပါပြီ');
@@ -5897,7 +6117,7 @@ var seekBtn = d.querySelector('.seek');
       tick = setInterval(function () {
         bStatus((state.freezing ? 'အသံက ဗီဒီယိုထက် ရှည်နေလို့ နောက်ဆုံးပုံကို ရပ်ထားပြီး (freeze + zoom) ထုတ်နေပါတယ်… ' : 'MP4 ထုတ်နေပါတယ်… ') + exportPct() + '% · ကြာချိန် ' + fmtElapsed(Date.now() - startT));
       }, 500);
-      state.expTotal = totalKeptSec + freezeSec; state.expDone = 0; state.curClip = null;
+      state.expTotal = totalKeptSec + totalFreezeSec; state.expDone = 0; state.curClip = null;
       state.stop = function () { try { vid.pause(); } catch (e) {} };
       /* Smooth export: render at 1x, not 2x. At 2x the loop had to draw +
          encode 60 frames per real second — exactly the display refresh cap —
@@ -5905,8 +6125,8 @@ var seekBtn = d.querySelector('.seek');
          loop only needs 30 frames/sec and every frame lands on time. */
       vid.playbackRate = 1;
       var lastEncT = -1;
-      for (var ci = 0; ci < kept.length && !state.cancelled; ci++) {
-        var cc = kept[ci];
+      for (var ci = 0; ci < renderClips.length && !state.cancelled; ci++) {
+        var cc = renderClips[ci];
         state.curClip = cc;
         vid.currentTime = cc.start;
         await new Promise(function (res) {
@@ -5949,17 +6169,43 @@ var seekBtn = d.querySelector('.seek');
         state.expDone += (cc.end - cc.start);
         state.curClip = null;
         if (encErr) throw encErr;
+        /* Per-line freeze attached to this clip piece: vid is already paused
+           on the line's last frame — hold it with a slow zoom until the
+           line's voice finishes. Output timestamps keep advancing, so the
+           next clip starts exactly when the voice ends. */
+        if (cc.freeze && !state.cancelled && !encErr) {
+          state.freezing = true;
+          var fz = cc.freeze, fzStart = state.expDone, nFrz = Math.max(1, Math.round(fz.d * 30));
+          for (var fi = 0; fi < nFrz && !state.cancelled && !encErr; fi++) {
+            var ft = fzStart + fi / 30;
+            var zm = 1 + 0.08 * (nFrz > 1 ? fi / (nFrz - 1) : 0);
+            drawBurnFrame(cx, W, H, vid, ft, framed, srcW, srcH, zm);
+            while (encoder.encodeQueueSize > 10 && !state.cancelled) await new Promise(function (r) { setTimeout(r, 25); });
+            if (state.cancelled) break;
+            try {
+              var vf3 = new VideoFrame(canvas, { timestamp: Math.round(ft * 1000000), duration: 33333 });
+              encoder.encode(vf3);
+              vf3.close();
+            } catch (e) { encErr = e; break; }
+            state.expDone = ft;
+            barEl.style.width = exportPct() + '%';
+          }
+          state.expDone = fzStart + fz.d;
+          state.freezing = false;
+          lastEncT = -1; /* next normal frame gets a full 33 ms duration */
+          if (encErr) throw encErr;
+        }
       }
       /* Dub အသံက ဗီဒီယိုထက် ရှည်နေရင်: ဗီဒီယိုကုန်တဲ့နေရာကနေ နောက်ဆုံးပုံကို
          ရပ်ထားပြီး (freeze) 1.00 → 1.08 ဖြည်းဖြည်း zoom ဆွဲပြီး အသံကုန်တဲ့အထိ
          ဆက်ထုတ်မယ် — ဒါမှ အသံနဲ့ ဗီဒီယို တခြားစီ မဖြစ်တော့ဘူး။ စာတန်းက dub ရဲ့
          ရွှေ့ထားတဲ့ အချိန်အတိုင်း ပေါ်မယ် (t = ft, edited timeline)။ */
-      if (!state.cancelled && freezeSec > 0.05 && !encErr) {
+      if (!state.cancelled && endFreezeSec > 0.05 && !encErr) {
         state.freezing = true;
-        bStatus('အသံက ဗီဒီယိုထက် ' + Math.round(freezeSec) + ' စက္ကန့် ရှည်နေလို့ နောက်ဆုံးပုံကို ရပ်ထားပြီး (freeze + zoom) ထုတ်နေပါတယ်…');
-        var nFrz = Math.round(freezeSec * 30);
+        bStatus('အသံက ဗီဒီယိုထက် ' + Math.round(endFreezeSec) + ' စက္ကန့် ရှည်နေလို့ နောက်ဆုံးပုံကို ရပ်ထားပြီး (freeze + zoom) ထုတ်နေပါတယ်…');
+        var nFrz = Math.round(endFreezeSec * 30);
         for (var fi = 0; fi < nFrz && !state.cancelled && !encErr; fi++) {
-          var ft = totalKeptSec + fi / 30;
+          var ft = totalKeptSec + lineFreeze.total + fi / 30;
           var zm = 1 + 0.08 * (nFrz > 1 ? fi / (nFrz - 1) : 0);
           drawBurnFrame(cx, W, H, vid, ft, framed, srcW, srcH, zm);
           while (encoder.encodeQueueSize > 10 && !state.cancelled) await new Promise(function (r) { setTimeout(r, 25); });
@@ -5972,11 +6218,11 @@ var seekBtn = d.querySelector('.seek');
           state.expDone = ft;
           barEl.style.width = exportPct() + '%';
         }
-        state.expDone = totalKeptSec + freezeSec;
+        state.expDone = totalKeptSec + totalFreezeSec;
         state.freezing = false;
         if (encErr) throw encErr;
       }
-      state.expDone = totalKeptSec + freezeSec;
+      state.expDone = totalKeptSec + totalFreezeSec;
       clearInterval(tick); tick = null;
       if (!state.cancelled) {
         await encoder.flush();
@@ -6009,7 +6255,7 @@ var seekBtn = d.querySelector('.seek');
           lastExport = { blob: finalBlob.blob, name: baseName() + '.subbed.mp4' };
           if (shareBtn) shareBtn.classList.remove('hidden');
           bStatus('ပြီးပါပြီ — MP4 ဖိုင် (' + fmtSize(finalBlob.blob.size) + ') ဒေါင်းလုဒ် စတင်ပါပြီ' +
-            ' · အရွယ် ' + W + '×' + H + (framed ? ' (' + burn.ratio + ')' : '') + audioNote + dubFreezeNote(totalKeptSec, freezeSec) + ' · app ထဲမှာ ဖိုင်မရောက်ရင် အောက်က 📤 Share ခလုတ်နဲ့ သိမ်းပါ။');
+            ' · အရွယ် ' + W + '×' + H + (framed ? ' (' + burn.ratio + ')' : '') + audioNote + dubFreezeNote(totalKeptSec, endFreezeSec, lineFreeze) + ' · app ထဲမှာ ဖိုင်မရောက်ရင် အောက်က 📤 Share ခလုတ်နဲ့ သိမ်းပါ။');
           toast('MP4 ဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
         }
       } else {
@@ -6142,6 +6388,13 @@ var seekBtn = d.querySelector('.seek');
       /* Dub အသံက ဗီဒီယိုထက် ရှည်နေရင် နောက်ဆုံးပုံကို freeze + zoom နဲ့ ဆက်ထုတ်မယ်
          (အသံ ပါမှ — အသံမပါရင် freeze လုပ်လည်း အဓိပ္ပာယ် မရှိဘူး) */
       var freezeSec = hasAudio ? dubFreezeSec(totalKeptSec) : 0;
+      /* Per-line freeze (see renderBurnedFast): split the kept clips at the
+         freeze points and run each freeze between two clip pieces. */
+      var lineFreeze = buildLineFreezeSpans(kept, totalKeptSec);
+      dubFreezeSpans = lineFreeze.spans;
+      var renderClips = splitKeptForFreeze(kept, lineFreeze.spans);
+      var endFreezeSec = Math.max(0, freezeSec - lineFreeze.total);
+      var totalFreezeSec = lineFreeze.total + endFreezeSec;
       if (state.cancelled) {
         bStatus('ရပ်လိုက်ပါပြီ — ဖိုင် မထုတ်လိုက်ပါဘူး။');
         toast('ဗီဒီယို ထုတ်တာ ရပ်လိုက်ပါပြီ');
@@ -6165,13 +6418,13 @@ var seekBtn = d.querySelector('.seek');
       tick = setInterval(function () {
         bStatus((state.freezing ? 'အသံက ဗီဒီယိုထက် ရှည်နေလို့ နောက်ဆုံးပုံကို ရပ်ထားပြီး (freeze + zoom) ထုတ်နေပါတယ်… (WASM အသံ) ' : 'MP4 ထုတ်နေပါတယ်… (WASM အသံ) ') + exportPct() + '% · ကြာချိန် ' + fmtElapsed(Date.now() - startT));
       }, 500);
-      state.expTotal = totalKeptSec + freezeSec; state.expDone = 0; state.curClip = null;
+      state.expTotal = totalKeptSec + totalFreezeSec; state.expDone = 0; state.curClip = null;
       state.stop = function () { try { vid.pause(); } catch (e) {} };
       /* 1x like the fast path — smooth frames over speed (see renderBurnedFast). */
       vid.playbackRate = 1;
       var lastEncT = -1, encErr = null;
-      for (var ci = 0; ci < kept.length && !state.cancelled; ci++) {
-        var cc = kept[ci];
+      for (var ci = 0; ci < renderClips.length && !state.cancelled; ci++) {
+        var cc = renderClips[ci];
         state.curClip = cc;
         vid.currentTime = cc.start;
         await new Promise(function (res) {
@@ -6208,16 +6461,34 @@ var seekBtn = d.querySelector('.seek');
         state.expDone += (cc.end - cc.start);
         state.curClip = null;
         if (encErr) throw encErr;
+        /* Per-line freeze attached to this clip piece (see renderBurnedFast). */
+        if (cc.freeze && !state.cancelled && !encErr) {
+          state.freezing = true;
+          var fz = cc.freeze, fzStart = state.expDone, nFrz = Math.max(1, Math.round(fz.d * 30));
+          for (var fi = 0; fi < nFrz && !state.cancelled && !encErr; fi++) {
+            var ft = fzStart + fi / 30;
+            var zm = 1 + 0.08 * (nFrz > 1 ? fi / (nFrz - 1) : 0);
+            drawBurnFrame(cx, W, H, vid, ft, framed, srcW, srcH, zm);
+            try { await videoSource.add(ft, 0.033); }
+            catch (e) { encErr = e; break; }
+            state.expDone = ft;
+            barEl.style.width = exportPct() + '%';
+          }
+          state.expDone = fzStart + fz.d;
+          state.freezing = false;
+          lastEncT = -1;
+          if (encErr) throw encErr;
+        }
       }
       /* Dub အသံက ဗီဒီယိုထက် ရှည်နေရင်: ဗီဒီယိုကုန်တဲ့နေရာကနေ နောက်ဆုံးပုံကို
          ရပ်ထားပြီး (freeze) 1.00 → 1.08 ဖြည်းဖြည်း zoom ဆွဲပြီး အသံကုန်တဲ့အထိ
          ဆက်ထုတ်မယ် — ဒါမှ အသံနဲ့ ဗီဒီယို တခြားစီ မဖြစ်တော့ဘူး။ */
-      if (!state.cancelled && freezeSec > 0.05 && !encErr) {
+      if (!state.cancelled && endFreezeSec > 0.05 && !encErr) {
         state.freezing = true;
-        bStatus('အသံက ဗီဒီယိုထက် ' + Math.round(freezeSec) + ' စက္ကန့် ရှည်နေလို့ နောက်ဆုံးပုံကို ရပ်ထားပြီး (freeze + zoom) ထုတ်နေပါတယ်…');
-        var nFrz = Math.round(freezeSec * 30);
+        bStatus('အသံက ဗီဒီယိုထက် ' + Math.round(endFreezeSec) + ' စက္ကန့် ရှည်နေလို့ နောက်ဆုံးပုံကို ရပ်ထားပြီး (freeze + zoom) ထုတ်နေပါတယ်…');
+        var nFrz = Math.round(endFreezeSec * 30);
         for (var fi = 0; fi < nFrz && !state.cancelled && !encErr; fi++) {
-          var ft = totalKeptSec + fi / 30;
+          var ft = totalKeptSec + lineFreeze.total + fi / 30;
           var zm = 1 + 0.08 * (nFrz > 1 ? fi / (nFrz - 1) : 0);
           drawBurnFrame(cx, W, H, vid, ft, framed, srcW, srcH, zm);
           try { await videoSource.add(ft, 0.033); }
@@ -6225,11 +6496,11 @@ var seekBtn = d.querySelector('.seek');
           state.expDone = ft;
           barEl.style.width = exportPct() + '%';
         }
-        state.expDone = totalKeptSec + freezeSec;
+        state.expDone = totalKeptSec + totalFreezeSec;
         state.freezing = false;
         if (encErr) throw encErr;
       }
-      state.expDone = totalKeptSec + freezeSec;
+      state.expDone = totalKeptSec + totalFreezeSec;
       clearInterval(tick); tick = null;
       if (!state.cancelled) {
         if (hasAudio && audioSource) {
@@ -6268,7 +6539,7 @@ var seekBtn = d.querySelector('.seek');
           lastExport = { blob: finalBlob.blob, name: baseName() + '.subbed.mp4' };
           if (shareBtn) shareBtn.classList.remove('hidden');
             bStatus('ပြီးပါပြီ — MP4 ဖိုင် (' + fmtSize(finalBlob.blob.size) + ') ဒေါင်းလုဒ် စတင်ပါပြီ' +
-              ' · အရွယ် ' + W + '×' + H + (framed ? ' (' + burn.ratio + ')' : '') + audioNote + dubFreezeNote(totalKeptSec, freezeSec) + ' · app ထဲမှာ ဖိုင်မရောက်ရင် အောက်က 📤 Share ခလုတ်နဲ့ သိမ်းပါ။');
+              ' · အရွယ် ' + W + '×' + H + (framed ? ' (' + burn.ratio + ')' : '') + audioNote + dubFreezeNote(totalKeptSec, endFreezeSec, lineFreeze) + ' · app ထဲမှာ ဖိုင်မရောက်ရင် အောက်က 📤 Share ခလုတ်နဲ့ သိမ်းပါ။');
             toast('MP4 ဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ');
           }
         }
@@ -6810,7 +7081,7 @@ var seekBtn = d.querySelector('.seek');
     $('pageHead').classList.toggle('hidden', name !== 'translate');
     if (name === 'edit') $('editEmpty').classList.toggle('hidden', !$('cardResult').classList.contains('hidden'));
     if (name === 'video') { updateVideoEmpty(); applyRatioPreview(); syncInfo(); }
-    if (name === 'recap') { renderRecapList(); applyRecapRatio(); }
+    if (name === 'recap') { renderRecapList(); applyRecapRatio(); renderTimeline(); }
     else { var rv = $('recapVideo'); if (rv && !rv.paused) rv.pause(); }
     if (name === 'projects') { refreshLocalList(); if (fbUser) refreshCloudList(); }
   }
@@ -6856,7 +7127,15 @@ var seekBtn = d.querySelector('.seek');
   var tlSel = null;       /* {kind:'video'|'sub', idx} */
   var tlDrag = null;
 
-  function vidDur() { var v = $('preview'); return (v && isFinite(v.duration)) ? v.duration : 0; }
+  function previewDur() { var v = $('preview'); return (v && isFinite(v.duration)) ? v.duration : 0; }
+  function recapDur() { var rv = $('recapVideo'); return (rv && isFinite(rv.duration)) ? rv.duration : 0; }
+  function vidDur() {
+    /* Duration of the loaded video — the Video preview first, else the Recap
+       video (same file): in a Recap-only run the Video preview is empty, so
+       without the fallback every duration-based helper (clips, outTime,
+       hasCuts) saw 0 and the timeline stayed hidden. */
+    return previewDur() || recapDur();
+  }
   function clipsFor(dur) {
     if (!dur) return [];
     if (!vclips || !vclips.length) return [{ start: 0, end: dur }];
@@ -6904,9 +7183,20 @@ var seekBtn = d.querySelector('.seek');
     var cs = clipsFor(d);
     vclips = cs.length ? cs : [{ start: 0, end: d }];
   }
+  /* The two timeline hosts share one state (vclips / segments / titleTexts)
+     and one zoom (tlPps); each renders into its own tab and seeks its own
+     video. The Video host shows when the Video preview has a video, the
+     Recap host when the Recap video does. */
+  var TL_HOSTS = [
+    { id: 'video', card: 'cardTimeline', inner: 'tlInner', ruler: 'tlRuler', videoLane: 'tlVideoLane', subLane: 'tlSubLane', titleLane: 'tlTitleLane', playhead: 'tlPlayhead', info: 'tlInfo', scroll: 'tlScroll', videoEl: 'preview', dur: function () { return previewDur(); } },
+    { id: 'recap', card: 'recapCardTimeline', inner: 'recapTlInner', ruler: 'recapTlRuler', videoLane: 'recapTlVideoLane', subLane: 'recapTlSubLane', titleLane: 'recapTlTitleLane', playhead: 'recapTlPlayhead', info: 'recapTlInfo', scroll: 'recapTlScroll', videoEl: 'recapVideo', dur: function () { return recapDur(); } }
+  ];
+  function tlCurrentHost() { return ($('panelRecap') && !$('panelRecap').classList.contains('hidden')) ? TL_HOSTS[1] : TL_HOSTS[0]; }
+  function tlDur() { return Math.max(previewDur(), recapDur()); }
   function tlFitPps() {
-    var d = vidDur(); if (!d) return 40;
-    var w = ($('tlScroll') ? $('tlScroll').clientWidth : 600) - 64;
+    var h = tlCurrentHost();
+    var d = h.dur(); if (!d) return 40;
+    var w = ($(h.scroll) ? $(h.scroll).clientWidth : 600) - 64;
     return Math.max(10, w / d);
   }
   function tlPpsNow() { return tlPps > 0 ? tlPps : tlFitPps(); }
@@ -6915,46 +7205,50 @@ var seekBtn = d.querySelector('.seek');
     var m = Math.floor(t / 60), s = Math.floor(t % 60);
     return m + ':' + (s < 10 ? '0' : '') + s;
   }
-  function renderTimeline() {
-    var card = $('cardTimeline'); if (!card) return;
-    var d = vidDur();
-    var show = d > 0 && segments.length > 0 && !$('previewCol').classList.contains('hidden');
+  function renderTimelineHost(host) {
+    var card = $(host.card); if (!card) return;
+    var d = host.dur();
+    var show = d > 0 && segments.length > 0 && (host.id === 'video' ? !$('previewCol').classList.contains('hidden') : true);
     card.classList.toggle('hidden', !show);
     if (!show) return;
     var pps = tlPpsNow();
-    $('tlInner').style.width = (64 + Math.max(50, Math.round(d * pps))) + 'px';
+    $(host.inner).style.width = (64 + Math.max(50, Math.round(d * pps))) + 'px';
     var step = pps > 120 ? 1 : pps > 60 ? 2 : pps > 30 ? 5 : pps > 15 ? 10 : 30;
     var rh = '';
     for (var t = 0; t <= d + 0.001; t += step) {
       rh += '<span class="tlTick" style="left:' + Math.round(t * pps) + 'px">' + fmtTl(t) + '</span>';
     }
-    $('tlRuler').innerHTML = rh;
+    $(host.ruler).innerHTML = rh;
     var vh = '';
     getClips().forEach(function (c, i) {
       vh += '<div class="tlClip' + (tlSel && tlSel.kind === 'video' && tlSel.idx === i ? ' sel' : '') + '" data-i="' + i + '" style="left:' + Math.round(c.start * pps) + 'px;width:' + Math.max(4, Math.round((c.end - c.start) * pps)) + 'px">' +
         '<span class="tlHandle l" data-edge="l"></span><span class="tlClipTxt">🎬 ' + fmtTl(c.start) + ' – ' + fmtTl(c.end) + '</span><span class="tlHandle r" data-edge="r"></span></div>';
     });
-    $('tlVideoLane').innerHTML = vh;
+    $(host.videoLane).innerHTML = vh;
     var clips = getClips(), sh = '';
     segments.forEach(function (s, i) {
       var dead = !clips.some(function (c) { return s.end > c.start && s.start < c.end; });
       sh += '<div class="tlSub' + (dead ? ' dead' : '') + (tlSel && tlSel.kind === 'sub' && tlSel.idx === i ? ' sel' : '') + '" data-i="' + i + '" style="left:' + Math.round(s.start * pps) + 'px;width:' + Math.max(4, Math.round((s.end - s.start) * pps)) + 'px">' +
         '<span class="tlHandle l" data-edge="l"></span><span class="tlSubTxt">' + escapeHtml((s.my || '').split('\n')[0] || '…') + '</span><span class="tlHandle r" data-edge="r"></span></div>';
     });
-    $('tlSubLane').innerHTML = sh;
+    $(host.subLane).innerHTML = sh;
     var th = '';
     titleTexts.forEach(function (tt, i) {
       th += '<div class="tlTitle' + (tlSel && tlSel.kind === 'title' && tlSel.idx === i ? ' sel' : '') + '" data-i="' + i + '" style="left:' + Math.round(tt.start * pps) + 'px;width:' + Math.max(4, Math.round((tt.end - tt.start) * pps)) + 'px">' +
         '<span class="tlHandle l" data-edge="l"></span><span class="tlTitleTxt">' + escapeHtml(tt.text || '…') + '</span><span class="tlHandle r" data-edge="r"></span></div>';
     });
-    $('tlTitleLane').innerHTML = th;
-    $('tlInfo').textContent = hasCuts()
-      ? 'ဖြတ်ထားတယ် — ထုတ်မယ့် အရှည် ' + fmtTl(totalKept()) + ' (မူလ ' + fmtTl(d) + ') · ဖျက်ထားတဲ့ အပိုင်းထဲက စာတန်းတွေ ထုတ်မယ့် ဗီဒီယိုမှာ မပါဘူး'
-      : 'ဗီဒီယို အရှည် ' + fmtTl(d) + ' · စာတန်း ' + segments.length + ' ကြောင်း · အကွက်ကို ဆွဲရွှေ့လို့ရတယ်၊ အစွန်းကို ဆွဲရင် အစ/အဆုံး ဖြတ်လို့ရတယ်';
-    if (titleTexts.length) $('tlInfo').textContent += ' · စာသား ' + titleTexts.length + ' ခု';
+    $(host.titleLane).innerHTML = th;
+    var infoEl = $(host.info);
+    if (infoEl) {
+      infoEl.textContent = hasCuts()
+        ? 'ဖြတ်ထားတယ် — ထုတ်မယ့် အရှည် ' + fmtTl(totalKept()) + ' (မူလ ' + fmtTl(d) + ') · ဖျက်ထားတဲ့ အပိုင်းထဲက စာတန်းတွေ ထုတ်မယ့် ဗီဒီယိုမှာ မပါဘူး'
+        : 'ဗီဒီယို အရှည် ' + fmtTl(d) + ' · စာတန်း ' + segments.length + ' ကြောင်း · အကွက်ကို ဆွဲရွှေ့လို့ရတယ်၊ အစွန်းကို ဆွဲရင် အစ/အဆုံး ဖြတ်လို့ရတယ်';
+      if (titleTexts.length) infoEl.textContent += ' · စာသား ' + titleTexts.length + ' ခု';
+    }
     syncTitleEditor();
     movePlayhead();
   }
+  function renderTimeline() { TL_HOSTS.forEach(renderTimelineHost); }
   function syncTitleEditor() {
     var ed = $('tlTitleEdit'); if (!ed) return;
     var sel = tlSel && tlSel.kind === 'title' ? titleTexts[tlSel.idx] : null;
@@ -6967,17 +7261,19 @@ var seekBtn = d.querySelector('.seek');
       $('tlTitlePos').value = sel.pos || 'top';
       var tf = $('tlTitleFont'); if (tf) tf.value = sel.font || 'default';
     }
-    $('tlTitleMeta').textContent = 'အချိန် ' + fmtTl(sel.start) + ' – ' + fmtTl(sel.end) + ' · စာလုံးအရွယ် ' + Math.round((sel.size || 1) * 100) + '% · ဗီဒီယိုပေါ်မှာ တိုက်ရိုက်ဆွဲပြီး နေရာရွှေ့လို့ရတယ်၊ ⤡ ကို ဆွဲရင် အရွယ် ပြောင်းမယ်';
+    setText('tlTitleMeta', 'အချိန် ' + fmtTl(sel.start) + ' – ' + fmtTl(sel.end) + ' · စာလုံးအရွယ် ' + Math.round((sel.size || 1) * 100) + '% · ဗီဒီယိုပေါ်မှာ တိုက်ရိုက်ဆွဲပြီး နေရာရွှေ့လို့ရတယ်၊ ⤡ ကို ဆွဲရင် အရွယ် ပြောင်းမယ်');
   }
   function movePlayhead() {
-    var v = $('preview'); if (!v || !vidDur()) return;
-    var ph = $('tlPlayhead'); if (!ph) return;
-    ph.style.left = (64 + v.currentTime * tlPpsNow()) + 'px';
-    ph.style.display = 'block';
-    if (!v.paused) {
-      var sc = $('tlScroll'), x = 64 + v.currentTime * tlPpsNow();
-      if (x < sc.scrollLeft + 70 || x > sc.scrollLeft + sc.clientWidth - 70) sc.scrollLeft = Math.max(0, x - 120);
-    }
+    TL_HOSTS.forEach(function (host) {
+      var v = $(host.videoEl); if (!v || !host.dur()) return;
+      var ph = $(host.playhead); if (!ph) return;
+      ph.style.left = (64 + v.currentTime * tlPpsNow()) + 'px';
+      ph.style.display = 'block';
+      if (!v.paused) {
+        var sc = $(host.scroll), x = 64 + v.currentTime * tlPpsNow();
+        if (sc && (x < sc.scrollLeft + 70 || x > sc.scrollLeft + sc.clientWidth - 70)) sc.scrollLeft = Math.max(0, x - 120);
+      }
+    });
   }
   function tlApplyDrag() {
     var dg = tlDrag; if (!dg) return;
@@ -6997,8 +7293,9 @@ var seekBtn = d.querySelector('.seek');
     dg.el.style.left = Math.round(dg.ns * pps) + 'px';
     dg.el.style.width = Math.max(4, Math.round((dg.ne - dg.ns) * pps)) + 'px';
   }
-  $('tlInner').addEventListener('pointerdown', function (e) {
-    var d = vidDur(); if (!d) return;
+  function bindTimelineHost(host) {
+    $(host.inner).addEventListener('pointerdown', function (e) {
+    var d = host.dur(); if (!d) return;
     var pps = tlPpsNow();
     var handle = e.target.closest ? e.target.closest('.tlHandle') : null;
     var block = e.target.closest ? e.target.closest('.tlClip, .tlSub, .tlTitle') : null;
@@ -7009,7 +7306,7 @@ var seekBtn = d.querySelector('.seek');
       if (kind === 'video') initClips();
       var o = kind === 'video' ? vclips[idx] : kind === 'title' ? titleTexts[idx] : segments[idx];
       if (!o) return;
-      tlDrag = { kind: kind, idx: idx, mode: mode, el: block, startX: e.clientX,
+      tlDrag = { kind: kind, idx: idx, mode: mode, el: block, host: host, startX: e.clientX,
         os: o.start, oe: o.end, ns: o.start, ne: o.end, moved: false };
       var prevEnd = 0, nextStart = d;
       var list = kind === 'video' ? vclips : kind === 'title' ? titleTexts : segments;
@@ -7023,22 +7320,22 @@ var seekBtn = d.querySelector('.seek');
       e.preventDefault();
       return;
     }
-    var lane = e.target.closest ? e.target.closest('.tlLane, #tlRuler') : null;
+    var lane = e.target.closest ? e.target.closest('.tlLane, #' + host.ruler) : null;
     if (lane) {
       var rect = lane.getBoundingClientRect();
       var t = Math.max(0, Math.min(d, (e.clientX - rect.left) / pps));
-      $('preview').currentTime = t;
+      $(host.videoEl).currentTime = t;
       tlDrag = { kind: 'scrub', lane: lane, moved: false };
       try { e.currentTarget.setPointerCapture(e.pointerId); } catch (err) {}
       e.preventDefault();
     }
   });
-  $('tlInner').addEventListener('pointermove', function (e) {
+    $(host.inner).addEventListener('pointermove', function (e) {
     if (!tlDrag) return;
-    var pps = tlPpsNow(), d = vidDur();
+    var pps = tlPpsNow(), d = host.dur();
     if (tlDrag.kind === 'scrub') {
       var rect = tlDrag.lane.getBoundingClientRect();
-      $('preview').currentTime = Math.max(0, Math.min(d, (e.clientX - rect.left) / pps));
+      $(host.videoEl).currentTime = Math.max(0, Math.min(d, (e.clientX - rect.left) / pps));
       return;
     }
     var dt = (e.clientX - tlDrag.startX) / pps;
@@ -7060,30 +7357,33 @@ var seekBtn = d.querySelector('.seek');
   function tlEndDrag() {
     if (!tlDrag) return;
     var dg = tlDrag; tlDrag = null;
+    var vEl = (dg.host && $(dg.host.videoEl)) || $('preview');
     if (dg.kind === 'scrub') { renderTimeline(); return; }
     if (!dg.moved) {
       tlSel = { kind: dg.kind, idx: dg.idx };
       var o = dg.kind === 'video' ? vclips[dg.idx] : dg.kind === 'title' ? titleTexts[dg.idx] : segments[dg.idx];
-      if (o) $('preview').currentTime = o.start;
+      if (o && vEl) vEl.currentTime = o.start;
       renderTimeline();
       return;
     }
     if (dg.kind === 'sub') {
-      renderEditor();
+      renderEditor(); renderRecapList();
       var s2 = segments[dg.idx];
-      if (s2) $('preview').currentTime = s2.start;
+      if (s2 && vEl) vEl.currentTime = s2.start;
     } else if (dg.kind === 'title') {
       var t2 = titleTexts[dg.idx];
-      if (t2) $('preview').currentTime = t2.start;
+      if (t2 && vEl) vEl.currentTime = t2.start;
     }
     scheduleSave();
     renderTimeline();
   }
-  $('tlInner').addEventListener('pointerup', tlEndDrag);
-  $('tlInner').addEventListener('pointercancel', function () { tlDrag = null; renderTimeline(); });
-  $('tlSplitVideo').addEventListener('click', function () {
-    var d = vidDur(); if (!d) return;
-    var t = $('preview').currentTime;
+    $(host.inner).addEventListener('pointerup', tlEndDrag);
+    $(host.inner).addEventListener('pointercancel', function () { tlDrag = null; renderTimeline(); });
+  }
+  bindTimelineHost(TL_HOSTS[0]);
+  bindTimelineHost(TL_HOSTS[1]);
+  function tlSplitVideoAt(t) {
+    var d = tlDur(); if (!d) return;
     initClips();
     for (var i = 0; i < vclips.length; i++) {
       var c = vclips[i];
@@ -7095,9 +7395,10 @@ var seekBtn = d.querySelector('.seek');
       }
     }
     toast('ခွဲလို့ရတဲ့ နေရာ မဟုတ်ပါဘူး — အပိုင်းအလယ် (အစ/အဆုံးက 0.2 စက္ကန့်ကျော်) မှာ ထားပြီး ခွဲပါ');
-  });
-  $('tlSplitSub').addEventListener('click', function () {
-    var t = $('preview').currentTime;
+  }
+  $('tlSplitVideo').addEventListener('click', function () { tlSplitVideoAt($('preview').currentTime); });
+  $('recapTlSplitVideo').addEventListener('click', function () { tlSplitVideoAt($('recapVideo').currentTime); });
+  function tlSplitSubAt(t) {
     for (var i = 0; i < segments.length; i++) {
       var s = segments[i];
       if (t > s.start + 0.2 && t < s.end - 0.2) {
@@ -7107,14 +7408,16 @@ var seekBtn = d.querySelector('.seek');
           { start: s.start, end: t, text: txArr.slice(0, mid2).join(''), my: myArr.slice(0, mid).join(''), failed: !!s.failed, dubVoice: s.dubVoice || '', keepOrig: !!s.keepOrig },
           { start: t, end: s.end, text: txArr.slice(mid2).join(''), my: myArr.slice(mid).join(''), failed: !!s.failed, dubVoice: s.dubVoice || '', keepOrig: !!s.keepOrig });
         tlSel = { kind: 'sub', idx: i + 1 };
-        renderEditor(); scheduleSave(); renderTimeline();
+        renderEditor(); renderRecapList(); scheduleSave(); renderTimeline();
         toast('စာတန်း ' + fmtTl(t) + ' မှာ ခွဲပြီးပါပြီ');
         return;
       }
     }
     toast('ခွဲလို့ရတဲ့ စာတန်း မရှိပါဘူး — playhead ကို စာတန်းအကွက် အလယ်မှာ ထားပြီး ခွဲပါ');
-  });
-  $('tlDelSel').addEventListener('click', function () {
+  }
+  $('tlSplitSub').addEventListener('click', function () { tlSplitSubAt($('preview').currentTime); });
+  $('recapTlSplitSub').addEventListener('click', function () { tlSplitSubAt($('recapVideo').currentTime); });
+  function tlDeleteSelected() {
     if (!tlSel) { toast('အရင် အကွက်တစ်ခု ရွေးပေးပါ'); return; }
     if (tlSel.kind === 'video') {
       initClips();
@@ -7134,19 +7437,22 @@ var seekBtn = d.querySelector('.seek');
       if (!s) return;
       segments.splice(tlSel.idx, 1);
       tlSel = null;
-      renderEditor();
+      renderEditor(); renderRecapList();
       toast('စာတန်း တစ်ကြောင်း ဖျက်ပြီးပါပြီ');
     }
     scheduleSave(); renderTimeline();
-  });
-  $('tlResetCuts').addEventListener('click', function () {
+  }
+  $('tlDelSel').addEventListener('click', tlDeleteSelected);
+  $('recapTlDelSel').addEventListener('click', tlDeleteSelected);
+  function tlResetCutsFn() {
     vclips = null; tlSel = null;
     initClips(); scheduleSave(); renderTimeline();
     toast('ဗီဒီယို ဖြတ်ထားတာ အားလုံး ပြန်ဆက်ပြီးပါပြီ');
-  });
-  $('tlAddTitle').addEventListener('click', function () {
-    var d = vidDur(); if (!d) return;
-    var t = $('preview').currentTime;
+  }
+  $('tlResetCuts').addEventListener('click', tlResetCutsFn);
+  $('recapTlResetCuts').addEventListener('click', tlResetCutsFn);
+  function tlAddTitleAt(t) {
+    var d = tlDur(); if (!d) return;
     var start = Math.max(0, Math.min(d - 0.5, t));
     /* a title added while another one is showing lands on the same spot, so
        2-3 texts stack at one place instead of piling up at the default top */
@@ -7157,9 +7463,11 @@ var seekBtn = d.querySelector('.seek');
     titleTexts.sort(function (a, b) { return a.start - b.start; });
     tlSel = { kind: 'title', idx: titleTexts.indexOf(nt) };
     scheduleSave(); renderTimeline();
-    updateCue(); /* ထည့်ပြီးချင်း ဗီဒီယိုပေါ်မှာ ပေါ်လာအောင် (paused ဖြစ်နေလည်း ဆွဲလို့ရတယ်) */
+    updateCue(); recapUpdateCue(); /* ထည့်ပြီးချင်း ဗီဒီယိုပေါ်မှာ ပေါ်လာအောင် (paused ဖြစ်နေလည်း ဆွဲလို့ရတယ်) */
     toast('စာသား ထည့်ပြီးပါပြီ — အောက်က အကွက်မှာ စာရိုက်ပြီး ပြင်လို့ရတယ်');
-  });
+  }
+  $('tlAddTitle').addEventListener('click', function () { tlAddTitleAt($('preview').currentTime); });
+  $('recapTlAddTitle').addEventListener('click', function () { tlAddTitleAt($('recapVideo').currentTime); });
   $('tlTitleText').addEventListener('input', function (e) {
     var sel = tlSel && tlSel.kind === 'title' ? titleTexts[tlSel.idx] : null;
     if (!sel) return;
@@ -7268,6 +7576,9 @@ var seekBtn = d.querySelector('.seek');
   $('tlZoomIn').addEventListener('click', function () { tlPps = Math.min(300, (tlPps > 0 ? tlPps : tlFitPps()) * 1.5); renderTimeline(); });
   $('tlZoomOut').addEventListener('click', function () { tlPps = Math.max(10, (tlPps > 0 ? tlPps : tlFitPps()) / 1.5); renderTimeline(); });
   $('tlZoomFit').addEventListener('click', function () { tlPps = 0; renderTimeline(); });
+  $('recapTlZoomIn').addEventListener('click', function () { tlPps = Math.min(300, (tlPps > 0 ? tlPps : tlFitPps()) * 1.5); renderTimeline(); });
+  $('recapTlZoomOut').addEventListener('click', function () { tlPps = Math.max(10, (tlPps > 0 ? tlPps : tlFitPps()) / 1.5); renderTimeline(); });
+  $('recapTlZoomFit').addEventListener('click', function () { tlPps = 0; renderTimeline(); });
   /* new video (or re-picked file): clips belong to the old file, so drop them */
   $('preview').addEventListener('loadedmetadata', function () {
     var k = videoFile ? videoFile.name : '';
@@ -8293,10 +8604,10 @@ var seekBtn = d.querySelector('.seek');
     var isBN = recapProv === 'edge' || recapProv === 'azure';
     $('recapVoiceRow').classList.toggle('hidden', !isBN);
     $('recapList').classList.toggle('hideVoice', !isBN);
-    $('recapKeyHint').textContent = recapProv === 'edge' ? 'Edge အခမဲ့ အသံ — Key မလို။'
+    setText('recapKeyHint', recapProv === 'edge' ? 'Edge အခမဲ့ အသံ — Key မလို။'
       : recapProv === 'azure' ? 'Azure Thiha / Nilar — Key + Region ကို ဒီ tab ထဲက အပေါ်က Key အကွက်မှာ ထည့်ပါ။'
       : recapProv === 'gemini' ? 'Gemini အသံ — Gemini Key ကို ဒီ tab ထဲက အပေါ်က Key အကွက်မှာ ထည့်ပါ။'
-      : 'ElevenLabs အသံ — ElevenLabs Key ကို ဒီ tab ထဲက အပေါ်က Key အကွက်မှာ ထည့်ပါ (မြန်မာစာအတွက် Eleven v4)။';
+      : 'ElevenLabs အသံ — ElevenLabs Key ကို ဒီ tab ထဲက အပေါ်က Key အကွက်မှာ ထည့်ပါ (မြန်မာစာအတွက် Eleven v4)။');
     $('recapVoiceNote').textContent = isBN ? '' : 'Gemini / ElevenLabs ရွေးထားလို့ တစ်ကြောင်းချင်း အသံ ပြောင်းလို့ မရဘူး (အသံ တစ်ခုတည်း သုံးမယ်)။';
     recapKeyRefresh();
   }
@@ -8427,6 +8738,8 @@ var seekBtn = d.querySelector('.seek');
     this.value = '';
   });
   $('recapVideo').addEventListener('timeupdate', recapUpdateCue);
+  $('recapVideo').addEventListener('timeupdate', movePlayhead);
+  $('recapVideo').addEventListener('seeked', movePlayhead);
   $('recapTranscriber').addEventListener('change', function () {
     $('transcriber').value = this.value;
     try { localStorage.setItem('mt_transcriber', this.value); } catch (e) {}
@@ -8822,17 +9135,23 @@ var seekBtn = d.querySelector('.seek');
   async function recapConciseRetranslate() {
     if (recapConciseBusy) return;
     if (recapRun) { toast('အသံထုတ်နေတုန်း ခဏစောင့်ပါ — ပြီးမှ တိုတိုပြန်ဆိုပါ'); return; }
-    if (!segments.length) { toast('စာတန်း မရှိသေးပါဘူး'); return; }
+    if (!segments.length) { toast('စာတန်း မရှိသေးပါဘူး — အရင်ဆုံး "▶ အစကနေ Recap လုပ်မယ် (ပုံမှန်)" ကို နှိပ်ပါ'); return; }
     if (!$('geminiKey').value.trim()) { toast('အရင်ဆုံး Gemini API Key ထည့်ပေးပါ — ဒီ tab ထဲက Key အကွက်မှာ ထည့်လို့ရတယ်'); $('recapGeminiKey').focus(); return; }
     var targets = segments.filter(function (s) { return s.text && s.my && !s.keepOrig; });
     if (!targets.length) { toast('တိုတိုပြန်ဆိုစရာ စာကြောင်း မရှိပါဘူး'); return; }
     var saved = targets.map(function (s) { return s.my; });
     recapConciseBusy = true;
     $('recapConciseBtn').disabled = true;
+    /* BUG FIX: the progress box (#recapProg) was never unhidden here, so the
+       whole run and its result were invisible — it looked like the button did
+       nothing. Show it now, with a real progress bar. */
+    $('recapProg').classList.remove('hidden');
+    $('recapBar').style.width = '0%';
     $('recapStatus').textContent = 'စာသားတွေ တိုတိုပြန်ဆိုနေပါတယ်…';
     try {
       await translateSegmentsGemini(targets, function (done, total) {
         $('recapStatus').textContent = 'စာသားတွေ တိုတိုပြန်ဆိုနေပါတယ်… ' + done + '/' + total;
+        $('recapBar').style.width = (total ? Math.round(done / total * 100) : 0) + '%';
       }, true);
       var changed = 0, savedChars = 0, kept = 0;
       targets.forEach(function (s, k) {
@@ -8844,11 +9163,17 @@ var seekBtn = d.querySelector('.seek');
       });
       clearDubMix();
       renderRecapList(); renderEditor(); scheduleSave();
-      $('recapStatus').textContent = 'ပြီးပါပြီ — စာကြောင်း ' + changed + ' ကြောင်း တိုသွားတယ် (စာလုံး ' + savedChars + ' လုံး လျှော့သွားတယ်)' + (kept ? ' · မရသေးတာ ' + kept + ' ကြောင်း (အဟောင်းအတိုင်း ထားတယ်)' : '') + ' — အခု "🎙️ စာကြောင်းတွေ အသံထုတ်မယ်" ကို ပြန်နှိပ်ပါ (ပြောင်းသွားတဲ့ စာကြောင်းတွေပဲ အသံပြန်ထုတ်မယ်)။';
+      $('recapBar').style.width = '100%';
+      var doneMsg = changed
+        ? 'ပြီးပါပြီ — စာကြောင်း ' + changed + ' ကြောင်း တိုသွားတယ် (စာလုံး ' + savedChars + ' လုံး လျှော့သွားတယ်)' + (kept ? ' · မရသေးတာ ' + kept + ' ကြောင်း (အဟောင်းအတိုင်း ထားတယ်)' : '') + ' — အခု "🎙️ စာကြောင်းတွေ အသံထုတ်မယ်" ကို ပြန်နှိပ်ပါ (ပြောင်းသွားတဲ့ စာကြောင်းတွေပဲ အသံပြန်ထုတ်မယ်)။'
+        : 'ပြီးပါပြီ — တိုသွားတဲ့ စာကြောင်း မရှိပါဘူး (စာသားတွေ အခုတိုနေပြီ၊ ဒါမှမဟုတ် ပိုတိုအောင် ပြန်ဆိုလို့ မရဘူး)။';
+      $('recapStatus').textContent = doneMsg;
+      toast(doneMsg);
     } catch (e) {
       targets.forEach(function (s, k) { s.my = saved[k]; s.failed = false; });
       renderRecapList(); renderEditor();
       $('recapStatus').textContent = 'တိုတိုပြန်ဆိုတာ မအောင်မြင်ပါဘူး: ' + (e && e.message ? e.message : e) + ' — စာသားတွေ အဟောင်းအတိုင်း ပြန်ထားတယ်။';
+      toast('တိုတိုပြန်ဆိုတာ မအောင်မြင်ပါဘူး — စာသားတွေ အဟောင်းအတိုင်း ပြန်ထားတယ်။');
     } finally {
       recapConciseBusy = false;
       $('recapConciseBtn').disabled = false;
@@ -8961,28 +9286,39 @@ var seekBtn = d.querySelector('.seek');
          lines after it shift later (cursor), so voices never overlap AND
          speech stays clear. A kept (MC) line is a hard wall: no TTS may
          start inside it, and a clip before it is squeezed to end before it. */
+      /* outTime() is the EDITED timeline — with no video loaded in the Video
+         tab preview it returns 0 for every time (clipsFor(0) is empty), so
+         every line's slot was 0 seconds long and ALL TTS clips were dropped
+         from the mix even though TTS had succeeded: the status said the dub
+         was ready but the mix had no voice at all. With no cuts the edited
+         timeline IS the source timeline, so use the raw times there — same
+         fix as the TTS filter. (Working in the Recap tab alone never loads
+         the Video tab preview, so this was the normal Recap case.) */
+      var useOut = hasCuts();
+      function ot(t) { return useOut ? outTime(t) : t; }
       var shifts = [];
+      var lineSpans = [];
       var maxRate = recapDubSpeedVal(); /* dub speed from the Recap tab — 1x = no squeeze, 2.5x = fastest */
       var cursor = 0; /* earliest time (edited seconds) the next TTS clip may start */
       segments.forEach(function (s, idx) {
-        var a0 = outTime(s.start), b0 = outTime(s.end);
+        var a0 = ot(s.start), b0 = ot(s.end);
         if (s.keepOrig) {
           if (b0 - a0 >= 0.05) cursor = Math.max(cursor, b0 + 0.05);
-          shifts[idx] = 0;
+          shifts[idx] = 0; lineSpans[idx] = null;
           return;
         }
-        var pcm = recapGetPcm(s);
-        if (!pcm || b0 - a0 < 0.05) { shifts[idx] = 0; return; }
+        var pcm = trimPcmSilence(recapGetPcm(s));
+        if (!pcm || b0 - a0 < 0.05) { shifts[idx] = 0; lineSpans[idx] = null; return; }
         var a = Math.max(a0, cursor);
         var roomEnd = b0, hardEnd = false, guard = 0;
         for (;;) {
           roomEnd = b0; hardEnd = false;
           for (var j = idx + 1; j < segments.length; j++) {
-            var ns = outTime(segments[j].start);
+            var ns = ot(segments[j].start);
             if (ns > a) { roomEnd = ns - 0.05; hardEnd = !!segments[j].keepOrig; break; }
           }
           /* Pushed past a kept line's start — wait until it is over. */
-          if (hardEnd && a >= roomEnd) { a = outTime(segments[j].end) + 0.05; if (++guard > segments.length) break; continue; }
+          if (hardEnd && a >= roomEnd) { a = ot(segments[j].end) + 0.05; if (++guard > segments.length) break; continue; }
           break;
         }
         var room = Math.max(0.05, roomEnd - a);
@@ -8994,24 +9330,35 @@ var seekBtn = d.querySelector('.seek');
         else fitted = fitPcmTo(pcm, Math.max(1, Math.floor((need / maxRate) * 16000)));
         clips.push({ start: a, pcm: fitted });
         shifts[idx] = a - a0;
+        lineSpans[idx] = { a: a, e: a + fitted.length / 16000, vidEnd: b0, vidStart: a0 };
         cursor = a + fitted.length / 16000 + 0.05;
       });
       dubShiftByIdx = shifts;
+      dubLineSpans = lineSpans;
       var keep = [];
       segments.forEach(function (s) {
         if (!s.keepOrig) return;
-        var a = outTime(s.start), b = outTime(s.end);
+        var a = ot(s.start), b = ot(s.end);
         if (b - a >= 0.05) keep.push({ start: a, end: b });
       });
       dubMixed = buildDubMix(edited, clips, recapBgModeVal(), keep);
       dubAudio = { samples: dubMixed, file: videoFile };
+      /* Freeze spans for the exporters + the watch preview (needs dubAudio set). */
+      dubFreezeSpans = buildLineFreezeSpans(kept, kept.reduce(function (x, c) { return x + (c.end - c.start); }, 0));
+      /* Peak level of the finished mix — tells at a glance whether the mix
+         itself is silent (peak ~0.00: the audio data is empty, a mix/TTS
+         problem) or has real audio (peak > 0: the mix is fine and the
+         problem is in playback instead). */
+      var peak = 0;
+      for (var pi = 0; pi < dubMixed.length; pi += 97) { var pa = Math.abs(dubMixed[pi]); if (pa > peak) peak = pa; }
+      var peakNote = peak < 0.001 ? ' · ⚠️ Mix အသံ အမြင့်ဆုံး 0.00 — mix က တိတ်နေတယ်' : ' · Mix အသံ အမြင့်ဆုံး ' + peak.toFixed(2);
       var shifted = shifts.filter(function (v) { return v > 0.05; }).length;
       var maxShift = shifts.reduce(function (m, v) { return Math.max(m, v); }, 0);
       var overrun = Math.max(0, dubMixed.length / 16000 - edited.length / 16000);
       var shiftNote = shifted ? ' · စာကြောင်း ' + shifted + ' ကြောင်း နောက်ကို ရွှေ့ထားတယ် (အသံ သဘာဝကျကျ ပြောနိုင်အောင်၊ အများဆုံး ' + maxShift.toFixed(1) + ' စက္ကန့်)' : '';
       var overNote = overrun > 0.05 ? ' · Dub အသံက ဗီဒီယိုထက် ' + overrun.toFixed(1) + ' စက္ကန့် ရှည်နေတယ် — အဆုံး အသံက ဗီဒီယို ပြီးပြီးချင်း ဆက်ကြားရမယ်' : '';
       var speedNote = maxRate !== 1.3 ? ' · Dub အမြန်နှုန်း ' + maxRate + 'X' : '';
-      $('recapStatus').textContent = 'Dub အသံ အဆင်သင့်ပါ — စာကြောင်း ' + clips.length + ' ကြောင်း · ကြာချိန် ' + fmtT(dubMixed.length / 16000) + shiftNote + overNote + speedNote + ' — "Dub အသံ နားထောင်မယ်" နဲ့ စစ်လို့ရပြီ၊ ဒါမှမဟုတ် "Dubbing MP4 ထုတ်မယ်" နှိပ်ပါ။';
+      $('recapStatus').textContent = 'Dub အသံ အဆင်သင့်ပါ — စာကြောင်း ' + clips.length + ' ကြောင်း · ကြာချိန် ' + fmtT(dubMixed.length / 16000) + shiftNote + overNote + speedNote + peakNote + ' — "Dub အသံ နားထောင်မယ်" နဲ့ စစ်လို့ရပြီ၊ ဒါမှမဟုတ် "Dubbing MP4 ထုတ်မယ်" နှိပ်ပါ။';
       updateRecapStats();
       return true;
     } catch (e) {
@@ -9044,7 +9391,7 @@ var seekBtn = d.querySelector('.seek');
      over a cut gap). The video's own transport drives the audio: pause the
      video and the dub pauses too; seek and the dub follows. */
   var dubCtx = null;
-  var dubWatch = { playing: false, src: null, ctx: null, startedAt: 0, offset: 0, timer: null };
+  var dubWatch = { playing: false, src: null, ctx: null, startedAt: 0, offset: 0, timer: null, freezing: false };
   function dubWatchAudioCtx() {
     if (!dubCtx) {
       try { dubCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { dubCtx = null; }
@@ -9081,8 +9428,24 @@ var seekBtn = d.querySelector('.seek');
   function dubWatchTick() {
     if (!dubWatch.playing || !dubWatch.src || !dubWatch.ctx) return;
     var vid = $('recapVideo');
-    if (vid.paused || vid.ended) return;
+    if (vid.ended) return;
     var audioT = dubWatch.offset + (dubWatch.ctx.currentTime - dubWatch.startedAt);
+    /* Per-line freeze in the preview (same as the exported MP4): when the
+       picture reaches the end of a line's video segment but its voice has not
+       finished, hold the picture there until the voice ends. The audio keeps
+       playing — only the picture pauses. */
+    var fz = dubPreviewFreezeAt(vid.currentTime, audioT);
+    if (fz) {
+      if (!vid.paused) { dubWatch.freezing = true; try { vid.pause(); } catch (e) {} }
+      if (Math.abs(vid.currentTime - fz.srcTime) > 0.15) { try { vid.currentTime = fz.srcTime; } catch (e) {} }
+      return;
+    }
+    if (vid.paused && dubWatch.freezing) {
+      dubWatch.freezing = false;
+      try { vid.play(); } catch (e) {}
+      return;
+    }
+    if (vid.paused || vid.ended) return;
     if (Math.abs(audioT - vid.currentTime) > 0.3) dubWatchStartAudio(vid.currentTime);
   }
   function dubWatchStop(finished) {
@@ -9091,6 +9454,7 @@ var seekBtn = d.querySelector('.seek');
     if (dubWatch.timer) { clearInterval(dubWatch.timer); dubWatch.timer = null; }
     var wasPlaying = dubWatch.playing;
     dubWatch.playing = false;
+    dubWatch.freezing = false;
     dubWatchSetBtn();
     var vid = $('recapVideo');
     if (wasPlaying && !finished) { try { vid.pause(); } catch (e) {} }
@@ -9122,8 +9486,10 @@ var seekBtn = d.querySelector('.seek');
     if (dubWatch.playing && !dubWatch.src) dubWatchStartAudio(this.currentTime);
   });
   $('recapVideo').addEventListener('pause', function () {
-    /* 'ended' also fires 'pause' — but then the tail audio should finish. */
-    if (dubWatch.playing && !this.ended) dubWatchStopAudio();
+    /* 'ended' also fires 'pause' — but then the tail audio should finish.
+       A freeze-pause also keeps the audio going (the picture is holding
+       while the voice finishes). */
+    if (dubWatch.playing && !this.ended && !dubWatch.freezing) dubWatchStopAudio();
   });
   $('recapVideo').addEventListener('seeked', function () {
     if (dubWatch.playing && !this.paused && !this.ended) dubWatchStartAudio(this.currentTime);
