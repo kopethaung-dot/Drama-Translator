@@ -64,7 +64,6 @@ body{margin:0;background:var(--bg);color:var(--ink);
   font-size:16px;line-height:1.6}
 .wrap{max-width:1020px;margin:0 auto;padding:22px 16px 72px}
 h1{font-size:clamp(22px,4.5vw,30px);line-height:1.35;margin:0;font-weight:800}
-.lede{color:var(--mut);margin:8px 0 0;font-size:15px;line-height:1.75;max-width:640px}
 h2{font-size:17px;margin:0 0 12px;font-weight:700;line-height:1.5}
 button{font-family:inherit}
 :focus-visible{outline:2px solid var(--blue);outline-offset:2px}
@@ -394,7 +393,6 @@ body{background-attachment:fixed}
 <div class="topbar"><button type="button" id="langBtn" aria-label="Language">EN</button><button type="button" id="themeBtn" aria-label="Theme">&#9680;</button></div>
 <div id="pageHead">
 <h1>ဗီဒီယိုကနေ မြန်မာစာတန်းထိုး SRT ထုတ်မယ်</h1>
-<p class="lede">ဗီဒီယို / အသံဖိုင် (သို့) SRT ဖိုင် ထည့်လိုက်ရင် မြန်မာ စာတန်းထိုး (.srt / .vtt) ထုတ်ပေးပါတယ်။ Google Gemini AI နဲ့ ဘာသာပြန်ပေးပါတယ်။</p>
 </div>
 
 <div class="tabbar" role="group" aria-label="အပိုင်းများ ရွေးရန်">
@@ -433,16 +431,15 @@ body{background-attachment:fixed}
   <div class="drop" id="dropVideo" role="button" tabindex="0" aria-label="ဗီဒီယို သို့မဟုတ် အသံဖိုင် ရွေးရန်">
     <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V5m0 0L8 9m4-4 4 4"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></svg>
     <div class="t">နှိပ်ပြီး ဖိုင်ရွေးပါ (သို့) ဒီမှာ ဆွဲချလိုက်ပါ</div>
-    <div class="s">mp4, webm, mov, mp3, wav စတဲ့ ဗီဒီယို / အသံဖိုင် အားလုံး ရပါတယ်</div>
   </div>
   <input type="file" id="fileInputVideo" accept="video/*,audio/*,.mkv" class="hidden" />
 
   <div class="drop hidden" id="dropSrt" role="button" tabindex="0" aria-label="SRT သို့မဟုတ် VTT ဖိုင် ရွေးရန်">
     <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
     <div class="t">နှိပ်ပြီး .srt / .vtt ဖိုင်ရွေးပါ (သို့) ဒီမှာ ဆွဲချလိုက်ပါ</div>
-    <div class="s">ရှိပြီးသား စာတန်းကို မြန်မာပြန်ဆိုပေးမယ် — အချိန်တွေ ဒီအတိုင်း ထားမယ်</div>
   </div>
   <input type="file" id="fileInputSrt" accept=".srt,.vtt,text/plain" class="hidden" />
+  <label id="srtAlreadyMyRow" class="hidden" style="display:flex;gap:8px;align-items:flex-start;margin:10px 0 0"><input type="checkbox" id="srtAlreadyMy" /> <span><b>SRT က မြန်မာလို ဖြစ်နေပြီ</b> — ပြန်ဆိုစရာ မလိုဘူး (API Key လည်း မလိုဘူး)။ Gemini web app က ထုတ်ပေးတဲ့ မြန်မာ SRT ကို ဒီအတိုင်း သုံးမယ်။</span></label>
 
   <div class="filemeta" id="fileMeta"></div>
 
@@ -452,10 +449,10 @@ body{background-attachment:fixed}
       <input type="text" id="linkUrl" placeholder="https://www.youtube.com/watch?v=… / https://www.tiktok.com/…" autocomplete="off" spellcheck="false" inputmode="url" style="flex:1" />
       <button class="btn small" id="linkBtn" type="button">🔗 ဆွဲယူမယ်</button>
     </div>
-    <div style="color:var(--mut);font-size:13px;margin-top:6px;line-height:1.6">YouTube / TikTok link တွေ ရပါတယ် — TikTok က watermark မပါဘူး။ Red Note (小红书) က Cobalt မထောက်ပံ့သေးလို့ မရသေးဘူး။</div>
     <div id="linkStatus" style="font-size:13px;margin-top:6px;line-height:1.6"></div>
     <details style="margin-top:6px">
       <summary style="font-size:13px;color:var(--mut);cursor:pointer">Cobalt instance / PC bridge ကိုယ်တိုင် သတ်မှတ်မယ် (မရရင်)</summary>
+      <div style="color:var(--mut);font-size:13px;margin-top:6px;line-height:1.6">YouTube / TikTok link တွေ ရပါတယ် — TikTok က watermark မပါဘူး။ Red Note (小红书) က Cobalt မထောက်ပံ့သေးလို့ မရသေးဘူး။</div>
       <div class="row" style="gap:8px;margin-top:6px">
         <input type="text" id="cobaltInstance" placeholder="Cobalt instance — https://… (ဥပမာ https://rue-cobalt.xenon.zone)" autocomplete="off" spellcheck="false" inputmode="url" style="flex:1" />
       </div>
@@ -463,6 +460,11 @@ body{background-attachment:fixed}
         <input type="text" id="bridgeUrl" placeholder="PC bridge URL — http://… (ဥပမာ http://192.168.1.5:8000)" autocomplete="off" spellcheck="false" inputmode="url" style="flex:1" />
         <button class="btn small ghost" id="cobaltSave" type="button">သိမ်းမယ်</button>
       </div>
+      <div class="row" style="gap:8px;margin-top:6px">
+        <button class="btn small" id="cobaltHealthBtn" type="button">📡 Instance တွေ စစ်မယ်</button>
+        <span id="cobaltHealthNote" style="font-size:13px;color:var(--mut);align-self:center"></span>
+      </div>
+      <div id="cobaltHealth" style="font-size:13px;margin-top:6px;line-height:1.8"></div>
       <div style="color:var(--mut);font-size:13px;margin-top:4px;line-height:1.6">အလုပ်ဖြစ်တဲ့ Cobalt instance တွေကို <a href="https://cobalt.directory/" target="_blank" rel="noopener">cobalt.directory</a> မှာ ကြည့်လို့ရတယ် (Turnstile မပါတဲ့ instance ကို ရွေးပါ)။ PC bridge (bridge.py) ကနေ tool ကို ဖွင့်ထားရင် bridge ကို အလိုအလျောက် သုံးမယ် — URL ရိုက်စရာမလိုဘူး။</div>
     </details>
   </div>
@@ -520,6 +522,7 @@ body{background-attachment:fixed}
             <option value="assemblyai">AssemblyAI — $50 credit အခမဲ့</option>
             <option value="gladia">Gladia Solaria — €50 credit အခမဲ့</option>
             <option value="hf">HF Whisper — အခမဲ့ (large-v3)</option>
+            <option value="g35">Gemini 3.5 Transcribe — စာလုံးအချိန်မှတ် တိကျ (Gemini Key သုံးတယ်)</option>
           </select>
         </div>
         <label style="display:flex;gap:8px;align-items:flex-start;margin:10px 0 0"><input type="checkbox" id="transcribeOnly" /> <span><b>ဘာသာပြန်စရာ မလိုဘူး</b> — နားထောင်ရတဲ့ စာသားအတိုင်း SRT ထုတ်မယ် (မြန်မာအသံအတွက်)။</span></label>
@@ -544,12 +547,15 @@ body{background-attachment:fixed}
           <input type="password" id="hfKey" placeholder="hf_…" autocomplete="off" spellcheck="false" />
         </div>
       
-      <div class="hint hidden" id="groqKeyHint">Key မရှိရင် <a href="https://console.groq.com/keys" target="_blank" rel="noopener">Groq Console</a> မှာ အခမဲ့ ထုတ်ပါ (ကတ်မလို)။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။ Whisper large-v3 သုံးတယ် — တစ်နေ့ကို အသံ ၈ နာရီစာ အခမဲ့။</div>
-      <div class="hint hidden" id="scribeHint">Scribe က TTS tab ထဲက ElevenLabs API Key ကို သုံးမယ် — key အသစ် မလိုဘူး။ တစ်လ ၂၇၀ မိနစ်စာ အခမဲ့၊ ပြီးရင် တစ်နာရီ $0.22။</div>
-      <div class="hint hidden" id="deepgramKeyHint">Key မရှိရင် <a href="https://console.deepgram.com/" target="_blank" rel="noopener">Deepgram Console</a> မှာ အကောင့်ဖွင့်ပြီး API Key ထုတ်ပါ — $200 credit အခမဲ့ (ကတ်မလို)၊ ကုန်သွားရင် တစ်မိနစ် $0.0043။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။</div>
-      <div class="hint hidden" id="assemblyKeyHint">Key မရှိရင် <a href="https://www.assemblyai.com/dashboard/signup" target="_blank" rel="noopener">AssemblyAI</a> မှာ အကောင့်ဖွင့်ပြီး API Key ထုတ်ပါ — $50 credit အခမဲ့ (ကတ်မလို)၊ ကုန်သွားရင် တစ်နာရီ $0.15။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။</div>
-      <div class="hint hidden" id="gladiaKeyHint">Key မရှိရင် <a href="https://app.gladia.io/signup" target="_blank" rel="noopener">Gladia</a> မှာ အကောင့်ဖွင့်ပြီး API Key ထုတ်ပါ — €50 credit အခမဲ့ (ကတ်မလို၊ အသံ နာရီ ၃၀၀ လောက်)၊ ကုန်သွားရင် တစ်နာရီ 0.16€။ ၁၀၀+ ဘာသာစကား၊ စာလုံးအချိန်မှတ် ပါတယ်။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။</div>
-      <div class="hint hidden" id="hfKeyHint">Token မရှိရင် <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener">Hugging Face</a> မှာ အကောင့်ဖွင့်ပြီး token အခမဲ့ ဖန်တီးပါ (Inference Providers permission ပါအောင်) — တစ်နေ့ request ~၁,၀၀၀ အခမဲ့၊ ကတ်မလို။ Groq နဲ့ မော်ဒယ်အတူတူ (Whisper large-v3)။ လူများရင် နှေးတတ်တယ် / model loading စောင့်ရတတ်တယ်။</div>
+      <details style="margin-top:8px">
+        <summary style="font-size:13px;color:var(--mut);cursor:pointer">🔑 Key ဘယ်လိုထုတ်ရမလဲ</summary>
+        <div class="hint hidden" id="groqKeyHint">Key မရှိရင် <a href="https://console.groq.com/keys" target="_blank" rel="noopener">Groq Console</a> မှာ အခမဲ့ ထုတ်ပါ (ကတ်မလို)။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။ Whisper large-v3 သုံးတယ် — တစ်နေ့ကို အသံ ၈ နာရီစာ အခမဲ့။</div>
+        <div class="hint hidden" id="scribeHint">Scribe က TTS tab ထဲက ElevenLabs API Key ကို သုံးမယ် — key အသစ် မလိုဘူး။ တစ်လ ၂၇၀ မိနစ်စာ အခမဲ့၊ ပြီးရင် တစ်နာရီ $0.22။</div>
+        <div class="hint hidden" id="deepgramKeyHint">Key မရှိရင် <a href="https://console.deepgram.com/" target="_blank" rel="noopener">Deepgram Console</a> မှာ အကောင့်ဖွင့်ပြီး API Key ထုတ်ပါ — $200 credit အခမဲ့ (ကတ်မလို)၊ ကုန်သွားရင် တစ်မိနစ် $0.0043။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။</div>
+        <div class="hint hidden" id="assemblyKeyHint">Key မရှိရင် <a href="https://www.assemblyai.com/dashboard/signup" target="_blank" rel="noopener">AssemblyAI</a> မှာ အကောင့်ဖွင့်ပြီး API Key ထုတ်ပါ — $50 credit အခမဲ့ (ကတ်မလို)၊ ကုန်သွားရင် တစ်နာရီ $0.15။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။</div>
+        <div class="hint hidden" id="gladiaKeyHint">Key မရှိရင် <a href="https://app.gladia.io/signup" target="_blank" rel="noopener">Gladia</a> မှာ အကောင့်ဖွင့်ပြီး API Key ထုတ်ပါ — €50 credit အခမဲ့ (ကတ်မလို၊ အသံ နာရီ ၃၀၀ လောက်)၊ ကုန်သွားရင် တစ်နာရီ 0.16€။ ၁၀၀+ ဘာသာစကား၊ စာလုံးအချိန်မှတ် ပါတယ်။ Key ကို ဒီ browser မှာ မှတ်ထားမယ်။</div>
+        <div class="hint hidden" id="hfKeyHint">Token မရှိရင် <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener">Hugging Face</a> မှာ အကောင့်ဖွင့်ပြီး token အခမဲ့ ဖန်တီးပါ (Inference Providers permission ပါအောင်) — တစ်နေ့ request ~၁,၀၀၀ အခမဲ့၊ ကတ်မလို။ Groq နဲ့ မော်ဒယ်အတူတူ (Whisper large-v3)။ လူများရင် နှေးတတ်တယ် / model loading စောင့်ရတတ်တယ်။</div>
+      </details>
       </div>
     </div>
     <details class="adv"><summary>အဆင့်မြင့် ဆက်တင်များ (Pacing၊ batch၊ fallback)</summary>
@@ -686,6 +692,7 @@ body{background-attachment:fixed}
 <div class="row" style="margin-top:8px">
 <button class="btn small" type="button" id="syncSnap">🎙️ အသံနဲ့ ပြန်ကပ်မယ်</button>
 </div>
+<label style="display:flex;gap:8px;align-items:flex-start;margin-top:8px;font-size:13.5px"><input type="checkbox" id="autoSnap" checked style="width:18px;height:18px"> <span><b>ထုတ်ပြီးတိုင်း အသံနဲ့ အလိုအလျောက် ကပ်မယ်</b> — စာတန်းအချိန် စောနေရင် အသံနဲ့ ပြန်ညှိပေးမယ် (Gemini အချိန်ခန့်မှန်းချက် မှားတာကို ပြင်တယ်)။</span></label>
 
 
 <div class="grid2">
@@ -1202,6 +1209,7 @@ body{background-attachment:fixed}
         <option value="assemblyai">AssemblyAI — $50 credit အခမဲ့</option>
         <option value="gladia">Gladia Solaria — €50 credit အခမဲ့</option>
         <option value="hf">HF Whisper — အခမဲ့ (large-v3)</option>
+        <option value="g35">Gemini 3.5 Transcribe — စာလုံးအချိန်မှတ် တိကျ (Gemini Key သုံးတယ်)</option>
       </select>
     </div>
     <div>
@@ -1514,11 +1522,13 @@ body{background-attachment:fixed}
     </details>
     <div class="row" style="margin-top:14px; flex-wrap:wrap">
       <button class="btn primary" id="recapTtsBtn">🎙️ စာကြောင်းတွေ အသံထုတ်မယ်</button>
+      <button class="btn" id="recapTestOneBtn">🎧 တစ်ကြောင်း အသံစမ်းမယ်</button>
       <button class="btn" id="recapPreviewBtn">🔊 Dub အသံ နားထောင်မယ်</button>
       <button class="btn" id="recapWatchBtn">▶ Dub နဲ့ ဗီဒီယို တွဲကြည့်မယ်</button>
       <button class="btn" id="recapExportBtn">🎬 Dubbing MP4 ထုတ်မယ်</button>
       <button class="btn ghost" id="recapClearDubBtn">မူရင်းအသံ ပြန်သုံးမယ်</button>
     </div>
+    <div id="recapMixInfo" style="font-size:13.5px;margin-top:8px;line-height:1.7;color:var(--mut)"></div>
     <label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14px"><input type="checkbox" id="recapCloudAuto" style="width:18px;height:18px"> ☁️ Cloud မှာ အလိုအလျောက် သိမ်းမယ်</label>
     <div id="recapProg" class="hidden" style="margin-top:12px">
       <div class="prog"><div id="recapBar"></div></div>
@@ -1573,6 +1583,12 @@ body{background-attachment:fixed}
     <button class="btn" id="saveLocalBtn">ဒီစက်ထဲ သိမ်းမယ်</button>
     <button class="btn ghost" id="saveCloudBtn">Cloud မှာ သိမ်းမယ်</button>
   </div>
+  <div class="row" style="margin-top:8px">
+    <button class="btn" id="backupExportBtn">💾 Project တွေ Backup ထုတ်မယ်</button>
+    <button class="btn ghost" id="backupImportBtn">📥 Backup ပြန်သွင်းမယ်</button>
+    <input type="file" id="backupImportFile" accept=".json,application/json" class="hidden" />
+  </div>
+  <div id="backupStatus" style="font-size:13px;margin-top:6px;line-height:1.6;color:var(--mut)"></div>
 
   <h2 style="margin-top:24px">ဒီစက်ထဲက ပရောဂျက်များ</h2>
   <div id="localProjectList"></div>
@@ -1702,7 +1718,8 @@ service cloud.firestore {
 <footer>
   <div class="credit">Powered By Maxflix Team</div>
   CREATED WITH MUSE & CLAUDE AI (By Kwee Jein)<br>
-  <button type="button" id="policyOpen" style="background:none;border:none;color:var(--mut);font-size:13px;text-decoration:underline;cursor:pointer;padding:6px 0 0">Privacy Policy &amp; Copyright · ကိုယ်ရေးကိုယ်တာမူဝါဒနှင့် မူပိုင်ခွင့်</button>
+  <button type="button" id="policyOpen" style="background:none;border:none;color:var(--mut);font-size:13px;text-decoration:underline;cursor:pointer;padding:6px 0 0">Privacy Policy &amp; Copyright · ကိုယ်ရေးကိုယ်တာမူဝါဒနှင့် မူပိုင်ခွင့်</button><br>
+  <button type="button" id="helpOpen" style="background:none;border:none;color:var(--mut);font-size:13px;text-decoration:underline;cursor:pointer;padding:6px 0 0">❓ အကူအညီ — ဘယ်လိုသုံးရမလဲ</button>
 </footer>
 </div>
 
@@ -1743,6 +1760,35 @@ service cloud.firestore {
       <p style="margin:0 0 8px">AI နဲ့ ထုတ်တဲ့ ပုံ / ဗီဒီယိုတွေက ထုတ်ပေးတဲ့ ကုမ္ပဏီ (Google, ElevenLabs, Pollinations) ရဲ့ စည်းမျဉ်းတွေကို လိုက်နာရပါတယ်။</p>
       <p style="margin:0 0 8px">Maxflix Studio၊ နာမည်၊ logo နဲ့ code — © 2026 Maxflix Team. မူပိုင်ခွင့် အားလုံး လက်ဝယ်ရှိသည်။</p>
       <p style="margin:0"><b>ကုန်အမှတ်တံဆိပ်။</b> Maxflix Studio ဟာ Netflix, Google, Microsoft ဒါမှမဟုတ် ဒီ tool ထဲမှာ ဖော်ပြထားတဲ့ တခြားကုမ္ပဏီတွေနဲ့ ဘာမှမသက်ဆိုင်ပါ၊ သူတို့က ထောက်ခံထားတာလည်း မဟုတ်ပါ။ အဲဒီ နာမည်နဲ့ တံဆိပ်တွေက သက်ဆိုင်ရာ ပိုင်ရှင်တွေရဲ့ ဥစ္စာပါ။</p>
+    </div>
+  </div>
+</div>
+
+<div id="helpModal" style="position:fixed;inset:0;z-index:9999;display:none;align-items:flex-start;justify-content:center;padding:18px;overflow:auto">
+  <div id="helpBackdrop" style="position:fixed;inset:0;background:rgba(0,0,0,.68)"></div>
+  <div role="dialog" aria-modal="true" aria-labelledby="helpTitle" style="position:relative;max-width:720px;width:100%;margin:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;color:var(--ink)">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+      <h2 id="helpTitle" style="margin:0;font-size:19px;line-height:1.4">❓ အကူအညီ<br><span style="font-size:14px;color:var(--mut)">Maxflix Studio ဘယ်လိုသုံးရမလဲ</span></h2>
+      <button class="btn small ghost" id="helpClose" type="button">✕ ပိတ်မယ်</button>
+    </div>
+    <div style="font-size:14px;line-height:1.85;margin-top:14px">
+      <h3 style="margin:16px 0 6px;font-size:15px">၁ — ဗီဒီယိုကနေ စာတန်းထုတ်မယ်</h3>
+      <p style="margin:0 0 8px">Translator tab → ဗီဒီယို / အသံဖိုင် (mp4, webm, mov, mp3, wav…) ရွေးပါ → Engine ရွေးပါ (မူလ Gemini; အချိန် တိကျချင်ရင် <b>Gemini 3.5 Transcribe</b> — စာလုံးအချိန်မှတ် အတိအကျ ပါတယ်) → <b>Start</b> → Edit tab မှာ စာသားနဲ့ အချိန် ပြင်ပါ → SRT / VTT ဒေါင်းလုဒ်ဆွဲပါ။</p>
+      <h3 style="margin:16px 0 6px;font-size:15px">၂ — Gemini web app က SRT ယူမယ် (API မလို)</h3>
+      <p style="margin:0 0 8px">gemini.google.com မှာ ဗီဒီယိုတင်ပြီး မြန်မာ SRT တောင်းပါ → ရတဲ့ စာသားကို .srt ဖိုင်အဖြစ် သိမ်းပါ → ဒီ tool မှာ <b>“SRT ဖိုင်ကို ပြန်ဆိုမယ်”</b> mode ရွေးပြီး .srt ရွေး → <b>“SRT က မြန်မာလို ဖြစ်နေပြီ”</b> ခြစ်ပါ → Start (API Key မလို) → ဗီဒီယို ပြန်ရွေးပြီး Video tab မှာ ထုတ်ပါ။</p>
+      <h3 style="margin:16px 0 6px;font-size:15px">၃ — စာတန်းထိုးပြီး ဗီဒီယိုထုတ်မယ်</h3>
+      <p style="margin:0 0 8px">Video tab → ဗီဒီယို ရွေးပါ → စာတန်း နေရာ / ဖောင့် အရွယ်အစား / အနားသတ် (stroke) ညှိပါ → မူရင်း စာတန်း ဖုံးချင်ရင် Blur သုံးပါ → <b>MP4 ထုတ်မယ်</b> နှိပ်ပါ။</p>
+      <h3 style="margin:16px 0 6px;font-size:15px">၄ — Recap — မြန်မာအသံထည့်မယ်</h3>
+      <p style="margin:0 0 8px">Recap tab → ဗီဒီယို ရွေးပြီး စာသားတွေ စစ်ပါ → အရင် <b>“🎧 တစ်ကြောင်း အသံစမ်းမယ်”</b> နဲ့ အသံရမရ စမ်းပါ → ရရင် <b>“🎙️ စာကြောင်းတွေ အသံထုတ်မယ်”</b> → <b>“🔊 Dub အသံ နားထောင်မယ်”</b> → <b>“🎬 Dubbing MP4 ထုတ်မယ်”</b>။ အသံတိတ်နေရင် Mix အခြေအနေ (Peak) ကြည့်ပါ — Peak 0.00 ဆို အသံ data ကိုက မရှိတာပါ။</p>
+      <h3 style="margin:16px 0 6px;font-size:15px">၅ — Link ကနေ ဗီဒီယိုဆွဲမယ်</h3>
+      <p style="margin:0 0 8px">Translator tab မှာ link ကပ်ပြီး <b>“🔗 ဆွဲယူမယ်”</b> နှိပ်ပါ။ မရရင် Cobalt instance ဆက်တင် ထဲက <b>“📡 Instance တွေ စစ်မယ်”</b> နဲ့ အသက်ရှင်တဲ့ instance (🟢) ကြည့်ပါ။ Red Note (小红书) က Cobalt မထောက်ပံ့သေးလို့ မရသေးပါဘူး။</p>
+      <h3 style="margin:16px 0 6px;font-size:15px">၆ — API Key တွေ ဘယ်မှာထည့်ရမလဲ</h3>
+      <p style="margin:0 0 8px">Gemini Key — Translator tab; ElevenLabs Key — TTS tab; Groq / Deepgram / AssemblyAI / Gladia / Hugging Face Key — Engine ရွေးရင် Key ကွက် ပေါ်လာမယ်။ Key တွေက ဒီ browser ထဲမှာပဲ သိမ်းတယ် — ဖုန်း / browser အသစ်ဆို ပြန်ထည့်ရမယ်။</p>
+      <h3 style="margin:16px 0 6px;font-size:15px">၇ — Project သိမ်းမယ် / Backup ထုတ်မယ်</h3>
+      <p style="margin:0 0 8px">Projects tab → နာမည်ပေးပြီး <b>“ဒီစက်ထဲ သိမ်းမယ်”</b>။ ဖုန်းအသစ် / browser အသစ်မှာ ပြန်သုံးချင်ရင် <b>“💾 Project တွေ Backup ထုတ်မယ်”</b> နဲ့ JSON ဖိုင် ထုတ်ထားပြီး အသစ်မှာ <b>“📥 Backup ပြန်သွင်းမယ်”</b> နဲ့ ပြန်သွင်းပါ။ ဗီဒီယိုဖိုင်ကိုတော့ ပြန်ရွေးပေးရမယ်။</p>
+      <h3 style="margin:16px 0 6px;font-size:15px">၈ — စာတန်းအချိန် စောနေရင်</h3>
+      <p style="margin:0 0 8px"><b>“ထုတ်ပြီးတိုင်း အသံနဲ့ အလိုအလျောက် ကပ်မယ်”</b> ဖွင့်ထားရင် ထုတ်ပြီးတိုင်း အသံနဲ့ အလိုအလျောက် ပြန်ညှိပေးတယ်။ လက်နဲ့ ပြင်ချင်ရင် Sync box ထဲက <b>“🎙️ အသံနဲ့ ပြန်ကပ်မယ်”</b> သုံးပါ၊ ဒါမှမဟုတ် Timeline မှာ စာတန်းတုံးကို ဆွဲပြင်ပါ။</p>
+      <p style="margin:0">မေးစရာရှိရင် Telegram — <a href="https://t.me/kopethaung778" target="_blank" rel="noopener" style="color:var(--acc)">@kopethaung778</a></p>
     </div>
   </div>
 </div>
@@ -1909,7 +1955,8 @@ var SrtTools = (function () {
     $('linkRow').classList.toggle('hidden', m !== 'video');
     $('dropSrt').classList.toggle('hidden', m !== 'srt');
     $('transcriberBox').classList.toggle('hidden', m !== 'video');
-    $('startBtnText').textContent = m === 'video' ? 'စတင်လုပ်ဆောင်မယ်' : 'SRT ကို မြန်မာပြန်ဆိုမယ်';
+    if ($('srtAlreadyMyRow')) $('srtAlreadyMyRow').classList.toggle('hidden', m !== 'srt');
+    $('startBtnText').textContent = m === 'video' ? 'စတင်လုပ်ဆောင်မယ်' : (srtAlreadyMyVal() ? 'SRT ကို ဒီအတိုင်း သုံးမယ်' : 'SRT ကို မြန်မာပြန်ဆိုမယ်');
     $('cardBatch').classList.toggle('hidden', m !== 'video');
     refreshSettings();
     showFileMeta();
@@ -2001,6 +2048,53 @@ var SrtTools = (function () {
     COBALT_INSTANCES.forEach(function (u) { if (list.indexOf(u) < 0) list.push(u); });
     return list;
   }
+  /* Instance health: a no-cors fetch resolves for any HTTP answer (even an
+     error page) and rejects only when the server is unreachable — enough to
+     tell "alive" from "dead" without tripping CORS. Results are cached so
+     the last check still shows on the next visit. */
+  function cobaltHealthSummary(results) {
+    var ok = 0, dead = 0;
+    (results || []).forEach(function (r) { if (r.ok) ok++; else dead++; });
+    return { ok: ok, dead: dead, total: (results || []).length };
+  }
+  function cobaltHealthRender(results, when) {
+    var box = $('cobaltHealth'); if (!box) return;
+    box.innerHTML = '';
+    var sum = cobaltHealthSummary(results);
+    var note = $('cobaltHealthNote');
+    if (note) note.textContent = results.length ? ('အသက်ရှင်တာ ' + sum.ok + ' / ' + sum.total + (when ? ' · စစ်ပြီး ' + when : '')) : '';
+    (results || []).forEach(function (r) {
+      var d = document.createElement('div');
+      var dot = document.createElement('span');
+      dot.textContent = r.ok ? '🟢 ' : '🔴 ';
+      d.appendChild(dot);
+      var t = document.createElement('span');
+      t.textContent = r.url + (r.ok ? '' : ' — မရောက်ဘူး');
+      d.appendChild(t);
+      box.appendChild(d);
+    });
+  }
+  async function cobaltHealthCheck() {
+    var btn = $('cobaltHealthBtn'); if (btn) btn.disabled = true;
+    var list = cobaltInstanceList();
+    var results = [];
+    for (var i = 0; i < list.length; i++) {
+      var ok = false;
+      try {
+        var ctl = new AbortController();
+        var to = setTimeout(function () { try { ctl.abort(); } catch (e) {} }, 8000);
+        await fetch(list[i], { mode: 'no-cors', signal: ctl.signal, cache: 'no-store' });
+        clearTimeout(to);
+        ok = true;
+      } catch (e) { ok = false; }
+      results.push({ url: list[i], ok: ok });
+      cobaltHealthRender(results, null);
+    }
+    try { localStorage.setItem('mt_cobalt_health', JSON.stringify({ at: Date.now(), results: results })); } catch (e) {}
+    cobaltHealthRender(results, new Date().toLocaleTimeString());
+    if (btn) btn.disabled = false;
+  }
+  $('cobaltHealthBtn').addEventListener('click', cobaltHealthCheck);
   /* PC bridge (bridge.py): same-origin when the tool is served over http(s),
      or the saved mt_bridge_url for file:// use. Pure — testable. */
   function bridgeBaseUrl(saved, protocol, origin) {
@@ -2229,6 +2323,8 @@ var SrtTools = (function () {
     if (_ci) $('cobaltInstance').value = _ci;
     var _bu = localStorage.getItem('mt_bridge_url') || '';
     if (_bu) $('bridgeUrl').value = _bu;
+    var _ch = JSON.parse(localStorage.getItem('mt_cobalt_health') || 'null');
+    if (_ch && _ch.results) cobaltHealthRender(_ch.results, new Date(_ch.at).toLocaleString());
   } catch (e) {}
   bindDrop('dropSrt', 'fileInputSrt', function (f) { srtFile = f; showFileMeta(); });
   window.addEventListener('dragover', function (e) { e.preventDefault(); });
@@ -2592,6 +2688,8 @@ var SrtTools = (function () {
   try { var asSaved = localStorage.getItem('mt_autoswitch'); if (asSaved !== null && $('autoModelSwitch')) $('autoModelSwitch').checked = asSaved === '1'; } catch (e) {}
   try { var gpSaved = localStorage.getItem('mt_gtpolish'); if (gpSaved !== null && $('gtPolish')) $('gtPolish').checked = gpSaved === '1'; } catch (e) {}
   try { var toSaved = localStorage.getItem('mt_transcribe_only'); if (toSaved !== null && $('transcribeOnly')) $('transcribeOnly').checked = toSaved === '1'; } catch (e) {}
+  try { var samSaved = localStorage.getItem('mt_srt_already_my'); if (samSaved !== null && $('srtAlreadyMy')) $('srtAlreadyMy').checked = samSaved === '1'; } catch (e) {}
+  try { var asnapSaved = localStorage.getItem('mt_auto_snap'); if (asnapSaved !== null && $('autoSnap')) $('autoSnap').checked = asnapSaved === '1'; } catch (e) {}
         try {
           var gmSaved = localStorage.getItem('mt_gmodel'), gcSaved = localStorage.getItem('mt_gmodel_custom');
           if (gmSaved && $('geminiModel') && Array.prototype.some.call($('geminiModel').options, function (o) { return o.value === gmSaved; })) $('geminiModel').value = gmSaved;
@@ -2613,6 +2711,8 @@ var SrtTools = (function () {
         if ($('autoModelSwitch')) $('autoModelSwitch').addEventListener('change', function () { try { localStorage.setItem('mt_autoswitch', this.checked ? '1' : '0'); } catch (e) {} });
         if ($('gtPolish')) $('gtPolish').addEventListener('change', function () { try { localStorage.setItem('mt_gtpolish', this.checked ? '1' : '0'); } catch (e) {} });
         if ($('transcribeOnly')) $('transcribeOnly').addEventListener('change', function () { try { localStorage.setItem('mt_transcribe_only', this.checked ? '1' : '0'); } catch (e) {} });
+        if ($('srtAlreadyMy')) $('srtAlreadyMy').addEventListener('change', function () { try { localStorage.setItem('mt_srt_already_my', this.checked ? '1' : '0'); } catch (e) {} if (mode === 'srt' && $('startBtnText')) $('startBtnText').textContent = this.checked ? 'SRT ကို ဒီအတိုင်း သုံးမယ်' : 'SRT ကို မြန်မာပြန်ဆိုမယ်'; });
+        if ($('autoSnap')) $('autoSnap').addEventListener('change', function () { try { localStorage.setItem('mt_auto_snap', this.checked ? '1' : '0'); } catch (e) {} });
   if ($('paceSec')) $('paceSec').addEventListener('change', function () {
     var v = parseFloat($('paceSec').value);
     if (!isFinite(v) || v < 0) v = 0;
@@ -3147,6 +3247,7 @@ var SrtTools = (function () {
       log('အားလုံး ပြီးပါပြီ');
       endProgress();
       showResult();
+      await maybeAutoSnap();
     } catch (e) {
       console.error(e);
       var msg = (e.isGemini || e.isTts) ? e.message
@@ -3171,6 +3272,7 @@ var SrtTools = (function () {
   var SCRIBE_SL = { chinese: 'zho', english: 'eng', korean: 'kor', japanese: 'jpn', thai: 'tha', burmese: 'mya' };
   function transcriberVal() { var el = $('transcriber'); return el ? el.value : 'gemini'; }
   function transcribeOnlyVal() { var el = $('transcribeOnly'); return !!(el && el.checked); }
+  function srtAlreadyMyVal() { var el = $('srtAlreadyMy'); return !!(el && el.checked); }
   function groqKeyVal() { return ($('groqKey').value || '').trim(); }
   function transcriberRefresh() {
     var tr = transcriberVal();
@@ -3255,6 +3357,78 @@ var SrtTools = (function () {
     var j = await postAudioWithRetry('https://api.elevenlabs.io/v1/speech-to-text',
       { 'xi-api-key': key }, fd, 'SCRIBE');
     return scribeWordsToSegments(j.words || []);
+  }
+  /* ---------- Gemini 3.5 Transcribe: dedicated speech-to-text model ----------
+     Real word-level timestamps (not Gemini's per-chunk time estimates), so
+     cues land on the actual speech — the fix for the timing problem (some
+     parts right, some early). Uses the saved Gemini key, no extra key.
+     Flow: Files API upload (multipart, X-Goog-Upload-Protocol) -> wait for
+     ACTIVE -> POST /v1beta/interactions with transcription_config
+     (verbatim + word timestamps) -> annotations[] word_info -> groupWordList.
+     Language codes are BCP-47 (auto = []); file auto-deletes after 48h. */
+  var GT35_SL = { chinese: 'cmn-Hans-CN', english: 'en-US', korean: 'ko-KR', japanese: 'ja-JP', thai: 'th-TH', burmese: 'my-MM' };
+  function g35OffsetSec(s) {
+    var m = /^(-?[\d.]+)s$/.exec(String(s || '').trim());
+    return m ? parseFloat(m[1]) : NaN;
+  }
+  async function g35UploadFile(wavBlob, key) {
+    var fd = new FormData();
+    fd.append('metadata', JSON.stringify({ file: { display_name: 'chunk.wav', mimeType: 'audio/wav' } }));
+    fd.append('file', wavBlob, 'chunk.wav');
+    var r = await fetch('https://generativelanguage.googleapis.com/upload/v1beta/files?key=' + encodeURIComponent(key), {
+      method: 'POST', headers: { 'X-Goog-Upload-Protocol': 'multipart' }, body: fd
+    });
+    if (!r.ok) { var t = await r.text().catch(function () { return ''; }); throw new Error('G35_UPLOAD_' + r.status + (t ? ': ' + t.slice(0, 120) : '')); }
+    var j = await r.json();
+    var f = j && j.file;
+    if (!f) throw new Error('G35_UPLOAD_NO_FILE');
+    /* small audio files go ACTIVE almost at once; poll briefly if needed */
+    for (var i = 0; i < 15 && f.state === 'PROCESSING'; i++) {
+      await aiSleep(2000);
+      var g = await fetch('https://generativelanguage.googleapis.com/v1beta/' + f.name + '?key=' + encodeURIComponent(key));
+      if (!g.ok) break;
+      var gj = await g.json();
+      if (gj) f = gj;
+    }
+    if (f.state === 'FAILED') throw new Error('G35_UPLOAD_FAILED');
+    if (f.uri) return f.uri;
+    if (f.name) return 'https://generativelanguage.googleapis.com/v1beta/' + f.name;
+    throw new Error('G35_UPLOAD_NO_URI');
+  }
+  async function g35TranscribeChunk(wavBlob, langBcp, key) {
+    var uri = await g35UploadFile(wavBlob, key);
+    var body = {
+      model: 'models/gemini-3.5-transcribe',
+      input: [{ type: 'file', file_uri: uri }],
+      generation_config: { transcription_config: { language_codes: langBcp ? [langBcp] : [], mode: { type: 'verbatim', timestamp_granularities: ['word'] } } }
+    };
+    var lastErr = null;
+    for (var attempt = 0; attempt < 3; attempt++) {
+      var r = await fetch('https://generativelanguage.googleapis.com/v1beta/interactions', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body: JSON.stringify(body)
+      });
+      if (r.ok) {
+        var j = await r.json();
+        var words = [];
+        (j.steps || []).forEach(function (s) {
+          (s.content || []).forEach(function (c) {
+            (c.annotations || []).forEach(function (a) {
+              if (a.type === 'word_info' && a.text) words.push({ text: a.text, start: g35OffsetSec(a.start_offset), end: g35OffsetSec(a.end_offset) });
+            });
+          });
+        });
+        words = words.filter(function (w) { return isFinite(w.start) && isFinite(w.end) && w.end >= w.start; });
+        return groupWordList(words);
+      }
+      var msg = '';
+      try { var ej = await r.json(); msg = (ej && ej.error && ej.error.message) || ''; } catch (e) {}
+      lastErr = new Error('G35_' + r.status + (msg ? ': ' + String(msg).slice(0, 120) : ''));
+      if (r.status !== 429 || attempt === 2) throw lastErr;
+      var waitMs = 30000;
+      try { var ra = r.headers && r.headers.get('Retry-After'); if (ra) waitMs = Math.max(1000, parseFloat(ra) * 1000); } catch (e) {}
+      await aiSleep(waitMs);
+    }
+    throw lastErr;
   }
   /* Generic JSON API call with 429 retry (Deepgram + AssemblyAI): wait out
      Retry-After (else 30s), up to 3 attempts. Throws TAG_status errors. */
@@ -3516,7 +3690,7 @@ var SrtTools = (function () {
     titleTexts = []; tlSel = null;   /* titles belong to the previous video */
     beginProgress([
       { id: 'audio', label: 'အသံထုတ်ယူ' },
-      { id: 'tr', label: tr === 'groq' ? 'Groq Whisper နားထောင်' : tr === 'scribe' ? 'Scribe နားထောင်' : tr === 'deepgram' ? 'Deepgram နားထောင်' : tr === 'gladia' ? 'Gladia နားထောင်' : tr === 'hf' ? 'HF Whisper နားထောင်' : 'AssemblyAI နားထောင်' },
+      { id: 'tr', label: tr === 'groq' ? 'Groq Whisper နားထောင်' : tr === 'scribe' ? 'Scribe နားထောင်' : tr === 'deepgram' ? 'Deepgram နားထောင်' : tr === 'gladia' ? 'Gladia နားထောင်' : tr === 'hf' ? 'HF Whisper နားထောင်' : tr === 'g35' ? 'Gemini 3.5 Transcribe နားထောင်' : 'AssemblyAI နားထောင်' },
       { id: 'tl', label: transcribeOnlyVal() ? 'SRT အဆင်သင့်' : 'Gemini မြန်မာပြန်ဆို' }
     ]);
     var curStep = 'audio';
@@ -3536,15 +3710,15 @@ var SrtTools = (function () {
          well under Groq's 25 MB free-tier file limit */
       var CHUNK = Math.max(30, parseInt(($('geminiChunk') && $('geminiChunk').value) || '120', 10) || 120);
       var chunks = Math.max(1, Math.ceil(totalSec / CHUNK));
-      var key = tr === 'groq' ? groqKeyVal() : tr === 'scribe' ? elKeyVal() : tr === 'deepgram' ? deepgramKeyVal() : tr === 'gladia' ? gladiaKeyVal() : tr === 'hf' ? hfKeyVal() : assemblyKeyVal();
-      var lang1 = WHISPER_SL[srcLang], lang3 = SCRIBE_SL[srcLang], langDg = DG_SL[srcLang], langAs = AS_SL[srcLang], langGl = GL_SL[srcLang];
+      var key = tr === 'g35' ? ($('geminiKey').value || '').trim() : tr === 'groq' ? groqKeyVal() : tr === 'scribe' ? elKeyVal() : tr === 'deepgram' ? deepgramKeyVal() : tr === 'gladia' ? gladiaKeyVal() : tr === 'hf' ? hfKeyVal() : assemblyKeyVal();
+      var lang1 = WHISPER_SL[srcLang], lang3 = SCRIBE_SL[srcLang], langDg = DG_SL[srcLang], langAs = AS_SL[srcLang], langGl = GL_SL[srcLang], lang35 = GT35_SL[srcLang];
       var all = [];
       for (var ci = 0; ci < chunks; ci++) {
         await waitIfPaused();
         if (cancelRun) throw geminiError('ရပ်လိုက်ပါပြီ — ပြန်စရင် အစက ပြန်လုပ်ရပါမယ်။', 'CANCELLED');
         var off = ci * CHUNK;
         var chunkEnd = Math.min(totalSec, off + CHUNK);
-        setStatus((tr === 'groq' ? 'Groq Whisper နဲ့ နားထောင်နေပါတယ်… ' : tr === 'scribe' ? 'Scribe နဲ့ နားထောင်နေပါတယ်… ' : tr === 'deepgram' ? 'Deepgram နဲ့ နားထောင်နေပါတယ်… ' : tr === 'gladia' ? 'Gladia နဲ့ နားထောင်နေပါတယ်… ' : tr === 'hf' ? 'HF Whisper နဲ့ နားထောင်နေပါတယ်… ' : 'AssemblyAI နဲ့ နားထောင်နေပါတယ်… ') + 'အပိုင်း ' + (ci + 1) + '/' + chunks);
+        setStatus((tr === 'groq' ? 'Groq Whisper နဲ့ နားထောင်နေပါတယ်… ' : tr === 'scribe' ? 'Scribe နဲ့ နားထောင်နေပါတယ်… ' : tr === 'deepgram' ? 'Deepgram နဲ့ နားထောင်နေပါတယ်… ' : tr === 'gladia' ? 'Gladia နဲ့ နားထောင်နေပါတယ်… ' : tr === 'hf' ? 'HF Whisper နဲ့ နားထောင်နေပါတယ်… ' : tr === 'g35' ? 'Gemini 3.5 Transcribe နဲ့ နားထောင်နေပါတယ်… ' : 'AssemblyAI နဲ့ နားထောင်နေပါတယ်… ') + 'အပိုင်း ' + (ci + 1) + '/' + chunks);
         var slice = audio.subarray(Math.floor(off * 16000), Math.min(audio.length, Math.ceil(chunkEnd * 16000)));
         var segs = [];
         if (audioPeak(slice) < 0.001) {
@@ -3558,6 +3732,7 @@ var SrtTools = (function () {
           else if (tr === 'deepgram') segs = await deepgramTranscribeChunk(wav, langDg, key, chunkEnd - off);
           else if (tr === 'gladia') segs = await gladiaTranscribeChunk(wav, langGl, key);
           else if (tr === 'hf') segs = await hfTranscribeChunk(wav, key, chunkEnd - off);
+          else if (tr === 'g35') segs = await g35TranscribeChunk(wav, lang35, key);
           else segs = await assemblyTranscribeChunk(wav, langAs, key);
         }
         segs.forEach(function (s) { all.push({ start: s.start + off, end: s.end + off, text: s.text }); });
@@ -3600,6 +3775,7 @@ var SrtTools = (function () {
       log('အားလုံး ပြီးပါပြီ');
       endProgress();
       showResult();
+      await maybeAutoSnap();
     } catch (e) {
       console.error(e);
       var msg = (e.isGemini || e.isTts) ? e.message
@@ -3608,7 +3784,7 @@ var SrtTools = (function () {
         : e.message === 'NO_SPEECH'
         ? 'အသံထဲမှာ စကားပြောသံ မတွေ့မိပါဘူး။ အသံပါတဲ့ ဖိုင် ဖြစ်ကြောင်း စစ်ကြည့်ပါ။'
         : e.message.indexOf('NO_SPEECH_') === 0
-        ? (tr === 'groq' ? 'Groq Whisper' : tr === 'scribe' ? 'Scribe' : tr === 'deepgram' ? 'Deepgram' : tr === 'gladia' ? 'Gladia' : tr === 'hf' ? 'HF Whisper' : 'AssemblyAI') +
+        ? (tr === 'groq' ? 'Groq Whisper' : tr === 'scribe' ? 'Scribe' : tr === 'deepgram' ? 'Deepgram' : tr === 'gladia' ? 'Gladia' : tr === 'hf' ? 'HF Whisper' : tr === 'g35' ? 'Gemini 3.5 Transcribe' : 'AssemblyAI') +
           ' က ဒီအသံထဲမှာ စကားပြောသံ မတွေ့မိပါဘူး — အောက်က log ထဲမှာ ဘာပြန်လဲ ကြည့်ပါ။ "မူရင်းဘာသာစကား" ရွေးတာ မှန်လား စစ်ပါ (အလိုအလျောက်ဆိုရင် တရုတ်လို့ တိုက်ရိုက် ရွေးကြည့်ပါ)၊ ဗီဒီယိုမှာ စကားပြောသံ တကယ်ပါလား စစ်ပါ၊ ဒါမှမဟုတ် တခြား Engine နဲ့ စမ်းကြည့်ပါ။'
         : e.message.indexOf('GROQ_429') === 0
         ? 'Groq limit ပြည့်နေပါတယ် (တစ်မိနစ် request ၂၀) — ခဏစောင့်ပြီး ပြန်စမ်းကြည့်ပါ။'
@@ -3679,11 +3855,12 @@ var SrtTools = (function () {
   }
   async function runSrt() {
     var srcLang = $('srcLang').value;
+    var alreadyMy = srtAlreadyMyVal(); /* SRT က မြန်မာလို ဖြစ်နေပြီ (Gemini web app က ထုတ်ပေးတာ) — ပြန်ဆိုစရာ မလိုဘူး */
     coverageGapSec = 0;
     titleTexts = []; tlSel = null;   /* titles belong to the previous video */
     beginProgress([
       { id: 'parse', label: 'ဖိုင်ဖတ်' },
-      { id: 'tr', label: 'မြန်မာပြန်ဆို' }
+      { id: 'tr', label: alreadyMy ? 'SRT အဆင်သင့်' : 'မြန်မာပြန်ဆို' }
     ]);
     var curStep = 'parse';
     try {
@@ -3695,11 +3872,21 @@ var SrtTools = (function () {
       log('စာကြောင်း ' + parsed.length + ' ကြောင်း တွေ့ပါတယ်');
       if (!parsed.length) throw new Error('NO_CUES');
       segments = parsed.map(function (s) {
-        return { start: s.start, end: s.end, text: s.text, my: '', failed: false };
+        return { start: s.start, end: s.end, text: s.text, my: alreadyMy ? s.text : '', failed: false };
       });
       setBar(15);
       setStep('parse', 'done');
 
+      if (alreadyMy) {
+        setStep('tr', 'done');
+        setBar(100);
+        setStatus('ပြီးပါပြီ!');
+        log('အားလုံး ပြီးပါပြီ');
+        endProgress();
+        showResult();
+        await maybeAutoSnap();
+        return;
+      }
       curStep = 'tr';
       setStep('tr', 'active');
       var failed = await translateSegmentsAuto(segments, GT_SL[srcLang] || 'auto', function (done, total) {
@@ -3715,6 +3902,7 @@ var SrtTools = (function () {
       log('အားလုံး ပြီးပါပြီ');
       endProgress();
       showResult();
+      await maybeAutoSnap();
     } catch (e) {
       console.error(e);
       var msg = (e.isGemini || e.isTts) ? e.message
@@ -3742,7 +3930,7 @@ var SrtTools = (function () {
   $('startBtn').addEventListener('click', function () {
     if (processing || batchRunning) return;
     maxCharsVal = Math.max(20, Math.min(80, parseInt($('maxChars').value, 10) || 42));
-    if (engine === 'gemini' && !$('geminiKey').value.trim()) {
+    if (engine === 'gemini' && !$('geminiKey').value.trim() && !(mode === 'srt' && srtAlreadyMyVal())) {
       toast('အရင်ဆုံး Gemini API Key ထည့်ပေးပါ');
       $('geminiKey').focus();
       return;
@@ -3768,6 +3956,8 @@ var SrtTools = (function () {
       } else if (transcriberVal() === 'hf') {
         if (!hfKeyVal()) { toast('အရင်ဆုံး Hugging Face token ထည့်ပေးပါ'); $('hfKey').focus(); return; }
         runExternalTranscribe();
+      } else if (transcriberVal() === 'g35') {
+        runExternalTranscribe(); /* Gemini key already checked above (engine is gemini) */
       } else {
         runVideoGemini();
       }
@@ -4150,6 +4340,17 @@ var SrtTools = (function () {
       }
     }
     return res;
+  }
+  function autoSnapVal() { var el = $('autoSnap'); return !!(el && el.checked); }
+  /* After a generation finishes, snap the new cues to the real speech
+     automatically (same VAD snap as the manual button) — Gemini's
+     per-chunk time estimates run early in places, and this fixes them
+     without an extra tap. Skips silently when there is no video yet
+     (SRT mode picks the video after the SRT run). */
+  async function maybeAutoSnap() {
+    if (!autoSnapVal()) return;
+    if (!segments.length || !videoFile) return;
+    try { await syncSnapToAudio(); } catch (e) { console.error(e); }
   }
   async function syncSnapToAudio() {
     if (!segments.length) { toast('ပြင်စရာ စာတန်း မရှိသေးပါဘူး'); return; }
@@ -5799,6 +6000,7 @@ var seekBtn = d.querySelector('.seek');
   var dubShiftByIdx = null;
   function clearDubMix() {
     dubMixed = null; dubAudio = null; dubShiftByIdx = null; dubLineSpans = null; dubFreezeSpans = null;
+    var mi = $('recapMixInfo'); if (mi) mi.textContent = '';
     /* a mix change invalidates the combined preview too */
     if (typeof dubWatchStop === 'function' && typeof dubWatch !== 'undefined' && dubWatch.playing) dubWatchStop(false);
   }
@@ -7718,6 +7920,77 @@ var seekBtn = d.querySelector('.seek');
     btn.disabled = false;
   });
 
+  /* ---------- project backup: export / import all named projects as one JSON file ----------
+     Projects live in this browser's IndexedDB only — a new phone or browser
+     loses them. The backup file carries the full project data (subtitles,
+     settings, burn settings); the video file itself is never stored, only
+     its name, so a restored project still needs its video re-picked. */
+  function backupValidate(obj) {
+    if (!obj || typeof obj !== 'object' || obj.kind !== 'projects-backup' || obj.v !== 1) return { ok: false, reason: 'backup ဖိုင် မဟုတ်ပါဘူး (Maxflix project backup JSON ဖြစ်ရမယ်)' };
+    if (!Array.isArray(obj.projects)) return { ok: false, reason: 'backup ဖိုင်ထဲမှာ project တွေ မတွေ့ပါဘူး' };
+    var items = [];
+    for (var i = 0; i < obj.projects.length; i++) {
+      var it = obj.projects[i];
+      if (!it || typeof it !== 'object' || !it.data || typeof it.data !== 'object' || !Array.isArray(it.data.segments)) return { ok: false, reason: 'backup ဖိုင်ထဲမှာ ပျက်နေတဲ့ project တစ်ခု ပါပါတယ် (အမှတ် ' + (i + 1) + ')' };
+      items.push({ id: String(it.id || ''), data: it.data });
+    }
+    return { ok: true, items: items };
+  }
+  function backupResolveName(name, existing) {
+    var base = String(name || 'ပရောဂျက် အသစ်');
+    if (existing.indexOf(base) < 0) return base;
+    var n = 2;
+    while (existing.indexOf(base + ' (backup ' + n + ')') >= 0) n++;
+    return base + ' (backup ' + n + ')';
+  }
+  function idbPutNamed(id, data) { return idbOp('readwrite', function (st) { return st.put(data, 'named:' + id); }); }
+  $('backupExportBtn').addEventListener('click', async function () {
+    var btn = $('backupExportBtn'); btn.disabled = true;
+    try {
+      var items = await idbNamedProjects();
+      var file = { app: 'maxflix-studio', kind: 'projects-backup', v: 1, exportedAt: Date.now(), projects: items.map(function (it) { return { id: it.id, data: it.data }; }) };
+      var d = new Date();
+      var pad = function (x) { return String(x).padStart(2, '0'); };
+      var name = 'maxflix-projects-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + pad(d.getHours()) + pad(d.getMinutes()) + '.json';
+      download(new Blob([JSON.stringify(file)], { type: 'application/json' }), name);
+      var st = $('backupStatus'); if (st) st.textContent = 'Backup ထုတ်ပြီးပါပြီ — project ' + items.length + ' ခု (' + name + ') — ဖိုင်ကို သေချာ သိမ်းထားပါ။';
+    } catch (e) { toast('Backup ထုတ်မရပါဘူး: ' + (e && e.message ? e.message : e)); }
+    btn.disabled = false;
+  });
+  $('backupImportBtn').addEventListener('click', function () { $('backupImportFile').click(); });
+  $('backupImportFile').addEventListener('change', async function () {
+    var f = this.files && this.files[0]; this.value = '';
+    if (!f) return;
+    var st = $('backupStatus');
+    try {
+      var parsed = JSON.parse(await readFileText(f));
+      var v = backupValidate(parsed);
+      if (!v.ok) { if (st) st.textContent = 'ပြန်သွင်းမရပါဘူး — ' + v.reason; toast('Backup ဖိုင် မဟုတ်ပါဘူး'); return; }
+      if (!v.items.length) { if (st) st.textContent = 'ဒီ backup ဖိုင်ထဲမှာ project မရှိပါဘူး'; return; }
+      var existing = await idbNamedProjects();
+      var names = existing.map(function (it) { return it.data.name || ''; });
+      var ids = existing.map(function (it) { return it.id; });
+      var added = 0, renamed = 0;
+      for (var i = 0; i < v.items.length; i++) {
+        var data = v.items[i].data;
+        if (typeof data.name !== 'string' || !data.name) data.name = 'ပရောဂျက် အသစ်';
+        var newName = backupResolveName(data.name, names);
+        if (newName !== data.name) renamed++;
+        data.name = newName;
+        var id = (v.items[i].id && ids.indexOf(v.items[i].id) < 0) ? v.items[i].id : newProjectId();
+        data.id = id;
+        await idbPutNamed(id, data);
+        names.push(newName); ids.push(id); added++;
+      }
+      refreshLocalList();
+      if (st) st.textContent = 'Backup ပြန်သွင်းပြီးပါပြီ — project ' + added + ' ခု' + (renamed ? ' (နာမည်တူလို့ ' + renamed + ' ခု နာမည်ပြောင်းထားတယ်)' : '') + '။ ဗီဒီယိုဖိုင်ကို ပြန်ရွေးပေးဖို့ လိုနိုင်တယ်။';
+      toast('Backup ပြန်သွင်းပြီးပါပြီ — ' + added + ' ခု');
+    } catch (e) {
+      if (st) st.textContent = 'ပြန်သွင်းမရပါဘူး — JSON ဖိုင် မဟုတ်တာ ဖြစ်နိုင်တယ်';
+      toast('Backup ဖိုင် ဖတ်မရပါဘူး');
+    }
+  });
+
   /* ---------- cloud projects (Firestore, user's own Firebase project) ---------- */
   /* Built-in config for the user's drama-translate-tools project, wired in
      directly: Firestore connects automatically on page load — there is no
@@ -7969,6 +8242,12 @@ var seekBtn = d.querySelector('.seek');
   $('policyClose').addEventListener('click', closePolicy);
   $('policyBackdrop').addEventListener('click', closePolicy);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closePolicy(); });
+  function openHelp() { var m = $('helpModal'); if (m) { m.style.display = 'flex'; document.body.style.overflow = 'hidden'; } }
+  function closeHelp() { var m = $('helpModal'); if (m) { m.style.display = 'none'; document.body.style.overflow = ''; } }
+  $('helpOpen').addEventListener('click', openHelp);
+  $('helpClose').addEventListener('click', closeHelp);
+  $('helpBackdrop').addEventListener('click', closeHelp);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeHelp(); });
   function guardSegments() {
     if (!segments.length) { toast('စာကြောင်း မရှိသေးပါဘူး'); return false; }
     return true;
@@ -8633,6 +8912,7 @@ var seekBtn = d.querySelector('.seek');
     var need = {};
     var tr = $('recapTranscriber') ? $('recapTranscriber').value : transcriberVal();
     if (tr === 'gemini') need.gemini = true;
+    else if (tr === 'g35') need.gemini = true;
     else if (tr === 'groq') need.groq = true;
     else if (tr === 'scribe') need.el = true;
     else if (tr === 'deepgram') need.deepgram = true;
@@ -9359,15 +9639,71 @@ var seekBtn = d.querySelector('.seek');
       var overNote = overrun > 0.05 ? ' · Dub အသံက ဗီဒီယိုထက် ' + overrun.toFixed(1) + ' စက္ကန့် ရှည်နေတယ် — အဆုံး အသံက ဗီဒီယို ပြီးပြီးချင်း ဆက်ကြားရမယ်' : '';
       var speedNote = maxRate !== 1.3 ? ' · Dub အမြန်နှုန်း ' + maxRate + 'X' : '';
       $('recapStatus').textContent = 'Dub အသံ အဆင်သင့်ပါ — စာကြောင်း ' + clips.length + ' ကြောင်း · ကြာချိန် ' + fmtT(dubMixed.length / 16000) + shiftNote + overNote + speedNote + peakNote + ' — "Dub အသံ နားထောင်မယ်" နဲ့ စစ်လို့ရပြီ၊ ဒါမှမဟုတ် "Dubbing MP4 ထုတ်မယ်" နှိပ်ပါ။';
+      /* persistent mix summary — survives later status writes, so the peak
+         is still visible when the export happens */
+      var mi = $('recapMixInfo');
+      if (mi) mi.textContent = 'Mix အခြေအနေ — စာကြောင်း ' + clips.length + ' ကြောင်း · ကြာချိန် ' + fmtT(dubMixed.length / 16000) + ' · Peak ' + peak.toFixed(2) + (peak < 0.001 ? ' ⚠️ တိတ်နေတယ်' : '');
       updateRecapStats();
       return true;
     } catch (e) {
       $('recapStatus').textContent = 'Dub အသံ ရောတာ မအောင်မြင်ပါဘူး: ' + (e && e.message ? e.message : e);
+      var mi2 = $('recapMixInfo'); if (mi2) mi2.textContent = '';
       return false;
     } finally {
       $('recapProg').classList.add('hidden');
     }
   }
+  /* One-line voice test: synthesize (or reuse) the FIRST speakable line
+     and play it, so a silent TTS setup is caught in seconds instead of
+     after a full run + export. Shows the line's length and peak level —
+     peak ~0.00 means the audio data itself is empty. */
+  var recapTestRunning = false;
+  async function recapTestOneLine() {
+    if (recapTestRunning) return;
+    if (!segments.length) { toast('စာတန်း မရှိသေးပါဘူး'); return; }
+    var useOut = hasCuts();
+    var found = null;
+    for (var i = 0; i < segments.length; i++) {
+      var s = segments[i];
+      var d = useOut ? outTime(s.end) - outTime(s.start) : s.end - s.start;
+      if (s.my && !s.failed && !s.keepOrig && d >= 0.05) { found = { s: s, i: i }; break; }
+    }
+    if (!found) { toast('အသံထုတ်စရာ စာကြောင်း မရှိပါဘူး — မြန်မာစာတန်း ရှိတဲ့ စာကြောင်း လိုတယ်'); return; }
+    var cfg = recapTtsCfg(found.s);
+    if (cfg.prov === 'azure' && !cfg.key) { toast('အရင်ဆုံး Azure Speech API Key ထည့်ပေးပါ'); return; }
+    if (cfg.prov === 'gemini' && !cfg.key) { toast('အရင်ဆုံး Gemini API Key ထည့်ပေးပါ'); return; }
+    if (cfg.prov === 'eleven' && !cfg.key) { toast('အရင်ဆုံး ElevenLabs API Key ထည့်ပေးပါ'); return; }
+    var btn = $('recapTestOneBtn');
+    recapTestRunning = true; if (btn) btn.disabled = true;
+    try {
+      var pcm = recapGetPcm(found.s);
+      if (!pcm) {
+        $('recapStatus').textContent = 'စာကြောင်း ' + (found.i + 1) + ' အသံ ထုတ်နေပါတယ်…';
+        var bytes = await ttsSynth(found.s.my, cfg);
+        pcm = await decodeTo16k(bytes);
+        recapSetPcm(found.s, pcm);
+        renderRecapRowStatus(found.i);
+      }
+      var peak = 0;
+      for (var pi = 0; pi < pcm.length; pi += 97) { var pa = Math.abs(pcm[pi]); if (pa > peak) peak = pa; }
+      var dur = pcm.length / 16000;
+      var ctx = dubWatchAudioCtx();
+      if (ctx) {
+        var buf = ctx.createBuffer(1, pcm.length, 16000);
+        buf.getChannelData(0).set(pcm);
+        var src = ctx.createBufferSource();
+        src.buffer = buf; src.connect(ctx.destination); src.start(0);
+      }
+      $('recapStatus').textContent = peak < 0.001
+        ? '⚠️ စာကြောင်း ' + (found.i + 1) + ' အသံ တိတ်နေတယ် (Peak 0.00) — TTS engine / Key စစ်ကြည့်ပါ၊ ဒါမှမဟုတ် တခြား engine နဲ့ စမ်းကြည့်ပါ။'
+        : 'စာကြောင်း ' + (found.i + 1) + ' အသံ ရပါတယ် — ' + dur.toFixed(1) + ' စက္ကန့် · Peak ' + peak.toFixed(2) + ' — အသံထွက်တာ ကြားရရင် အကုန် အသံထုတ်လို့ ရပြီ။';
+    } catch (e) {
+      $('recapStatus').textContent = 'တစ်ကြောင်း စမ်းတာ မအောင်မြင်ပါဘူး: ' + (e && e.message ? e.message : e);
+    } finally {
+      recapTestRunning = false; if (btn) btn.disabled = false;
+    }
+  }
+  $('recapTestOneBtn').addEventListener('click', recapTestOneLine);
   $('recapTtsBtn').addEventListener('click', recapTtsAll);
   $('recapConciseBtn').addEventListener('click', recapConciseRetranslate);
   $('recapCancel').addEventListener('click', function () {
@@ -9731,7 +10067,7 @@ $('addSeg').addEventListener('click', function () {
         break;
       }
     }
-    if (hit429 && lastErr && lastErr.message === 'HTTP 429') throw new Error('HTTP 429 — သုံးခွင့် ခဏတာ ပြည့်သွားပါပြီ။ မိနစ်အနည်းငယ် စောင့်ပြီး ပြန်စမ်းပါ။ တစ်နေ့တာ သုံးခွင့် ကုန်သွားရင်တော့ မနက်ဖြန်မှ ပြန်ရပါမယ်');
+    if (hit429 && lastErr && lastErr.message === 'HTTP 429') throw new Error('HTTP 429 — သုံးခွင့် ခဏတာ ပြည့်သွားပါပြီ။ မိနစ်အနည်းငယ် စောင့်ပြီး ပြန်စမ်းပါ။');
     throw lastErr || new Error('ပုံထုတ်တာ မအောင်မြင်ပါဘူး');
   }
   function aiPollinationsUrl(prompt, ratio) {
@@ -9800,7 +10136,7 @@ $('addSeg').addEventListener('click', function () {
       var p = $('aiVidPrompt').value.trim();
       if (!p) { toast('ဗီဒီယိုအကြောင်း အရင်ရိုက်ပေးပါ'); return; }
       var elKey2 = aiElKey();
-      if (!elKey2) { toast('ElevenLabs API Key အရင်ထည့်ပေးပါ — အသံထုတ် tab ထဲမှာ'); return; }
+      if (!elKey2) { toast('ElevenLabs API Key အရင်ထည့်ပေးပါ'); return; }
       var btn2 = $('aiVidGen'); btn2.disabled = true;
       var st2 = $('aiVidStatus');
       try {
@@ -9809,11 +10145,11 @@ $('addSeg').addEventListener('click', function () {
         var vbody = { model_id: vmodel, prompt: p, aspect_ratio: $('aiVidRatio').value };
         if (vmodel.indexOf('veo-') === 0) { vbody.duration_secs = 8; vbody.generate_audio = true; }
         var vj = await aiElCreate('video', vbody, elKey2, st2, 'ElevenLabs ဗီဒီယို');
-        var vdone = await aiPollFlows('video', vj.id, elKey2, st2, 'ElevenLabs ဗီဒီယိုထုတ်နေပါတယ် (မိနစ်အနည်းငယ် ကြာနိုင်ပါတယ်)', 10000, 600000);
+        var vdone = await aiPollFlows('video', vj.id, elKey2, st2, 'ElevenLabs ဗီဒီယိုထုတ်နေပါတယ်', 10000, 600000);
         var vv = $('aiVidOut'); vv.src = vdone.content_url; vv.classList.remove('hidden');
         $('aiVidDl').onclick = function () { window.open(vdone.content_url, '_blank'); };
         $('aiVidDlRow').classList.remove('hidden');
-        aiSetStatus(st2, 'ဗီဒီယိုရပါပြီ (ElevenLabs) — link က ၁ နာရီလောက်ပဲ ခံလို့ မြန်မြန်ဒေါင်းပါ');
+        aiSetStatus(st2, 'ဗီဒီယိုရပါပြီ');
       } catch (e) { aiSetStatus(st2, 'ဗီဒီယိုထုတ်တာ မအောင်မြင်ပါဘူး: ' + (e.message || e)); }
       btn2.disabled = false;
       return;
