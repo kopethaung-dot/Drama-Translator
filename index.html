@@ -25,6 +25,7 @@
 :root{
   color-scheme: light;
   --bg:linear-gradient(155deg,#b9d2ff 0%,#dcefff 32%,#d6f5e4 68%,#a9ecc4 100%);
+  --bg-solid:#dcebf7;
   --surface:rgba(255,255,255,.62); --surface2:rgba(255,255,255,.42); --ink:#0b1b33; --mut:#42597a;
   --line:rgba(23,74,140,.18); --acc:#0e9f7a; --acc-dark:#0b7a5e; --acc-soft:rgba(196,242,222,.55); --acc-ink:#ffffff;
   --blue:#0b63d8; --ok:#12805c; --warn-bg:rgba(253,244,224,.85); --warn-line:#e3c078; --warn-ink:#7a5410;
@@ -37,6 +38,7 @@
   :root:not([data-theme="light"]){
     color-scheme: dark;
     --bg:linear-gradient(160deg,#020d24 0%,#06264f 34%,#063f45 66%,#07553c 100%);
+    --bg-solid:#04101f;
     --surface:rgba(13,26,48,.55); --surface2:rgba(255,255,255,.08); --ink:#eef4ff; --mut:#a7b8d4;
     --line:rgba(160,200,255,.2); --acc:#3fd9a4; --acc-dark:#2bb885; --acc-soft:rgba(18,84,66,.5); --acc-ink:#ffffff;
     --blue:#5eb2ff; --ok:#3fd9a4; --warn-bg:rgba(44,33,16,.82); --warn-line:#6b4a1f; --warn-ink:#f0c674;
@@ -49,6 +51,7 @@
 :root[data-theme="dark"]{
     color-scheme: dark;
     --bg:linear-gradient(160deg,#020d24 0%,#06264f 34%,#063f45 66%,#07553c 100%);
+    --bg-solid:#04101f;
     --surface:rgba(13,26,48,.55); --surface2:rgba(255,255,255,.08); --ink:#eef4ff; --mut:#a7b8d4;
     --line:rgba(160,200,255,.2); --acc:#3fd9a4; --acc-dark:#2bb885; --acc-soft:rgba(18,84,66,.5); --acc-ink:#ffffff;
     --blue:#5eb2ff; --ok:#3fd9a4; --warn-bg:rgba(44,33,16,.82); --warn-line:#6b4a1f; --warn-ink:#f0c674;
@@ -75,6 +78,7 @@ button{font-family:inherit}
   padding:11px 8px;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;line-height:1.4}
 .modebar button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
 .modebar svg{flex:none}
+.modeShort{display:none}
 
 /* main tabs */
 .tabbar{display:flex;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px;margin-top:18px;flex-wrap:wrap}
@@ -85,10 +89,19 @@ button{font-family:inherit}
 @keyframes tabPop{0%{transform:scale(.82)}55%{transform:scale(1.09)}100%{transform:scale(1)}}
 .tabbar button[aria-pressed="true"]{animation:tabPop .35s ease}
 .tabbar button:active{transform:scale(.93)}
+/* More sheet (mobile nav) — the 6th tab-bar button; hidden on desktop */
+#tabMore{display:none}
+#moreSheet button{display:flex;align-items:center;gap:12px;width:100%;padding:13px 12px;border:0;background:transparent;color:var(--ink);font-size:15px;font-weight:700;border-radius:10px;text-align:left;cursor:pointer;line-height:1.4}
+#moreSheet button svg{flex:none;width:20px;height:20px}
+#moreSheet button[aria-pressed="true"]{background:var(--acc);color:var(--acc-ink)}
+/* settings live in one closed box on the Translate tab */
+.settingsBox{margin-top:16px;border:1px solid var(--line);border-radius:16px;padding:12px 14px;background:var(--surface2)}
+.settingsBox>summary{font-size:15px;font-weight:700;cursor:pointer;line-height:1.5}
+.settingsBox .adv{margin-top:12px}
 @media (prefers-reduced-motion: reduce){.tabbar button[aria-pressed="true"]{animation:none}}
 /* mobile: floating bottom nav, icons only */
 @media(max-width:640px){
-  .wrap{padding-bottom:112px}
+  .wrap{padding:14px 16px 112px}
   .tabbar{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:60;margin-top:0;flex-wrap:nowrap;
     border-radius:18px;padding:6px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
   .tabbar button{flex:1 1 0;min-width:0;padding:8px 2px 7px;flex-direction:column;gap:3px}
@@ -98,6 +111,23 @@ button{font-family:inherit}
      the nav and notifications were invisible on mobile) */
   #toast{bottom:calc(86px + env(safe-area-inset-bottom))}
   .tabbar .tabLabel{display:block;font-size:10px;font-weight:600;line-height:1.2;white-space:nowrap}
+  /* pro mobile: flat background (no 4-colour gradient), roomier cards, 6-tab bar */
+  body{background:var(--bg-solid)}
+  h1{font-size:18px;line-height:1.35}
+  h2{font-size:16px}
+  .card{border-radius:16px;padding:16px;margin-top:12px}
+  .modebar{margin-top:14px}
+  .modebar .modeFull{display:none}
+  .modebar .modeShort{display:inline}
+  .modebar button{white-space:nowrap}
+  .drop{padding:18px 14px}
+  .drop svg{width:30px;height:30px}
+  #srtAlreadyMyRow span{font-size:13px;line-height:1.6}
+  .burngrid{grid-template-columns:1fr}
+  #tabProjects,#tabTts{display:none}
+  #tabMore{display:flex}
+  #moreSheet:not(.hidden){display:block;position:fixed;left:10px;right:10px;bottom:calc(78px + env(safe-area-inset-bottom));z-index:61;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:8px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+  #moreBackdrop:not(.hidden){display:block;position:fixed;inset:0;z-index:59;background:rgba(0,0,0,.3)}
 }
 .resultgrid.solo{grid-template-columns:1fr}
 .rulesbox{background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;
@@ -112,7 +142,6 @@ button{font-family:inherit}
 .hint a{color:var(--blue)}
 
 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:16px;box-shadow:var(--shadow)}
-@media(max-width:560px){.card{padding:14px}}
 
 .drop{border:2px dashed var(--line);border-radius:12px;padding:30px 16px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
 .drop:hover,.drop.over{border-color:var(--acc);background:var(--acc-soft)}
@@ -140,7 +169,7 @@ select:focus,input:focus,textarea:focus{border-color:var(--blue);outline:none;bo
 /* mobile: buttons felt too big — tighten them so the layout looks balanced */
 @media(max-width:640px){
   .btn{padding:10px 16px;font-size:15px;min-height:44px}
-  .btn.small{padding:7px 12px;font-size:13px;min-height:40px}
+  .btn.small{padding:9px 14px;font-size:14px;min-height:44px}
   .btn.primary{margin-top:12px}
   .modebar button{padding:9px 6px;font-size:14px}
 }
@@ -403,17 +432,23 @@ body{background-attachment:fixed}
   <button id="tabTts" aria-pressed="false" title="TTS fro Recap"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg><span class="tabLabel">အသံထုတ်</span></button>
   <button id="tabRecap" aria-pressed="false" title="One click Recap"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16M2 9h5M2 15h5M17 9h5M17 15h5"/></svg><span class="tabLabel">Recap</span></button>
   <button id="tabCreate" aria-pressed="false" title="AI Generate"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg><span class="tabLabel">AI ဖန်တီးမယ်</span></button>
+  <button id="tabMore" aria-pressed="false" title="ပိုများ"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg><span class="tabLabel">ပိုများ</span></button>
+</div>
+<div id="moreBackdrop" class="hidden"></div>
+<div id="moreSheet" class="hidden" role="menu" aria-label="ပိုများ">
+  <button id="moreProjects" type="button" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.2 3.9A2 2 0 0 0 7.52 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg><span>ပရောဂျက်များ</span></button>
+  <button id="moreTts" type="button" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg><span>အသံထုတ်</span></button>
 </div>
 
 <div id="panelTranslate">
 <div class="modebar" role="group" aria-label="လုပ်ဆောင်မည့်နည်းလမ်း ရွေးရန်">
   <button id="modeVideo" aria-pressed="true">
     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16M2 9h5M2 15h5M17 9h5M17 15h5"/></svg>
-    ဗီဒီယိုကနေ စာတန်းထုတ်မယ်
+    <span class="modeFull">ဗီဒီယိုကနေ စာတန်းထုတ်မယ်</span><span class="modeShort">ဗီဒီယို</span>
   </button>
   <button id="modeSrt" aria-pressed="false">
     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
-    SRT ဖိုင်ကို ပြန်ဆိုမယ်
+    <span class="modeFull">SRT ဖိုင်ကို ပြန်ဆိုမယ်</span><span class="modeShort">SRT ဖိုင်</span>
   </button>
 </div>
 
@@ -446,12 +481,12 @@ body{background-attachment:fixed}
   <div id="linkRow" style="margin-top:14px">
     <label class="f" for="linkUrl">ဒါမှမဟုတ် link ကနေ ယူမယ်</label>
     <div class="row" style="gap:8px;margin-top:6px">
-      <input type="text" id="linkUrl" placeholder="https://www.youtube.com/watch?v=… / https://www.tiktok.com/…" autocomplete="off" spellcheck="false" inputmode="url" style="flex:1" />
+      <input type="text" id="linkUrl" placeholder="YouTube / TikTok link ထည့်ပါ" autocomplete="off" spellcheck="false" inputmode="url" style="flex:1" />
       <button class="btn small" id="linkBtn" type="button">🔗 ဆွဲယူမယ်</button>
     </div>
     <div id="linkStatus" style="font-size:13px;margin-top:6px;line-height:1.6"></div>
     <details style="margin-top:6px">
-      <summary style="font-size:13px;color:var(--mut);cursor:pointer">Cobalt instance / PC bridge ကိုယ်တိုင် သတ်မှတ်မယ် (မရရင်)</summary>
+      <summary style="font-size:13px;color:var(--mut);cursor:pointer">Cobalt instance / PC bridge သတ်မှတ်မယ်</summary>
       <div style="color:var(--mut);font-size:13px;margin-top:6px;line-height:1.6">YouTube / TikTok link တွေ ရပါတယ် — TikTok က watermark မပါဘူး။ Red Note (小红书) က Cobalt မထောက်ပံ့သေးလို့ မရသေးဘူး။</div>
       <div class="row" style="gap:8px;margin-top:6px">
         <input type="text" id="cobaltInstance" placeholder="Cobalt instance — https://… (ဥပမာ https://rue-cobalt.xenon.zone)" autocomplete="off" spellcheck="false" inputmode="url" style="flex:1" />
@@ -469,7 +504,7 @@ body{background-attachment:fixed}
     </details>
   </div>
 
-  <h2 style="margin-top:20px">၂ — ဆက်တင်များ</h2>
+  <details class="settingsBox" id="settingsBox"><summary>⚙️ ဆက်တင်များ — ဘာသာစကား၊ Key၊ Engine</summary>
   <div class="grid2">
     <div>
       <label class="f" for="srcLang">မူရင်းဘာသာစကား</label>
@@ -613,6 +648,7 @@ body{background-attachment:fixed}
       အပြည့်အစုံကို <button type="button" id="policyOpenNote" style="background:none;border:none;color:var(--acc);font-size:13px;text-decoration:underline;cursor:pointer;padding:0">Privacy Policy &amp; Copyright</button> မှာ ဖတ်လို့ရတယ်။
     </div>
   </details>
+  </details>
   
 <button class="btn primary" id="startBtn">
     <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
@@ -717,7 +753,7 @@ body{background-attachment:fixed}
               <button id="posBottom" aria-pressed="true">အောက်</button>
             </div>
           </div>
-          <div>
+          <div class="full">
             <label class="f" for="burnOff">အပေါ် / အောက် ရွှေ့ရန် <span class="val" id="burnOffVal">0%</span></label>
             <input type="range" id="burnOff" min="-25" max="25" step="1" value="0" />
           </div>
@@ -948,7 +984,7 @@ body{background-attachment:fixed}
 <div id="panelVideo" class="hidden">
 <section class="card" id="cardVideo">
   <h2>ဗီဒီယို ပြင်ဆင်ရန်</h2>
-  <div class="empty" id="videoEmpty">ဗီဒီယို မရှိသေးပါဘူး — ဘာသာပြန် tab မှာ ဗီဒီယိုဖိုင် အရင် ရွေးပါ၊ ဒါမှမဟုတ် Projects tab က ပရောဂျက် ဖွင့်ပါ။</div>
+  <div class="empty" id="videoEmpty">ဗီဒီယို မရှိသေးပါဘူး — ဘာသာပြန် tab မှာ ရွေးပါ၊ ဒါမှမဟုတ် Projects က ဖွင့်ပါ။</div>
   <div id="videoSlot"></div>
 </section>
 <section class="card hidden" id="cardTimeline">
@@ -3927,10 +3963,13 @@ var SrtTools = (function () {
     if (runPaused) setStatus('⏸ ခေတ္တရပ်ထားပါတယ် — "ဆက်လုပ်မယ်" နှိပ်ရင် ဆက်လုပ်ပါမယ်');
     else setStatus('ဆက်လုပ်နေပါတယ်…');
   });
+  /* settings live inside a closed box — open it when a key is missing so the field is visible */
+  function openSettings() { var sb = $('settingsBox'); if (sb) sb.open = true; }
   $('startBtn').addEventListener('click', function () {
     if (processing || batchRunning) return;
     maxCharsVal = Math.max(20, Math.min(80, parseInt($('maxChars').value, 10) || 42));
     if (engine === 'gemini' && !$('geminiKey').value.trim() && !(mode === 'srt' && srtAlreadyMyVal())) {
+      openSettings();
       toast('အရင်ဆုံး Gemini API Key ထည့်ပေးပါ');
       $('geminiKey').focus();
       return;
@@ -3939,22 +3978,22 @@ var SrtTools = (function () {
       if (!videoFile) { toast('အရင်ဆုံး ဗီဒီယို / အသံဖိုင် ရွေးပေးပါ'); return; }
       autoFinishPending = !!($('autoFinish') && $('autoFinish').checked);
       if (transcriberVal() === 'groq') {
-        if (!groqKeyVal()) { toast('အရင်ဆုံး Groq API Key ထည့်ပေးပါ'); $('groqKey').focus(); return; }
+        if (!groqKeyVal()) { openSettings(); toast('အရင်ဆုံး Groq API Key ထည့်ပေးပါ'); $('groqKey').focus(); return; }
         runExternalTranscribe();
       } else if (transcriberVal() === 'scribe') {
         if (!elKeyVal()) { toast('အရင်ဆုံး ElevenLabs API Key ထည့်ပေးပါ — TTS tab ထဲမှာ Key ကွက်ရှိပါတယ်'); return; }
         runExternalTranscribe();
       } else if (transcriberVal() === 'deepgram') {
-        if (!deepgramKeyVal()) { toast('အရင်ဆုံး Deepgram API Key ထည့်ပေးပါ'); $('deepgramKey').focus(); return; }
+        if (!deepgramKeyVal()) { openSettings(); toast('အရင်ဆုံး Deepgram API Key ထည့်ပေးပါ'); $('deepgramKey').focus(); return; }
         runExternalTranscribe();
       } else if (transcriberVal() === 'assemblyai') {
-        if (!assemblyKeyVal()) { toast('အရင်ဆုံး AssemblyAI API Key ထည့်ပေးပါ'); $('assemblyKey').focus(); return; }
+        if (!assemblyKeyVal()) { openSettings(); toast('အရင်ဆုံး AssemblyAI API Key ထည့်ပေးပါ'); $('assemblyKey').focus(); return; }
         runExternalTranscribe();
       } else if (transcriberVal() === 'gladia') {
-        if (!gladiaKeyVal()) { toast('အရင်ဆုံး Gladia API Key ထည့်ပေးပါ'); $('gladiaKey').focus(); return; }
+        if (!gladiaKeyVal()) { openSettings(); toast('အရင်ဆုံး Gladia API Key ထည့်ပေးပါ'); $('gladiaKey').focus(); return; }
         runExternalTranscribe();
       } else if (transcriberVal() === 'hf') {
-        if (!hfKeyVal()) { toast('အရင်ဆုံး Hugging Face token ထည့်ပေးပါ'); $('hfKey').focus(); return; }
+        if (!hfKeyVal()) { openSettings(); toast('အရင်ဆုံး Hugging Face token ထည့်ပေးပါ'); $('hfKey').focus(); return; }
         runExternalTranscribe();
       } else if (transcriberVal() === 'g35') {
         runExternalTranscribe(); /* Gemini key already checked above (engine is gemini) */
@@ -6823,7 +6862,7 @@ var seekBtn = d.querySelector('.seek');
   });
   $('glossaryAi').addEventListener('click', async function () {
     var btn = $('glossaryAi');
-    if (!$('geminiKey').value.trim()) { toast('အရင်ဆုံး Gemini API Key ထည့်ပေးပါ'); $('geminiKey').focus(); return; }
+    if (!$('geminiKey').value.trim()) { openSettings(); toast('အရင်ဆုံး Gemini API Key ထည့်ပေးပါ'); $('geminiKey').focus(); return; }
     btn.disabled = true;
     var oldLabel = btn.textContent;
     btn.textContent = 'နာမည်တွေ ထုတ်နေပါတယ်…';
@@ -6988,6 +7027,7 @@ var seekBtn = d.querySelector('.seek');
       return;
     }
     if (engine === 'gemini' && !$('geminiKey').value.trim()) {
+      openSettings();
       toast('အရင်ဆုံး Gemini API Key ထည့်ပေးပါ');
       $('geminiKey').focus();
       return;
@@ -7280,6 +7320,11 @@ var seekBtn = d.querySelector('.seek');
     [['tabTranslate', 'translate'], ['tabEdit', 'edit'], ['tabVideo', 'video'], ['tabProjects', 'projects'], ['tabTts', 'tts'], ['tabCreate', 'create'], ['tabRecap', 'recap']].forEach(function (pr) {
       $(pr[0]).setAttribute('aria-pressed', pr[1] === name ? 'true' : 'false');
     });
+    /* More button lights up when a sheet tab (projects / tts) is active */
+    var tm = $('tabMore'); if (tm) tm.setAttribute('aria-pressed', (name === 'projects' || name === 'tts') ? 'true' : 'false');
+    var mp = $('moreProjects'); if (mp) mp.setAttribute('aria-pressed', name === 'projects' ? 'true' : 'false');
+    var mt = $('moreTts'); if (mt) mt.setAttribute('aria-pressed', name === 'tts' ? 'true' : 'false');
+    if (name !== 'projects' && name !== 'tts') closeMoreSheet();
     $('pageHead').classList.toggle('hidden', name !== 'translate');
     if (name === 'edit') $('editEmpty').classList.toggle('hidden', !$('cardResult').classList.contains('hidden'));
     if (name === 'video') { updateVideoEmpty(); applyRatioPreview(); syncInfo(); }
@@ -7300,6 +7345,17 @@ var seekBtn = d.querySelector('.seek');
   $('tabTts').addEventListener('click', function () { switchTab('tts'); });
   $('tabRecap').addEventListener('click', function () { switchTab('recap'); });
   $('tabCreate').addEventListener('click', function () { switchTab('create'); });
+  /* More sheet (mobile nav): Projects + အသံထုတ် live here on small screens */
+  function closeMoreSheet() { var s = $('moreSheet'); if (s) s.classList.add('hidden'); var b = $('moreBackdrop'); if (b) b.classList.add('hidden'); }
+  $('tabMore').addEventListener('click', function () {
+    var s = $('moreSheet'); if (!s) return;
+    var willOpen = s.classList.contains('hidden');
+    s.classList.toggle('hidden', !willOpen);
+    var b = $('moreBackdrop'); if (b) b.classList.toggle('hidden', !willOpen);
+  });
+  $('moreBackdrop').addEventListener('click', closeMoreSheet);
+  $('moreProjects').addEventListener('click', function () { closeMoreSheet(); switchTab('projects'); });
+  $('moreTts').addEventListener('click', function () { closeMoreSheet(); switchTab('tts'); });
   window.addEventListener('resize', applyRatioPreview);
   /* the video preview + burn-in editor live in the Video tab now — and they
      stay visible all the time, even before any video is loaded, so the font /
@@ -10067,7 +10123,7 @@ $('addSeg').addEventListener('click', function () {
         break;
       }
     }
-    if (hit429 && lastErr && lastErr.message === 'HTTP 429') throw new Error('HTTP 429 — သုံးခွင့် ခဏတာ ပြည့်သွားပါပြီ။ မိနစ်အနည်းငယ် စောင့်ပြီး ပြန်စမ်းပါ။');
+    if (hit429 && lastErr && lastErr.message === 'HTTP 429') throw new Error('HTTP 429 — သုံးခွင့် ခဏတာ ပြည့်သွားပါပြီ။ မိနစ်အနည်းငယ် စောင့်ပြီး ပြန်စမ်းပါ။ တစ်နေ့တာ သုံးခွင့် ကုန်သွားရင်တော့ မနက်ဖြန်မှ ပြန်ရပါမယ်');
     throw lastErr || new Error('ပုံထုတ်တာ မအောင်မြင်ပါဘူး');
   }
   function aiPollinationsUrl(prompt, ratio) {
@@ -10136,7 +10192,7 @@ $('addSeg').addEventListener('click', function () {
       var p = $('aiVidPrompt').value.trim();
       if (!p) { toast('ဗီဒီယိုအကြောင်း အရင်ရိုက်ပေးပါ'); return; }
       var elKey2 = aiElKey();
-      if (!elKey2) { toast('ElevenLabs API Key အရင်ထည့်ပေးပါ'); return; }
+      if (!elKey2) { toast('ElevenLabs API Key အရင်ထည့်ပေးပါ — အသံထုတ် tab ထဲမှာ'); return; }
       var btn2 = $('aiVidGen'); btn2.disabled = true;
       var st2 = $('aiVidStatus');
       try {
@@ -10145,11 +10201,11 @@ $('addSeg').addEventListener('click', function () {
         var vbody = { model_id: vmodel, prompt: p, aspect_ratio: $('aiVidRatio').value };
         if (vmodel.indexOf('veo-') === 0) { vbody.duration_secs = 8; vbody.generate_audio = true; }
         var vj = await aiElCreate('video', vbody, elKey2, st2, 'ElevenLabs ဗီဒီယို');
-        var vdone = await aiPollFlows('video', vj.id, elKey2, st2, 'ElevenLabs ဗီဒီယိုထုတ်နေပါတယ်', 10000, 600000);
+        var vdone = await aiPollFlows('video', vj.id, elKey2, st2, 'ElevenLabs ဗီဒီယိုထုတ်နေပါတယ် (မိနစ်အနည်းငယ် ကြာနိုင်ပါတယ်)', 10000, 600000);
         var vv = $('aiVidOut'); vv.src = vdone.content_url; vv.classList.remove('hidden');
         $('aiVidDl').onclick = function () { window.open(vdone.content_url, '_blank'); };
         $('aiVidDlRow').classList.remove('hidden');
-        aiSetStatus(st2, 'ဗီဒီယိုရပါပြီ');
+        aiSetStatus(st2, 'ဗီဒီယိုရပါပြီ (ElevenLabs) — link က ၁ နာရီလောက်ပဲ ခံလို့ မြန်မြန်ဒေါင်းပါ');
       } catch (e) { aiSetStatus(st2, 'ဗီဒီယိုထုတ်တာ မအောင်မြင်ပါဘူး: ' + (e.message || e)); }
       btn2.disabled = false;
       return;
